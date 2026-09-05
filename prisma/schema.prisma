@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  icon        String
+  image       String?
+  description String?
+  businesses  Business[]
+}
+
+model City {
+  id            Int           @id @default(autoincrement())
+  name          String
+  slug          String        @unique
+  neighborhoods Neighborhood[]
+  businesses    Business[]
+}
+
+model Neighborhood {
+  id         Int        @id @default(autoincrement())
+  name       String
+  slug       String     @unique
+  cityId     Int
+  city       City       @relation(fields: [cityId], references: [id])
+  businesses Business[]
+}
+
+model Business {
+  id             Int            @id @default(autoincrement())
+  name           String
+  slug           String         @unique
+  description    String?
+  phone          String?
+  address        String?
+  coverImage     String?
+  logoImage      String?
+  lat            Float?
+  lng            Float?
+  rating         Float          @default(0)
+  reviewCount    Int            @default(0)
+  isFeatured     Boolean        @default(false)
+  isVerified     Boolean        @default(false)
+  priceLevel     Int            @default(1)
+  categoryId     Int
+  category       Category       @relation(fields: [categoryId], references: [id])
+  cityId         Int
+  city           City           @relation(fields: [cityId], references: [id])
+  neighborhoodId Int?
+  neighborhood   Neighborhood?  @relation(fields: [neighborhoodId], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  reviews        Review[]
+  appointments   Int            @default(0)
+  services       Service[]
+  workingHours   WorkingHours[]
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       Int
+  durationMin Int      @default(30)
+  businessId  Int
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+}
+
+model WorkingHours {
+  id         Int      @id @default(autoincrement())
+  dayOfWeek  Int
+  openTime   String
+  closeTime  String
+  businessId Int
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@unique([businessId, dayOfWeek])
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  name       String
+  rating     Int
+  comment    String
+  businessId Int
+  business   Business @relation(fields: [businessId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Faq {
+  id       Int    @id @default(autoincrement())
+  question String
+  answer   String
+  order    Int    @default(0)
+}
