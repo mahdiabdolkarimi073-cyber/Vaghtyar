@@ -86,6 +86,11 @@ const businessData: BusinessSeed[] = [
       { name: 'روکش دندان', price: 2500000, durationMin: 90 },
     ],
     workingHours: FULL_WEEK,
+    staff: [
+      { name: 'دکتر سحر احمدی', role: 'متخصص دندان‌پزشکی اطفال', photo: 'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+      { name: 'دکتر رضا کریمی', role: 'متخصص ارتودنسی', photo: 'https://images.pexels.com/photos/5407206/pexels-photo-5407206.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+      { name: 'دکتر مهسا رستمی', role: 'دندان‌پزشک عمومی', photo: 'https://images.pexels.com/photos/5214955/pexels-photo-5214955.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+    ],
   },
   {
     name: 'آرایشگاه مردانه VIP',
@@ -101,6 +106,11 @@ const businessData: BusinessSeed[] = [
       { name: 'رنگ مو', price: 450000, durationMin: 60 },
     ],
     workingHours: WEEK_NO_FRI,
+    staff: [
+      { name: 'علی رضایی', role: 'استایلیست ارشد', photo: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+      { name: 'محمد حسینی', role: 'متخصص ریش‌تراشی', photo: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+      { name: 'سینا مرادی', role: 'متخصص رنگ مو', photo: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+    ],
   },
   {
     name: 'کافه رستوران نوبت‌یار',
@@ -131,6 +141,10 @@ const businessData: BusinessSeed[] = [
       { name: 'ماساژ پا', price: 250000, durationMin: 30 },
     ],
     workingHours: WEEK_NO_FRI,
+    staff: [
+      { name: 'نگار صادقی', role: 'متخصص ماساژ درمانی', photo: 'https://images.pexels.com/photos/3865711/pexels-photo-3865711.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+      { name: 'آیدا موسوی', role: 'متخصص ماساژ سنگ داغ', photo: 'https://images.pexels.com/photos/4173251/pexels-photo-4173251.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+    ],
   },
   {
     name: 'خشک‌شویی پاکیزه',
@@ -206,6 +220,10 @@ const businessData: BusinessSeed[] = [
       { name: 'نوار قلب', price: 350000, durationMin: 30 },
     ],
     workingHours: FULL_WEEK,
+    staff: [
+      { name: 'دکتر پوریا نوری', role: 'متخصص قلب و عروق', photo: 'https://images.pexels.com/photos/5407206/pexels-photo-5407206.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+      { name: 'دکتر فاطمه عباسی', role: 'پزشک عمومی', photo: 'https://images.pexels.com/photos/5214955/pexels-photo-5214955.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+    ],
   },
   {
     name: 'دندان‌پزشکی درخشان',
@@ -236,6 +254,12 @@ const businessData: BusinessSeed[] = [
       { name: 'میکاپ عروس', price: 2500000, durationMin: 120 },
     ],
     workingHours: FULL_WEEK,
+    staff: [
+      { name: 'نازنین احمدی', role: 'متخصص رنگ و مش', photo: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+      { name: 'سارا محمدی', role: 'متخصص کوتاهی مو', photo: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+      { name: 'پریسا مرادی', role: 'متخصص کراتین و احیا', photo: 'https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+      { name: 'الهام علیزاده', role: 'متخصص شینیون', photo: 'https://images.pexels.com/photos/2613260/pexels-photo-2613260.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+    ],
   },
   {
     name: 'باشگاه طلایی پارسیان',
@@ -251,6 +275,10 @@ const businessData: BusinessSeed[] = [
       { name: 'جلسه پرسنال ترینینگ', price: 600000, durationMin: 60 },
     ],
     workingHours: FULL_WEEK,
+    staff: [
+      { name: 'بهنام تقوی', role: 'مربی ارشد بدنسازی', photo: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+      { name: 'مرجان جوادی', role: 'مربی یوگا', photo: 'https://images.pexels.com/photos/3865711/pexels-photo-3865711.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop' },
+    ],
   },
   {
     name: 'رستوران فروردین',

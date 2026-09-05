@@ -183,7 +183,10 @@ function BookingFlowInner({ data }: { data: SalonApiResponse }) {
           services={data.business.services}
           selected={selectedServices}
           onToggle={toggleService}
-          onNext={() => selectedServices.length > 0 ? setStep(2) : toast.error('حداقل یک خدمت انتخاب کنید')}
+          onNext={() => {
+            if (selectedServices.length === 0) { toast.error('حداقل یک خدمت انتخاب کنید'); return; }
+            router.push(`/booking/employee?serviceId=${selectedServices[0].id}&businessName=${data.business.slug}`);
+          }}
         />
       )}
       {step === 2 && (
