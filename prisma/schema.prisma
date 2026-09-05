@@ -35,9 +35,9 @@ model Neighborhood {
 }
 
 model Business {
-  id             Int            @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   name           String
-  slug           String         @unique
+  slug           String        @unique
   description    String?
   phone          String?
   address        String?
@@ -45,23 +45,26 @@ model Business {
   logoImage      String?
   lat            Float?
   lng            Float?
-  rating         Float          @default(0)
-  reviewCount    Int            @default(0)
-  isFeatured     Boolean        @default(false)
-  isVerified     Boolean        @default(false)
-  priceLevel     Int            @default(1)
+  rating         Float         @default(0)
+  reviewCount    Int           @default(0)
+  isFeatured     Boolean       @default(false)
+  isVerified     Boolean       @default(false)
+  priceLevel     Int           @default(1)
   categoryId     Int
-  category       Category       @relation(fields: [categoryId], references: [id])
+  category       Category      @relation(fields: [categoryId], references: [id])
   cityId         Int
-  city           City           @relation(fields: [cityId], references: [id])
+  city           City          @relation(fields: [cityId], references: [id])
   neighborhoodId Int?
-  neighborhood   Neighborhood?  @relation(fields: [neighborhoodId], references: [id])
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  neighborhood   Neighborhood? @relation(fields: [neighborhoodId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   reviews        Review[]
-  appointments   Int            @default(0)
+  appointmentCount Int        @default(0)
   services       Service[]
   workingHours   WorkingHours[]
+  staff          Staff[]
+  galleryImages  GalleryImage[]
+  appointments   Appointment[]
 }
 
 model Service {
@@ -94,9 +97,42 @@ model Review {
   createdAt  DateTime @default(now())
 }
 
+model Staff {
+  id         Int      @id @default(autoincrement())
+  name       String
+  role       String
+  photo      String?
+  businessId Int
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+}
+
+model GalleryImage {
+  id         Int      @id @default(autoincrement())
+  url        String
+  businessId Int
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+}
+
 model Faq {
   id       Int    @id @default(autoincrement())
   question String
   answer   String
   order    Int    @default(0)
+}
+
+model Appointment {
+  id               Int      @id @default(autoincrement())
+  businessId       Int
+  business         Business @relation(fields: [businessId], references: [id])
+  serviceIds       String
+  staffId          String?
+  customerName     String
+  customerPhone    String
+  appointmentDate  String
+  appointmentTime  String
+  totalPrice       Int
+  totalDuration    Int
+  createdAt        DateTime @default(now())
+
+  @@index([businessId, appointmentDate])
 }

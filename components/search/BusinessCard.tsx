@@ -109,7 +109,7 @@ export function BusinessCard({ business }: { business: BusinessResult }) {
             {business.reviewCount.toLocaleString('fa-IR')} نظر
           </span>
           <Link
-            href={`/business/${business.slug}`}
+            href={`/salon/${business.slug}`}
             className="rounded-lg bg-indigo-500 px-5 py-2 text-xs font-bold text-white transition-colors hover:bg-indigo-600"
           >
             رزرو نوبت

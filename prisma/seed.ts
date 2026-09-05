@@ -58,7 +58,7 @@ interface BusinessSeed {
   reviewCount: number;
   isFeatured: boolean;
   priceLevel: number;
-  appointments: number;
+  appointmentCount: number;
   lat: number;
   lng: number;
   categorySlug: string;
@@ -67,6 +67,8 @@ interface BusinessSeed {
   coverImage?: string;
   services: ServiceSeed[];
   workingHours: { dayOfWeek: number; openTime: string; closeTime: string }[];
+  staff?: { name: string; role: string; photo?: string }[];
+  gallery?: string[];
 }
 
 const businessData: BusinessSeed[] = [
@@ -75,7 +77,7 @@ const businessData: BusinessSeed[] = [
     slug: 'sepid-dental',
     description: 'ارائه خدمات تخصصی دندانپزشکی با کادر مجرب و تجهیزات پیشرفته',
     phone: '021-12345678', address: 'تهران، سعادت‌آباد، خیابان ۲۴',
-    rating: 4.9, reviewCount: 124, isFeatured: true, priceLevel: 3, appointments: 1250,
+    rating: 4.9, reviewCount: 124, isFeatured: true, priceLevel: 3, appointmentCount: 1250,
     lat: 35.7560, lng: 51.4180,
     categorySlug: 'doctor', citySlug: 'tehran', neighborhoodSlug: 'saadatabad',
     services: [
@@ -90,7 +92,7 @@ const businessData: BusinessSeed[] = [
     slug: 'vip-barbershop',
     description: 'پیرایش و خدمات مردانه VIP با بهترین استایلیست‌ها',
     phone: '071-2345678', address: 'شیراز، معالی‌آباد، خیابان ۱۴',
-    rating: 4.8, reviewCount: 98, isFeatured: true, priceLevel: 2, appointments: 890,
+    rating: 4.8, reviewCount: 98, isFeatured: true, priceLevel: 2, appointmentCount: 890,
     lat: 29.5918, lng: 52.5837,
     categorySlug: 'beauty', citySlug: 'shiraz', neighborhoodSlug: 'maaliabad',
     services: [
@@ -105,7 +107,7 @@ const businessData: BusinessSeed[] = [
     slug: 'nobatyar-cafe',
     description: 'غذاهای سنتی و کافه در محیطی دلنشین',
     phone: '031-1234567', address: 'اصفهان، جلفا، کوچه ارامنه',
-    rating: 4.7, reviewCount: 86, isFeatured: true, priceLevel: 2, appointments: 1800,
+    rating: 4.7, reviewCount: 86, isFeatured: true, priceLevel: 2, appointmentCount: 1800,
     lat: 32.6539, lng: 51.6660,
     categorySlug: 'other', citySlug: 'isfahan', neighborhoodSlug: 'jolfa',
     services: [
@@ -120,7 +122,7 @@ const businessData: BusinessSeed[] = [
     slug: 'aramesh-massage',
     description: 'ماساژ درمانی و خدمات اسپا در محیطی آرام',
     phone: '051-3456789', address: 'مشهد، احمدآباد، بلوار وکیل‌آباد',
-    rating: 4.9, reviewCount: 67, isFeatured: true, priceLevel: 3, appointments: 670,
+    rating: 4.9, reviewCount: 67, isFeatured: true, priceLevel: 3, appointmentCount: 670,
     lat: 36.2970, lng: 59.6060,
     categorySlug: 'beauty', citySlug: 'mashhad', neighborhoodSlug: 'ahmadabad',
     services: [
@@ -135,7 +137,7 @@ const businessData: BusinessSeed[] = [
     slug: 'pakizeh-drycleaning',
     description: 'خدمات خشک‌شویی و لباسشویی با کیفیت',
     phone: '041-1234567', address: 'تبریز، خیابان ولیعصر',
-    rating: 4.5, reviewCount: 12, isFeatured: false, priceLevel: 1, appointments: 230,
+    rating: 4.5, reviewCount: 12, isFeatured: false, priceLevel: 1, appointmentCount: 230,
     lat: 38.0800, lng: 46.2919,
     categorySlug: 'other', citySlug: 'tabriz', neighborhoodSlug: 'valiasr',
     services: [
@@ -150,7 +152,7 @@ const businessData: BusinessSeed[] = [
     slug: 'rose-blanc-flowers',
     description: 'گل و دسته‌گل‌های متنوع برای همه مناسبت‌ها',
     phone: '021-22334455', address: 'تهران، ونک، خیابان ملاصراپ',
-    rating: 4.6, reviewCount: 18, isFeatured: false, priceLevel: 1, appointments: 420,
+    rating: 4.6, reviewCount: 18, isFeatured: false, priceLevel: 1, appointmentCount: 420,
     lat: 35.7570, lng: 51.4100,
     categorySlug: 'other', citySlug: 'tehran', neighborhoodSlug: 'vanak',
     services: [
@@ -165,7 +167,7 @@ const businessData: BusinessSeed[] = [
     slug: 'gamma-language',
     description: 'آموزش زبان‌های خارجی با اساتید مجرب',
     phone: '026-1234567', address: 'کرج، گوهردشت، بلوار طالقانی',
-    rating: 4.4, reviewCount: 15, isFeatured: false, priceLevel: 2, appointments: 560,
+    rating: 4.4, reviewCount: 15, isFeatured: false, priceLevel: 2, appointmentCount: 560,
     lat: 35.8400, lng: 50.9800,
     categorySlug: 'education', citySlug: 'karaj', neighborhoodSlug: 'gohardasht',
     services: [
@@ -180,7 +182,7 @@ const businessData: BusinessSeed[] = [
     slug: 'energy-gym',
     description: 'بدن‌سازی و کلاس‌های گروهی با تجهیزات پیشرفته',
     phone: '031-7654321', address: 'اصفهان، مرداویج، خیابان امام',
-    rating: 4.8, reviewCount: 24, isFeatured: false, priceLevel: 2, appointments: 310,
+    rating: 4.8, reviewCount: 24, isFeatured: false, priceLevel: 2, appointmentCount: 310,
     lat: 32.6600, lng: 51.6700,
     categorySlug: 'doctor', citySlug: 'isfahan', neighborhoodSlug: 'mardavij',
     services: [
@@ -195,7 +197,7 @@ const businessData: BusinessSeed[] = [
     slug: 'salamat-clinic',
     description: 'کلینیک چندتخصصی با پزشکان حاذق',
     phone: '021-88776655', address: 'تهران، الهیه، خیابان مقدم',
-    rating: 4.7, reviewCount: 210, isFeatured: true, priceLevel: 3, appointments: 2100,
+    rating: 4.7, reviewCount: 210, isFeatured: true, priceLevel: 3, appointmentCount: 2100,
     lat: 35.7700, lng: 51.4200,
     categorySlug: 'doctor', citySlug: 'tehran', neighborhoodSlug: 'elahieh',
     services: [
@@ -210,7 +212,7 @@ const businessData: BusinessSeed[] = [
     slug: 'dorakhshan-dental',
     description: 'دندان‌پزشکی کودکان و بزرگسالان',
     phone: '021-22445566', address: 'تهران، جردن، خیابان آفریقا',
-    rating: 4.6, reviewCount: 76, isFeatured: false, priceLevel: 2, appointments: 540,
+    rating: 4.6, reviewCount: 76, isFeatured: false, priceLevel: 2, appointmentCount: 540,
     lat: 35.7600, lng: 51.4300,
     categorySlug: 'doctor', citySlug: 'tehran', neighborhoodSlug: 'jordan',
     services: [
@@ -225,7 +227,7 @@ const businessData: BusinessSeed[] = [
     slug: 'artin-beauty-salon',
     description: 'خدمات زیبایی مو و پوست و ناخن',
     phone: '021-33445566', address: 'تهران، ونک، خیابان نلسون ماندلا',
-    rating: 4.8, reviewCount: 145, isFeatured: true, priceLevel: 2, appointments: 1100,
+    rating: 4.8, reviewCount: 145, isFeatured: true, priceLevel: 2, appointmentCount: 1100,
     lat: 35.7550, lng: 51.4150,
     categorySlug: 'beauty', citySlug: 'tehran', neighborhoodSlug: 'vanak',
     services: [
@@ -240,7 +242,7 @@ const businessData: BusinessSeed[] = [
     slug: 'parsian-gold-gym',
     description: 'بدن‌سازی و فیتنس لوکس',
     phone: '021-55667788', address: 'تهران، سعادت‌آباد، بلوار دریا',
-    rating: 4.7, reviewCount: 92, isFeatured: false, priceLevel: 3, appointments: 430,
+    rating: 4.7, reviewCount: 92, isFeatured: false, priceLevel: 3, appointmentCount: 430,
     lat: 35.7580, lng: 51.4190,
     categorySlug: 'doctor', citySlug: 'tehran', neighborhoodSlug: 'saadatabad',
     services: [
@@ -255,7 +257,7 @@ const businessData: BusinessSeed[] = [
     slug: 'farvardin-restaurant',
     description: 'غذاهای ایرانی و سنتی در محیطی زیبا',
     phone: '021-66778899', address: 'تهران، الهیه، خیابان دربند',
-    rating: 4.5, reviewCount: 310, isFeatured: false, priceLevel: 2, appointments: 1600,
+    rating: 4.5, reviewCount: 310, isFeatured: false, priceLevel: 2, appointmentCount: 1600,
     lat: 35.7720, lng: 51.4250,
     categorySlug: 'other', citySlug: 'tehran', neighborhoodSlug: 'elahieh',
     services: [
@@ -270,7 +272,7 @@ const businessData: BusinessSeed[] = [
     slug: 'lahzeh-studio',
     description: 'عکاسی پرتره و خانوادگی',
     phone: '021-77889900', address: 'تهران، جردن، خیابان سعیدی',
-    rating: 4.6, reviewCount: 38, isFeatured: false, priceLevel: 2, appointments: 280,
+    rating: 4.6, reviewCount: 38, isFeatured: false, priceLevel: 2, appointmentCount: 280,
     lat: 35.7610, lng: 51.4280,
     categorySlug: 'other', citySlug: 'tehran', neighborhoodSlug: 'jordan',
     services: [
@@ -285,7 +287,7 @@ const businessData: BusinessSeed[] = [
     slug: 'novin-counseling',
     description: 'مشاوره روانشناسی و خانواده',
     phone: '021-88990011', address: 'تهران، ونک، خیابان شهرداری',
-    rating: 4.8, reviewCount: 56, isFeatured: false, priceLevel: 2, appointments: 390,
+    rating: 4.8, reviewCount: 56, isFeatured: false, priceLevel: 2, appointmentCount: 390,
     lat: 35.7540, lng: 51.4120,
     categorySlug: 'education', citySlug: 'tehran', neighborhoodSlug: 'vanak',
     services: [
@@ -300,7 +302,7 @@ const businessData: BusinessSeed[] = [
     slug: 'mehregan-dental',
     description: 'دندان‌پزشکی زیبایی و ایمپلنت',
     phone: '021-99001122', address: 'تهران، سعادت‌آباد، خیابان اسفندیار',
-    rating: 4.7, reviewCount: 88, isFeatured: false, priceLevel: 3, appointments: 620,
+    rating: 4.7, reviewCount: 88, isFeatured: false, priceLevel: 3, appointmentCount: 620,
     lat: 35.7575, lng: 51.4175,
     categorySlug: 'doctor', citySlug: 'tehran', neighborhoodSlug: 'saadatabad',
     services: [
@@ -315,7 +317,7 @@ const businessData: BusinessSeed[] = [
     slug: 'golestan-beauty',
     description: 'مو، ناخن، پوست و آرایش',
     phone: '071-99887766', address: 'شیراز، معالی‌آباد، خیابان دانشجو',
-    rating: 4.5, reviewCount: 42, isFeatured: false, priceLevel: 1, appointments: 340,
+    rating: 4.5, reviewCount: 42, isFeatured: false, priceLevel: 1, appointmentCount: 340,
     lat: 29.5900, lng: 52.5800,
     categorySlug: 'beauty', citySlug: 'shiraz', neighborhoodSlug: 'maaliabad',
     services: [
@@ -330,7 +332,7 @@ const businessData: BusinessSeed[] = [
     slug: 'asia-sport-club',
     description: 'بدن‌سازی، ایروبیک و کلاس‌های گروهی',
     phone: '051-99880011', address: 'مشهد، احمدآباد، بلوار سجاد',
-    rating: 4.4, reviewCount: 31, isFeatured: false, priceLevel: 1, appointments: 260,
+    rating: 4.4, reviewCount: 31, isFeatured: false, priceLevel: 1, appointmentCount: 260,
     lat: 36.2950, lng: 59.6100,
     categorySlug: 'doctor', citySlug: 'mashhad', neighborhoodSlug: 'ahmadabad',
     services: [
@@ -406,9 +408,11 @@ async function main() {
     }
   }
 
-  // Clear old services + working hours
+  // Clear old services + working hours + staff + gallery
   await prisma.service.deleteMany({});
   await prisma.workingHours.deleteMany({});
+  await prisma.staff.deleteMany({});
+  await prisma.galleryImage.deleteMany({});
 
   // Businesses
   for (const b of businessData) {
@@ -424,14 +428,14 @@ async function main() {
       update: {
         name: b.name, description: b.description, phone: b.phone, address: b.address,
         rating: b.rating, reviewCount: b.reviewCount, isFeatured: b.isFeatured,
-        priceLevel: b.priceLevel, appointments: b.appointments,
+        priceLevel: b.priceLevel, appointmentCount: b.appointmentCount,
         categoryId: category.id, cityId: city.id, neighborhoodId: neighborhood?.id || null,
         coverImage, lat: b.lat, lng: b.lng,
       },
       create: {
         name: b.name, slug: b.slug, description: b.description, phone: b.phone, address: b.address,
         rating: b.rating, reviewCount: b.reviewCount, isFeatured: b.isFeatured,
-        priceLevel: b.priceLevel, appointments: b.appointments,
+        priceLevel: b.priceLevel, appointmentCount: b.appointmentCount,
         categoryId: category.id, cityId: city.id, neighborhoodId: neighborhood?.id || null,
         coverImage, lat: b.lat, lng: b.lng,
       },
@@ -448,6 +452,18 @@ async function main() {
     for (const wh of b.workingHours) {
       await prisma.workingHours.create({
         data: { ...wh, businessId: business.id },
+      });
+    }
+
+    if (b.staff) {
+      await prisma.staff.createMany({
+        data: b.staff.map((member) => ({ ...member, businessId: business.id })),
+      });
+    }
+
+    if (b.gallery) {
+      await prisma.galleryImage.createMany({
+        data: b.gallery.map((url) => ({ url, businessId: business.id })),
       });
     }
   }

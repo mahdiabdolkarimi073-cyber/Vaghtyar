@@ -1,0 +1,37 @@
+import { notFound } from 'next/navigation';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
+import { SalonProfileClient } from './SalonProfileClient';
+import type { SalonApiResponse } from '@/lib/salon-types';
+
+export const revalidate = 0;
+
+async function getSalon(businessName: string): Promise<SalonApiResponse | null> {
+  try {
+    const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const res = await fetch(`${base}/api/salon/${encodeURIComponent(businessName)}`, { cache: 'no-store' });
+    if (!res.ok) return null;
+    return (await res.json()) as SalonApiResponse;
+  } catch {
+    return null;
+  }
+}
+
+export async function generateMetadata({ params }: { params: { businessName: string } }) {
+  const data = await getSalon(params.businessName);
+  if (!data) return { title: 'سالن پیدا نشد | نوبت‌یار' };
+  return { title: `${data.business.name} | نوبت‌یار`, description: data.business.description || '' };
+}
+
+export default async function SalonProfilePage({ params }: { params: { businessName: string } }) {
+  const data = await getSalon(params.businessName);
+  if (!data) notFound();
+
+  return (
+    <main className="flex min-h-screen w-full flex-col bg-slate-50">
+      <Header />
+      <SalonProfileClient data={data} />
+      <Footer />
+    </main>
+  );
+}

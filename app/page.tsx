@@ -11,6 +11,8 @@ import { WhyBusiness } from '@/components/home/why-business';
 import { Reviews } from '@/components/home/reviews';
 import { Faq } from '@/components/home/faq';
 
+export const dynamic = 'force-dynamic';
+
 const COVER_IMAGES: Record<string, string> = {
   'salamat-clinic': 'https://images.pexels.com/photos/5355863/pexels-photo-5355863.jpeg?auto=compress&cs=tinysrgb&w=940&h=500',
   'dorakhshan-dental': 'https://images.pexels.com/photos/4269268/pexels-photo-4269268.jpeg?auto=compress&cs=tinysrgb&w=940&h=500',
@@ -44,12 +46,12 @@ export default async function HomePage() {
     prisma.faq.findMany({ orderBy: { order: 'asc' } }),
     Promise.all([
       prisma.business.count(),
-      prisma.business.aggregate({ _sum: { appointments: true } }),
+      prisma.business.aggregate({ _sum: { appointmentCount: true } }),
       prisma.city.count(),
     ]),
   ]);
 
-  const totalAppointments = stats[1]._sum.appointments || 0;
+  const totalAppointments = stats[1]._sum.appointmentCount || 0;
   const totalCustomers = Math.floor(totalAppointments * 0.7);
 
   const featuredWithImages = featuredBusinesses.map((b) => ({
