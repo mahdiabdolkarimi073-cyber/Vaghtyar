@@ -70,7 +70,7 @@ export default function AdminCategoriesPage() {
         <AdminHeader title="مدیریت دسته‌بندی‌ها" />
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-4">
           <div className="flex justify-end">
-            <button onClick={() => { setEditing(null); setForm({ name: '', icon: '', description: '' }); setShowAdd(true); }} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-md shadow-violet-500/25">
+            <button onClick={() => { setEditing(null); setForm({ name: '', icon: '', description: '' }); setShowAdd(true); }} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-md shadow-primary/25">
               <Plus className="w-4 h-4" /> افزودن دسته
             </button>
           </div>
@@ -80,22 +80,22 @@ export default function AdminCategoriesPage() {
               {[1,2,3,4,5,6].map(i => <div key={i} className="admin-card p-5 h-32 admin-skeleton rounded-2xl" />)}
             </div>
           ) : data.length === 0 ? (
-            <div className="admin-card rounded-2xl p-12 text-center text-slate-400">دسته‌بندی وجود ندارد</div>
+            <div className="admin-card rounded-2xl p-12 text-center text-text-muted">دسته‌بندی وجود ندارد</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {data.map((cat, i) => (
                 <div key={cat.id} className={`admin-card p-5 border-r-4 ${accentBorder[accentColors[i % accentColors.length]]}`}>
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-12 h-12 rounded-xl bg-violet-50 flex items-center justify-center text-2xl">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-2xl">
                       {cat.icon || '✨'}
                     </div>
                     <StatusBadge variant="neutral">{toPersianDigits(cat._count?.businesses || 0)} کسب‌وکار</StatusBadge>
                   </div>
-                  <h3 className="font-bold text-slate-800 mb-1">{cat.name}</h3>
-                  {cat.description && <p className="text-sm text-slate-400">{cat.description}</p>}
-                  <div className="flex gap-2 mt-3 pt-3 border-t border-slate-100">
-                    <button onClick={() => { setEditing(cat); setForm({ name: cat.name, icon: cat.icon || '', description: '' }); setShowAdd(true); }} className="p-1.5 rounded-lg text-violet-600 hover:bg-violet-50"><Edit className="w-4 h-4" /></button>
-                    <button onClick={() => setDeleteId(cat.id)} className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50"><Trash2 className="w-4 h-4" /></button>
+                  <h3 className="font-bold text-text-primary mb-1">{cat.name}</h3>
+                  {cat.description && <p className="text-sm text-text-muted">{cat.description}</p>}
+                  <div className="flex gap-2 mt-3 pt-3 border-t border-border">
+                    <button onClick={() => { setEditing(cat); setForm({ name: cat.name, icon: cat.icon || '', description: '' }); setShowAdd(true); }} className="p-1.5 rounded-lg text-primary hover:bg-primary/10"><Edit className="w-4 h-4" /></button>
+                    <button onClick={() => setDeleteId(cat.id)} className="p-1.5 rounded-lg text-error hover:bg-error/10"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
               ))}
@@ -108,8 +108,8 @@ export default function AdminCategoriesPage() {
         <DialogContent>
           <DialogHeader><DialogTitle>{editing ? 'ویرایش دسته' : 'افزودن دسته جدید'}</DialogTitle></DialogHeader>
           <div className="space-y-3">
-            <div><label className="text-sm text-slate-600 mb-1 block">نام</label><input value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" /></div>
-            <div><label className="text-sm text-slate-600 mb-1 block">آیکون (اموجی)</label><input value={form.icon} onChange={e => setForm({...form, icon: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" placeholder="✂️" /></div>
+            <div><label className="text-sm text-text-secondary mb-1 block">نام</label><input value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" /></div>
+            <div><label className="text-sm text-text-secondary mb-1 block">آیکون (اموجی)</label><input value={form.icon} onChange={e => setForm({...form, icon: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" placeholder="✂️" /></div>
           </div>
           <DialogFooter>
             <button onClick={() => setShowAdd(false)} className="admin-input px-4 py-2 rounded-xl text-sm">انصراف</button>
@@ -121,7 +121,7 @@ export default function AdminCategoriesPage() {
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader><AlertDialogTitle>حذف دسته‌بندی</AlertDialogTitle><AlertDialogDescription>آیا از حذف این دسته‌بندی اطمینان دارید؟ در صورت وجود کسب‌وکار در این دسته، حذف ممکن نخواهد بود.</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={deleteCategory} className="bg-rose-500 hover:bg-rose-600">حذف</AlertDialogAction></AlertDialogFooter>
+          <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={deleteCategory} className="bg-error hover:bg-red-600">حذف</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>

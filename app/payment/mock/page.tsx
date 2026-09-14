@@ -60,27 +60,27 @@ export default function MockPaymentPage() {
     router.push('/payment/failed');
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-indigo-400" /></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" dir="rtl">
       <GlassCard strong className="p-8 w-full max-w-md text-center">
-        <h1 className="text-xl font-bold text-primary-custom mb-2">پرداخت شبیه‌سازی</h1>
-        <p className="text-sm text-secondary-custom mb-6">این یک پرداخت آزمایشی است. هیچ مبلغی واقعاً کسر نمی‌شود.</p>
+        <h1 className="text-xl font-bold text-text-primary mb-2">پرداخت شبیه‌سازی</h1>
+        <p className="text-sm text-text-secondary mb-6">این یک پرداخت آزمایشی است. هیچ مبلغی واقعاً کسر نمی‌شود.</p>
 
         <div className="space-y-3 mb-6 text-right">
-          <div className="flex justify-between p-3 rounded-xl bg-white/5">
-            <span className="text-sm text-secondary-custom">پلن</span>
-            <span className="text-sm font-bold text-primary-custom">{payment?.planName}</span>
+          <div className="flex justify-between p-3 rounded-xl bg-surface/5">
+            <span className="text-sm text-text-secondary">پلن</span>
+            <span className="text-sm font-bold text-text-primary">{payment?.planName}</span>
           </div>
-          <div className="flex justify-between p-3 rounded-xl bg-white/5">
-            <span className="text-sm text-secondary-custom">مبلغ</span>
+          <div className="flex justify-between p-3 rounded-xl bg-surface/5">
+            <span className="text-sm text-text-secondary">مبلغ</span>
             <span className="text-sm font-bold gradient-text">{payment ? formatPrice(payment.amount) : ''}</span>
           </div>
         </div>
 
         <div className="flex gap-3">
-          <button onClick={handleCancel} disabled={processing} className="flex-1 py-3 rounded-xl border border-white/10 text-secondary-custom hover:bg-white/5 text-sm flex items-center justify-center gap-2">
+          <button onClick={handleCancel} disabled={processing} className="flex-1 py-3 rounded-xl border border-border text-text-secondary hover:bg-muted text-sm flex items-center justify-center gap-2">
             <X className="w-4 h-4" /> انصراف
           </button>
           <GradientButton onClick={handleSuccess} loading={processing} className="flex-1" size="md">

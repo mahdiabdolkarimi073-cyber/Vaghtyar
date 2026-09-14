@@ -36,14 +36,14 @@ export default function AdminSidebar() {
 
   const sidebarContent = (
     <>
-      <div className="p-6 border-b border-slate-100">
+      <div className="p-6 border-b border-border">
         <Link href="/admin/dashboard" className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl admin-gradient-primary flex items-center justify-center">
             <Shield className="w-5 h-5 text-white" />
           </div>
           <div>
-            <div className="text-sm font-bold admin-gradient-text">نوبت‌یار</div>
-            <div className="text-xs text-slate-500">پنل مدیریت</div>
+            <div className="text-sm font-bold text-text-primary">نوبت‌یار</div>
+            <div className="text-xs text-text-secondary">پنل مدیریت</div>
           </div>
         </Link>
       </div>
@@ -56,10 +56,10 @@ export default function AdminSidebar() {
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                 isActive
-                  ? 'admin-gradient-primary text-white shadow-md shadow-violet-500/25'
-                  : 'text-slate-600 hover:bg-violet-50 hover:text-violet-600'
+                  ? 'bg-primary text-white shadow-soft'
+                  : 'text-text-secondary hover:bg-primary/10 hover:text-primary'
               }`}
             >
               <item.icon className="w-5 h-5" />
@@ -69,10 +69,10 @@ export default function AdminSidebar() {
         })}
       </nav>
 
-      <div className="p-3 border-t border-slate-100">
+      <div className="p-3 border-t border-border">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-rose-500 hover:bg-rose-50 transition-all w-full"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-error hover:bg-error/10 transition-all w-full"
         >
           <LogOut className="w-5 h-5" />
           خروج
@@ -94,7 +94,7 @@ export default function AdminSidebar() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
           <aside className="admin-sidebar absolute top-0 right-0 h-screen w-64 flex flex-col admin-animate">
             <div className="p-4 flex justify-start">
-              <button onClick={() => setOpen(false)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setOpen(false)} className="text-text-muted hover:text-text-primary">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -103,12 +103,12 @@ export default function AdminSidebar() {
         </div>
       )}
 
-      {/* Mobile menu button - rendered by parent */}
+      {/* Mobile menu button */}
       <button
         onClick={() => setOpen(true)}
-        className="lg:hidden fixed top-4 right-4 z-30 p-2 rounded-lg bg-white shadow-md"
+        className="lg:hidden fixed top-4 right-4 z-30 p-2 rounded-lg bg-surface shadow-card"
       >
-        <Menu className="w-6 h-6 text-slate-600" />
+        <Menu className="w-6 h-6 text-text-primary" />
       </button>
     </>
   );

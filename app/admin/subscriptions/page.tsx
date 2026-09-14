@@ -58,7 +58,7 @@ export default function AdminSubscriptionsPage() {
         <AdminHeader title="مدیریت اشتراک‌ها" />
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-4">
           <Tabs value={tab} onValueChange={setTab}>
-            <TabsList className="bg-white border border-slate-200 rounded-xl p-1">
+            <TabsList className="bg-surface border border-border rounded-xl p-1">
               <TabsTrigger value="active" className="rounded-lg">فعال</TabsTrigger>
               <TabsTrigger value="expiring" className="rounded-lg">در حال انقضا</TabsTrigger>
               <TabsTrigger value="expired" className="rounded-lg">منقضی شده</TabsTrigger>
@@ -66,8 +66,8 @@ export default function AdminSubscriptionsPage() {
 
             <TabsContent value={tab}>
               {tab === 'expiring' && (
-                <div className="admin-card p-4 mb-4 bg-amber-50 border-amber-200 flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 text-amber-500" />
+                <div className="admin-card p-4 mb-4 bg-warning/10 border-amber-200 flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-warning" />
                   <span className="text-sm text-amber-700">{toPersianDigits(data.length)} اشتراک در ۷ روز آینده منقضی می‌شود</span>
                 </div>
               )}
@@ -76,8 +76,8 @@ export default function AdminSubscriptionsPage() {
                 columns={[
                   { key: 'business', header: 'کسب‌وکار', render: r => r.business?.name || '-' },
                   { key: 'plan', header: 'طرح', render: r => <StatusBadge variant={planVariantMap[r.plan?.name] || 'neutral'}>{r.plan?.name || '-'}</StatusBadge> },
-                  { key: 'startDate', header: 'شروع', render: r => <span className="text-xs text-slate-400">{formatDateShortFA(new Date(r.startDate))}</span> },
-                  { key: 'endDate', header: 'پایان', render: r => <span className="text-xs text-slate-400">{formatDateShortFA(new Date(r.endDate))}</span> },
+                  { key: 'startDate', header: 'شروع', render: r => <span className="text-xs text-text-muted">{formatDateShortFA(new Date(r.startDate))}</span> },
+                  { key: 'endDate', header: 'پایان', render: r => <span className="text-xs text-text-muted">{formatDateShortFA(new Date(r.endDate))}</span> },
                   { key: 'daysLeft', header: 'روز باقی‌مانده', render: r => {
                     const d = daysRemaining(r.endDate);
                     return <StatusBadge variant={d > 30 ? 'success' : d > 7 ? 'warning' : 'danger'}>{toPersianDigits(d)} روز</StatusBadge>;
@@ -99,7 +99,7 @@ export default function AdminSubscriptionsPage() {
         <DialogContent>
           <DialogHeader><DialogTitle>تمدید اشتراک</DialogTitle></DialogHeader>
           <div className="space-y-3">
-            <label className="text-sm text-slate-600 block">تعداد روزهای تمدید</label>
+            <label className="text-sm text-text-secondary block">تعداد روزهای تمدید</label>
             <input type="number" value={extendDays} onChange={e => setExtendDays(Number(e.target.value))} className="admin-input w-full h-10 px-4 text-sm" min={1} />
           </div>
           <DialogFooter>

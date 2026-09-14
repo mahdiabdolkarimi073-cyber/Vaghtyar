@@ -90,9 +90,9 @@ export default function AdminPaymentsPage() {
               { key: 'amount', header: 'مبلغ', render: r => formatPrice(r.amount) },
               { key: 'plan', header: 'طرح', render: r => r.plan?.name || '-' },
               { key: 'status', header: 'وضعیت', render: r => <StatusBadge variant={statusVariantMap[r.status] || 'neutral'}>{statusLabelMap[r.status] || r.status}</StatusBadge> },
-              { key: 'createdAt', header: 'تاریخ', render: r => <span className="text-xs text-slate-400">{formatDateShortFA(new Date(r.createdAt))}</span> },
+              { key: 'createdAt', header: 'تاریخ', render: r => <span className="text-xs text-text-muted">{formatDateShortFA(new Date(r.createdAt))}</span> },
               { key: 'actions', header: 'عملیات', render: r => r.status === 'SUCCESS' ? (
-                <button onClick={() => setRefundId(r.id)} className="text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg text-xs font-medium">بازگشت وجه</button>
+                <button onClick={() => setRefundId(r.id)} className="text-error hover:bg-error/10 p-1.5 rounded-lg text-xs font-medium">بازگشت وجه</button>
               ) : '-' },
             ]}
             data={data}
@@ -103,7 +103,7 @@ export default function AdminPaymentsPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="admin-input px-3 py-1.5 text-sm rounded-lg disabled:opacity-50">قبلی</button>
-              <span className="text-sm text-slate-500">{toPersianDigits(page)} از {toPersianDigits(totalPages)}</span>
+              <span className="text-sm text-text-muted">{toPersianDigits(page)} از {toPersianDigits(totalPages)}</span>
               <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="admin-input px-3 py-1.5 text-sm rounded-lg disabled:opacity-50">بعدی</button>
             </div>
           )}
@@ -113,7 +113,7 @@ export default function AdminPaymentsPage() {
       <AlertDialog open={!!refundId} onOpenChange={() => setRefundId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader><AlertDialogTitle>بازگشت وجه</AlertDialogTitle><AlertDialogDescription>آیا از بازگشت وجه این پرداخت اطمینان دارید؟</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={refund} className="bg-rose-500 hover:bg-rose-600">تایید بازگشت</AlertDialogAction></AlertDialogFooter>
+          <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={refund} className="bg-error hover:bg-red-600">تایید بازگشت</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>

@@ -66,22 +66,22 @@ export default function ReportsPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <h2 className="text-lg font-bold text-primary-custom">گزارش‌ها و درآمد</h2>
-        <button onClick={handleExport} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl glass text-sm text-primary-custom hover:bg-white/8 transition-all">
+        <h2 className="text-lg font-bold text-text-primary">گزارش‌ها و درآمد</h2>
+        <button onClick={handleExport} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl glass text-sm text-text-primary hover:bg-muted transition-all">
           <Download className="w-4 h-4" /> خروجی CSV
         </button>
       </div>
 
       <div className="flex flex-wrap gap-2">
         {([['today', 'امروز'], ['week', 'این هفته'], ['month', 'این ماه'], ['custom', 'بازه دلخواه']] as const).map(([f, label]) => (
-          <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${filter === f ? 'gradient-primary text-white' : 'glass text-secondary-custom hover:text-primary-custom'}`}>{label}</button>
+          <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${filter === f ? 'gradient-primary text-white' : 'glass text-text-secondary hover:text-text-primary'}`}>{label}</button>
         ))}
       </div>
 
       {filter === 'custom' && (
         <div className="flex gap-2 items-center">
           <input type="date" value={customStart} onChange={e => setCustomStart(e.target.value)} className="glass-input px-3 py-2 text-sm" />
-          <span className="text-secondary-custom text-xs">تا</span>
+          <span className="text-text-secondary text-xs">تا</span>
           <input type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)} className="glass-input px-3 py-2 text-sm" />
         </div>
       )}
@@ -103,7 +103,7 @@ export default function ReportsPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <GlassCard className="p-5">
-              <h3 className="text-sm font-bold text-primary-custom mb-4">درآمد روزانه</h3>
+              <h3 className="text-sm font-bold text-text-primary mb-4">درآمد روزانه</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <AreaChart data={report?.dailyRevenue || []}>
                   <defs>
@@ -122,7 +122,7 @@ export default function ReportsPage() {
             </GlassCard>
 
             <GlassCard className="p-5">
-              <h3 className="text-sm font-bold text-primary-custom mb-4">نوبت‌ها بر اساس وضعیت</h3>
+              <h3 className="text-sm font-bold text-text-primary mb-4">نوبت‌ها بر اساس وضعیت</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie data={report?.statusBreakdown || []} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={50} label={(e: { name: string; value: number }) => `${e.name}: ${toPersianDigits(e.value)}`}>
@@ -136,7 +136,7 @@ export default function ReportsPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <GlassCard className="p-5">
-              <h3 className="text-sm font-bold text-primary-custom mb-4">درآمد بر اساس خدمت</h3>
+              <h3 className="text-sm font-bold text-text-primary mb-4">درآمد بر اساس خدمت</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={report?.revenueByService || []} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -149,7 +149,7 @@ export default function ReportsPage() {
             </GlassCard>
 
             <GlassCard className="p-5">
-              <h3 className="text-sm font-bold text-primary-custom mb-4">درآمد بر اساس کارکن</h3>
+              <h3 className="text-sm font-bold text-text-primary mb-4">درآمد بر اساس کارکن</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={report?.revenueByStaff || []} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />

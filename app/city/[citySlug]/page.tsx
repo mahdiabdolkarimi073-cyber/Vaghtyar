@@ -53,30 +53,30 @@ export default async function CityPage({ params }: Props) {
 
   return (
     <div className="container mx-auto px-4 max-w-7xl py-8">
-      <div className="bg-gradient-to-br from-teal-600 to-cyan-700 rounded-3xl p-8 md:p-12 text-white mb-8">
+      <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl p-8 md:p-12 text-white mb-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-3">رزرو نوبت در {city.name}</h1>
-        <p className="text-teal-50 text-lg">سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌های {city.name} را پیدا کنید و آنلاین نوبت رزرو کنید.</p>
+        <p className="text-primary-foreground/80 text-lg">سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌های {city.name} را پیدا کنید و آنلاین نوبت رزرو کنید.</p>
       </div>
 
       {categories.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">دسته‌بندی‌ها در {city.name}</h2>
+          <h2 className="text-xl font-bold text-text-primary mb-4">دسته‌بندی‌ها در {city.name}</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {categories.map(cat => (
-              <Link key={cat.id} href={`/${params.citySlug}/${cat.slug}`} className="bg-white rounded-2xl border border-gray-100 p-5 text-center hover:shadow-lg hover:border-teal-200 transition-all hover:-translate-y-1">
-                <h3 className="font-medium text-gray-700">{cat.name}</h3>
+              <Link key={cat.id} href={`/${params.citySlug}/${cat.slug}`} className="bg-surface rounded-2xl border border-border p-5 text-center hover:shadow-lg hover:border-primary/30 transition-all hover:-translate-y-1">
+                <h3 className="font-medium text-text-secondary">{cat.name}</h3>
               </Link>
             ))}
           </div>
         </div>
       )}
 
-      <div className="mb-4 flex items-center gap-2 text-gray-500 text-sm">
+      <div className="mb-4 flex items-center gap-2 text-text-muted text-sm">
         <MapPin className="w-4 h-4" /> {toPersianDigits(businessData.length)} کسب‌وکار در {city.name}
       </div>
 
       {businessData.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center text-gray-400">
+        <div className="bg-surface rounded-2xl border border-border p-12 text-center text-text-muted">
           هنوز کسب‌وکاری در این شهر ثبت نشده است.
         </div>
       ) : (

@@ -63,7 +63,7 @@ export default function BusinessLoginPage() {
               <LogIn className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold gradient-text">ورود کسب‌وکار</h1>
-            <p className="text-sm text-secondary-custom mt-2">به پنل مدیریت کسب‌وکار خود وارد شوید</p>
+            <p className="text-sm text-text-secondary mt-2">به پنل مدیریت کسب‌وکار خود وارد شوید</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -75,7 +75,7 @@ export default function BusinessLoginPage() {
                 error={errors.email?.message}
                 className="pr-11"
               />
-              <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary-custom pointer-events-none" style={{ marginTop: errors.email ? '0' : '0' }} />
+              <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary pointer-events-none" style={{ marginTop: errors.email ? '0' : '0' }} />
             </div>
 
             <div className="relative">
@@ -86,22 +86,22 @@ export default function BusinessLoginPage() {
                 error={errors.password?.message}
                 className="pr-11 pl-11"
               />
-              <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary-custom pointer-events-none" />
+              <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary pointer-events-none" />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-custom hover:text-primary-custom transition-colors"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer text-secondary-custom">
-                <input type="checkbox" {...register('remember')} className="rounded border-white/20 bg-white/5" />
+              <label className="flex items-center gap-2 cursor-pointer text-text-secondary">
+                <input type="checkbox" {...register('remember')} className="rounded border-white/20 bg-surface/5" />
                 مرا به خاطر بسپار
               </label>
-              <Link href="/business/forgot-password" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+              <Link href="/business/forgot-password" className="text-primary hover:text-primary transition-colors">
                 رمز خود را فراموشته‌اید؟
               </Link>
             </div>
@@ -111,9 +111,9 @@ export default function BusinessLoginPage() {
             </GradientButton>
           </form>
 
-          <div className="mt-6 text-center text-sm text-secondary-custom">
+          <div className="mt-6 text-center text-sm text-text-secondary">
             کسب‌وکار ندارید؟{' '}
-            <Link href="/business/register" className="text-indigo-400 hover:text-indigo-300 font-medium">
+            <Link href="/business/register" className="text-primary hover:text-primary font-medium">
               ثبت‌نام کنید
             </Link>
           </div>

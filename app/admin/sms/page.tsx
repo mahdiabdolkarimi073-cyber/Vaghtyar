@@ -66,7 +66,7 @@ export default function AdminSmsPage() {
           </div>
 
           <Tabs defaultValue="logs">
-            <TabsList className="bg-white border border-slate-200 rounded-xl p-1">
+            <TabsList className="bg-surface border border-border rounded-xl p-1">
               <TabsTrigger value="logs" className="rounded-lg">گزارش پیامک‌ها</TabsTrigger>
               <TabsTrigger value="settings" className="rounded-lg">تنظیمات</TabsTrigger>
             </TabsList>
@@ -75,10 +75,10 @@ export default function AdminSmsPage() {
               <DataTable
                 columns={[
                   { key: 'phone', header: 'گیرنده', render: r => <span dir="ltr">{r.phone}</span> },
-                  { key: 'message', header: 'پیام', render: r => <span className="text-xs text-slate-500 max-w-xs block truncate">{r.message}</span> },
+                  { key: 'message', header: 'پیام', render: r => <span className="text-xs text-text-muted max-w-xs block truncate">{r.message}</span> },
                   { key: 'status', header: 'وضعیت', render: r => <StatusBadge variant={statusVariantMap[r.status] || 'neutral'}>{statusLabelMap[r.status] || r.status}</StatusBadge> },
                   { key: 'type', header: 'نوع', render: r => r.type || '-' },
-                  { key: 'sentAt', header: 'تاریخ', render: r => <span className="text-xs text-slate-400">{formatDateShortFA(new Date(r.sentAt))}</span> },
+                  { key: 'sentAt', header: 'تاریخ', render: r => <span className="text-xs text-text-muted">{formatDateShortFA(new Date(r.sentAt))}</span> },
                 ]}
                 data={data}
                 isLoading={loading}
@@ -88,26 +88,26 @@ export default function AdminSmsPage() {
 
             <TabsContent value="settings">
               <div className="admin-card p-6 max-w-xl space-y-4">
-                <h3 className="text-sm font-bold text-slate-700">تنظیمات سرویس پیامک</h3>
-                <div><label className="text-sm text-slate-600 mb-1 block">ارائه‌دهنده</label>
+                <h3 className="text-sm font-bold text-text-secondary">تنظیمات سرویس پیامک</h3>
+                <div><label className="text-sm text-text-secondary mb-1 block">ارائه‌دهنده</label>
                   <select value={settings.sms_provider || ''} onChange={e => setSettings({...settings, sms_provider: e.target.value})} className="admin-input w-full h-10 px-4 text-sm">
                     <option value="kavenegar">کاوه‌نگار</option>
                     <option value="farapayamak">فراپیامک</option>
                     <option value="melipayamak">ملی‌پیامک</option>
                   </select>
                 </div>
-                <div><label className="text-sm text-slate-600 mb-1 block">کلید API</label><input value={settings.sms_api_key || ''} onChange={e => setSettings({...settings, sms_api_key: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" type="password" /></div>
-                <div><label className="text-sm text-slate-600 mb-1 block">شماره ارسال‌کننده</label><input value={settings.sms_sender_number || ''} onChange={e => setSettings({...settings, sms_sender_number: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
+                <div><label className="text-sm text-text-secondary mb-1 block">کلید API</label><input value={settings.sms_api_key || ''} onChange={e => setSettings({...settings, sms_api_key: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" type="password" /></div>
+                <div><label className="text-sm text-text-secondary mb-1 block">شماره ارسال‌کننده</label><input value={settings.sms_sender_number || ''} onChange={e => setSettings({...settings, sms_sender_number: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
                 <button onClick={saveSettings} disabled={saving} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50">
                   {saving ? 'در حال ذخیره...' : 'ذخیره'}
                 </button>
               </div>
 
               <div className="admin-card p-6 max-w-xl space-y-4 mt-4">
-                <h3 className="text-sm font-bold text-slate-700">قالب‌های پیامک</h3>
-                <div><label className="text-sm text-slate-600 mb-1 block">قالب تایید نوبت</label><textarea value={settings.sms_template_appointment || ''} onChange={e => setSettings({...settings, sms_template_appointment: e.target.value})} className="admin-input w-full p-3 text-sm" rows={2} /></div>
-                <div><label className="text-sm text-slate-600 mb-1 block">قالب یادآوری</label><textarea value={settings.sms_template_reminder || ''} onChange={e => setSettings({...settings, sms_template_reminder: e.target.value})} className="admin-input w-full p-3 text-sm" rows={2} /></div>
-                <div><label className="text-sm text-slate-600 mb-1 block">قالب تایید</label><textarea value={settings.sms_template_confirmation || ''} onChange={e => setSettings({...settings, sms_template_confirmation: e.target.value})} className="admin-input w-full p-3 text-sm" rows={2} /></div>
+                <h3 className="text-sm font-bold text-text-secondary">قالب‌های پیامک</h3>
+                <div><label className="text-sm text-text-secondary mb-1 block">قالب تایید نوبت</label><textarea value={settings.sms_template_appointment || ''} onChange={e => setSettings({...settings, sms_template_appointment: e.target.value})} className="admin-input w-full p-3 text-sm" rows={2} /></div>
+                <div><label className="text-sm text-text-secondary mb-1 block">قالب یادآوری</label><textarea value={settings.sms_template_reminder || ''} onChange={e => setSettings({...settings, sms_template_reminder: e.target.value})} className="admin-input w-full p-3 text-sm" rows={2} /></div>
+                <div><label className="text-sm text-text-secondary mb-1 block">قالب تایید</label><textarea value={settings.sms_template_confirmation || ''} onChange={e => setSettings({...settings, sms_template_confirmation: e.target.value})} className="admin-input w-full p-3 text-sm" rows={2} /></div>
                 <button onClick={saveSettings} disabled={saving} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50">
                   {saving ? 'در حال ذخیره...' : 'ذخیره قالب‌ها'}
                 </button>

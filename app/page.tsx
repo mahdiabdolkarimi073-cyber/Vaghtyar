@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-  Sparkles, Clock, Bell, CalendarCheck, TrendingUp, Users, MapPin,
-  CheckCircle2, Star, ChevronDown, Phone, Mail, ShieldCheck, Award, Zap
+  Clock, Bell, CalendarCheck, TrendingUp, Users, MapPin,
+  Star, Award, Zap, ShieldCheck
 } from 'lucide-react';
 import SearchBar from '@/components/SearchBar';
 import BusinessCard from '@/components/BusinessCard';
@@ -56,14 +56,14 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-teal-600 via-cyan-600 to-teal-700 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-primary via-primary-light to-primary-dark overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-20V10h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zm0-20V10H4v4H0v2h4v4h2v-4h4v-2H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
         <div className="container mx-auto px-4 max-w-7xl relative z-10 py-20 md:py-28">
           <div className="text-center mb-10 animate-slide-up">
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
               نوبت‌یار، رزرو آنلاین نوبت
             </h1>
-            <p className="text-teal-50 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            <p className="text-primary-foreground/80 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
               بدون انتظار، بدون معطلی. نوبت خود را آنلاین رزرو کنید و در زمان مقرر به سالن یا کلینیک مراجعه کنید.
             </p>
           </div>
@@ -82,12 +82,12 @@ export default function Home() {
             { icon: MapPin, label: 'شهر', value: '۱۲' },
             { icon: Star, label: 'رضایت مشتری', value: '۹۸٪' },
           ].map((stat, i) => (
-            <div key={i} className="bg-white rounded-2xl p-5 shadow-lg border border-gray-50 text-center">
-              <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center mx-auto mb-3">
-                <stat.icon className="w-6 h-6 text-teal-600" />
+            <div key={i} className="bg-surface rounded-xl p-5 shadow-card-hover border border-border text-center hover:-translate-y-1 transition-all duration-200">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                <stat.icon className="w-6 h-6 text-primary" />
               </div>
-              <div className="text-2xl font-bold text-gray-800">{stat.value}</div>
-              <div className="text-sm text-gray-500 mt-1">{stat.label}</div>
+              <div className="text-2xl font-bold text-text-primary">{stat.value}</div>
+              <div className="text-sm text-text-secondary mt-1">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -97,17 +97,17 @@ export default function Home() {
       {categories.length > 0 && (
         <section className="container mx-auto px-4 max-w-7xl py-16">
           <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">دسته‌بندی کسب‌وکارها</h2>
-            <p className="text-gray-500">نوع خدمت مورد نظر خود را انتخاب کنید</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">دسته‌بندی کسب‌وکارها</h2>
+            <p className="text-text-secondary">نوع خدمت مورد نظر خود را انتخاب کنید</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {categories.map((cat) => (
               <Link key={cat.id} href={`/search?category=${cat.slug}`} className="group">
-                <div className="bg-white rounded-2xl border border-gray-100 p-6 text-center hover:shadow-lg hover:border-teal-200 transition-all duration-300 hover:-translate-y-1">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-50 flex items-center justify-center mx-auto mb-3 text-3xl group-hover:from-teal-100 group-hover:to-cyan-100 transition-colors">
+                <div className="bg-surface rounded-xl border border-border p-6 text-center hover:shadow-card-hover hover:border-primary/30 transition-all duration-200 hover:-translate-y-1">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary-light/10 flex items-center justify-center mx-auto mb-3 text-3xl group-hover:from-primary/15 group-hover:to-primary-light/15 transition-colors">
                     {CATEGORY_ICONS[cat.slug] || '✨'}
                   </div>
-                  <h3 className="font-medium text-gray-700 group-hover:text-teal-600 transition-colors">{cat.name}</h3>
+                  <h3 className="font-medium text-text-primary group-hover:text-primary transition-colors">{cat.name}</h3>
                 </div>
               </Link>
             ))}
@@ -120,13 +120,13 @@ export default function Home() {
         <section className="container mx-auto px-4 max-w-7xl py-16">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 flex items-center gap-2">
-                <Award className="w-7 h-7 text-amber-500" />
+              <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2 flex items-center gap-2">
+                <Award className="w-7 h-7 text-warning" />
                 کسب‌وکارهای ویژه
               </h2>
-              <p className="text-gray-500">برترین کسب‌وکارهای تأییدشده</p>
+              <p className="text-text-secondary">برترین کسب‌وکارهای تأییدشده</p>
             </div>
-            <Link href="/search?sort=rating" className="text-teal-600 hover:text-teal-700 font-medium text-sm hidden md:block">مشاهده همه ←</Link>
+            <Link href="/search?sort=rating" className="text-primary hover:text-primary-dark font-medium text-sm hidden md:block transition-colors">مشاهده همه ←</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featured.map((b) => <BusinessCard key={b.id} business={b} />)}
@@ -139,13 +139,13 @@ export default function Home() {
         <section className="container mx-auto px-4 max-w-7xl py-16">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 flex items-center gap-2">
-                <TrendingUp className="w-7 h-7 text-teal-500" />
+              <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2 flex items-center gap-2">
+                <TrendingUp className="w-7 h-7 text-primary" />
                 تازه‌های نوبت‌یار
               </h2>
-              <p className="text-gray-500">جدیدترین کسب‌وکارهای عضو شده</p>
+              <p className="text-text-secondary">جدیدترین کسب‌وکارهای عضو شده</p>
             </div>
-            <Link href="/search?sort=newest" className="text-teal-600 hover:text-teal-700 font-medium text-sm hidden md:block">مشاهده همه ←</Link>
+            <Link href="/search?sort=newest" className="text-primary hover:text-primary-dark font-medium text-sm hidden md:block transition-colors">مشاهده همه ←</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {recent.slice(0, 4).map((b) => <BusinessCard key={b.id} business={b} />)}
@@ -154,11 +154,11 @@ export default function Home() {
       )}
 
       {/* Why Nobetyar - Customers */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-16">
+      <section className="bg-muted/50 py-16">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">چرا نوبت‌یار؟</h2>
-            <p className="text-gray-500">مزایای رزرو نوبت آنلاین برای مشتریان</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">چرا نوبت‌یار؟</h2>
+            <p className="text-text-secondary">مزایای رزرو نوبت آنلاین برای مشتریان</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -167,11 +167,11 @@ export default function Home() {
               { icon: CalendarCheck, title: 'رزرو ۲۴/۷', desc: 'در هر ساعت از شبانه‌روز می‌توانید نوبت رزرو کنید.' },
             ].map((item, i) => (
               <div key={i} className="text-center group">
-                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300 shadow-soft">
                   <item.icon className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="font-bold text-gray-800 text-lg mb-2">{item.title}</h3>
-                <p className="text-gray-500 leading-relaxed max-w-xs mx-auto">{item.desc}</p>
+                <h3 className="font-bold text-text-primary text-lg mb-2">{item.title}</h3>
+                <p className="text-text-secondary leading-relaxed max-w-xs mx-auto">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -181,8 +181,8 @@ export default function Home() {
       {/* Why Businesses Choose Nobetyar */}
       <section className="container mx-auto px-4 max-w-7xl py-16">
         <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">چرا کسب‌وکارها نوبت‌یار را انتخاب می‌کنند؟</h2>
-          <p className="text-gray-500">مزایای عضویت در پلتفرم نوبت‌یار برای صاحبان کسب‌وکار</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">چرا کسب‌وکارها نوبت‌یار را انتخاب می‌کنند؟</h2>
+          <p className="text-text-secondary">مزایای عضویت در پلتفرم نوبت‌یار برای صاحبان کسب‌وکار</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
@@ -190,36 +190,36 @@ export default function Home() {
             { icon: Zap, title: 'مدیریت آسان', desc: 'نوبت‌ها را به صورت متمرکز مدیریت کنید و از تداخل جلوگیری کنید.' },
             { icon: ShieldCheck, title: 'تأیید هویت', desc: 'با نشان تأیید هویت، اعتماد مشتریان را جلب کنید.' },
           ].map((item, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-lg transition-shadow">
-              <div className="w-14 h-14 rounded-2xl bg-teal-50 flex items-center justify-center mb-4">
-                <item.icon className="w-7 h-7 text-teal-600" />
+            <div key={i} className="bg-surface rounded-xl border border-border p-8 hover:shadow-card-hover transition-all duration-200">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                <item.icon className="w-7 h-7 text-primary" />
               </div>
-              <h3 className="font-bold text-gray-800 text-lg mb-2">{item.title}</h3>
-              <p className="text-gray-500 leading-relaxed">{item.desc}</p>
+              <h3 className="font-bold text-text-primary text-lg mb-2">{item.title}</h3>
+              <p className="text-text-secondary leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-16">
+      <section className="bg-muted/50 py-16">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">نظر کاربران ما</h2>
-            <p className="text-gray-500">تجربه مشتریان نوبت‌یار</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">نظر کاربران ما</h2>
+            <p className="text-text-secondary">تجربه مشتریان نوبت‌یار</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+              <div key={i} className="bg-surface rounded-xl border border-border p-6 shadow-card">
                 <StarRating rating={t.rating} />
-                <p className="text-gray-600 my-4 leading-relaxed">«{t.text}»</p>
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-50">
-                  <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center font-bold text-teal-700">
+                <p className="text-text-secondary my-4 leading-relaxed">«{t.text}»</p>
+                <div className="flex items-center gap-3 pt-4 border-t border-border">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
                     {t.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="font-medium text-gray-800">{t.name}</div>
-                    <div className="text-sm text-gray-400">{t.city}</div>
+                    <div className="font-medium text-text-primary">{t.name}</div>
+                    <div className="text-sm text-text-muted">{t.city}</div>
                   </div>
                 </div>
               </div>
@@ -231,16 +231,16 @@ export default function Home() {
       {/* FAQ */}
       <section className="container mx-auto px-4 max-w-3xl py-16">
         <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">سوالات متداول</h2>
-          <p className="text-gray-500">پاسخ به پرسش‌های پرتکرار</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">سوالات متداول</h2>
+          <p className="text-text-secondary">پاسخ به پرسش‌های پرتکرار</p>
         </div>
         <Accordion type="single" collapsible className="space-y-3">
           {FAQS.map((faq, i) => (
-            <AccordionItem key={i} value={`item-${i}`} className="bg-white rounded-xl border border-gray-100 px-5">
-              <AccordionTrigger className="text-right font-medium text-gray-800 hover:no-underline">
+            <AccordionItem key={i} value={`item-${i}`} className="bg-surface rounded-xl border border-border px-5 shadow-card">
+              <AccordionTrigger className="text-right font-medium text-text-primary hover:no-underline">
                 {faq.q}
               </AccordionTrigger>
-              <AccordionContent className="text-gray-500 leading-relaxed">
+              <AccordionContent className="text-text-secondary leading-relaxed">
                 {faq.a}
               </AccordionContent>
             </AccordionItem>
@@ -250,13 +250,13 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 max-w-7xl pb-16">
-        <div className="bg-gradient-to-br from-teal-600 to-cyan-700 rounded-3xl p-10 md:p-16 text-center overflow-hidden relative">
+        <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl p-10 md:p-16 text-center overflow-hidden relative shadow-primary">
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-20V10h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zm0-20V10H4v4H0v2h4v4h2v-4h4v-2H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
           <div className="relative z-10">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">کسب‌وکار خود را ثبت کنید</h2>
-            <p className="text-teal-50 mb-8 max-w-xl mx-auto">همین حالا عضو نوبت‌یار شوید و نوبت‌گیری آنلاین را برای مشتریان خود فراهم کنید.</p>
+            <p className="text-primary-foreground/80 mb-8 max-w-xl mx-auto">همین حالا عضو نوبت‌یار شوید و نوبت‌گیری آنلاین را برای مشتریان خود فراهم کنید.</p>
             <Link href="/register-business">
-              <button className="bg-white text-teal-700 font-bold px-8 py-3 rounded-xl hover:bg-teal-50 transition-colors shadow-lg">
+              <button className="bg-white text-primary font-bold px-8 py-3.5 rounded-xl hover:bg-primary-foreground/10 hover:text-white transition-all shadow-lg active:scale-95">
                 شروع ثبت‌نام
               </button>
             </Link>

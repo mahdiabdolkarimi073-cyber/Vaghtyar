@@ -80,7 +80,7 @@ export default function AdminBusinessesPage() {
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-4">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
               <input
                 value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
                 placeholder="جستجوی کسب‌وکار..."
@@ -104,11 +104,11 @@ export default function AdminBusinessesPage() {
               { key: 'category', header: 'دسته' },
               { key: 'neighborhood', header: 'محله', render: r => r.neighborhood || '-' },
               { key: 'status', header: 'وضعیت', render: r => <StatusBadge status={r.status} variant={statusVariantMap[r.status] || 'neutral'}>{statusLabelMap[r.status] || r.status}</StatusBadge> },
-              { key: 'createdAt', header: 'تاریخ ثبت', render: r => <span className="text-xs text-slate-400">{formatDateShortFA(new Date(r.createdAt))}</span> },
+              { key: 'createdAt', header: 'تاریخ ثبت', render: r => <span className="text-xs text-text-muted">{formatDateShortFA(new Date(r.createdAt))}</span> },
               { key: 'actions', header: 'عملیات', render: r => (
                 <div className="flex items-center gap-1">
                   {r.status === 'PENDING' && (
-                    <button onClick={() => updateStatus(r.id, 'APPROVED')} className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50" title="تایید">
+                    <button onClick={() => updateStatus(r.id, 'APPROVED')} className="p-1.5 rounded-lg text-secondary hover:bg-secondary/10" title="تایید">
                       <CheckCircle className="w-4 h-4" />
                     </button>
                   )}
@@ -116,11 +116,11 @@ export default function AdminBusinessesPage() {
                     <Eye className="w-4 h-4" />
                   </button>
                   {r.status === 'APPROVED' && (
-                    <button onClick={() => updateStatus(r.id, 'SUSPENDED')} className="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50" title="تعلیق">
+                    <button onClick={() => updateStatus(r.id, 'SUSPENDED')} className="p-1.5 rounded-lg text-warning hover:bg-warning/10" title="تعلیق">
                       <Ban className="w-4 h-4" />
                     </button>
                   )}
-                  <button onClick={() => setDeleteId(r.id)} className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50" title="حذف">
+                  <button onClick={() => setDeleteId(r.id)} className="p-1.5 rounded-lg text-error hover:bg-error/10" title="حذف">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -134,7 +134,7 @@ export default function AdminBusinessesPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="admin-input px-3 py-1.5 text-sm rounded-lg disabled:opacity-50">قبلی</button>
-              <span className="text-sm text-slate-500">{toPersianDigits(page)} از {toPersianDigits(totalPages)}</span>
+              <span className="text-sm text-text-muted">{toPersianDigits(page)} از {toPersianDigits(totalPages)}</span>
               <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="admin-input px-3 py-1.5 text-sm rounded-lg disabled:opacity-50">بعدی</button>
             </div>
           )}
@@ -149,16 +149,16 @@ export default function AdminBusinessesPage() {
           {selected && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-slate-400">نام:</span> <span className="text-slate-700 font-medium">{selected.name}</span></div>
-                <div><span className="text-slate-400">دسته:</span> <span className="text-slate-700">{selected.category}</span></div>
-                <div><span className="text-slate-400">شهر:</span> <span className="text-slate-700">{selected.city}</span></div>
-                <div><span className="text-slate-400">محله:</span> <span className="text-slate-700">{selected.neighborhood || '-'}</span></div>
-                <div><span className="text-slate-400">تلفن:</span> <span className="text-slate-700">{selected.phone || '-'}</span></div>
-                <div><span className="text-slate-400">ایمیل:</span> <span className="text-slate-700">{selected.email || '-'}</span></div>
-                <div><span className="text-slate-400">وضعیت:</span> <StatusBadge status={selected.status} variant={statusVariantMap[selected.status] || 'neutral'}>{statusLabelMap[selected.status] || selected.status}</StatusBadge></div>
-                <div><span className="text-slate-400">تاریخ ثبت:</span> <span className="text-slate-700">{formatDateShortFA(new Date(selected.createdAt))}</span></div>
+                <div><span className="text-text-muted">نام:</span> <span className="text-text-secondary font-medium">{selected.name}</span></div>
+                <div><span className="text-text-muted">دسته:</span> <span className="text-text-secondary">{selected.category}</span></div>
+                <div><span className="text-text-muted">شهر:</span> <span className="text-text-secondary">{selected.city}</span></div>
+                <div><span className="text-text-muted">محله:</span> <span className="text-text-secondary">{selected.neighborhood || '-'}</span></div>
+                <div><span className="text-text-muted">تلفن:</span> <span className="text-text-secondary">{selected.phone || '-'}</span></div>
+                <div><span className="text-text-muted">ایمیل:</span> <span className="text-text-secondary">{selected.email || '-'}</span></div>
+                <div><span className="text-text-muted">وضعیت:</span> <StatusBadge status={selected.status} variant={statusVariantMap[selected.status] || 'neutral'}>{statusLabelMap[selected.status] || selected.status}</StatusBadge></div>
+                <div><span className="text-text-muted">تاریخ ثبت:</span> <span className="text-text-secondary">{formatDateShortFA(new Date(selected.createdAt))}</span></div>
               </div>
-              {selected.description && <p className="text-sm text-slate-600 border-t pt-3">{selected.description}</p>}
+              {selected.description && <p className="text-sm text-text-secondary border-t pt-3">{selected.description}</p>}
               <div className="flex gap-2 pt-3 border-t">
                 {selected.status === 'PENDING' && (
                   <button onClick={() => { updateStatus(selected.id, 'APPROVED'); setSelected(null); }} className="admin-gradient-emerald text-white px-4 py-2 rounded-xl text-sm font-medium">تایید</button>
@@ -183,7 +183,7 @@ export default function AdminBusinessesPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>انصراف</AlertDialogCancel>
-            <AlertDialogAction onClick={deleteBusiness} className="bg-rose-500 hover:bg-rose-600">حذف</AlertDialogAction>
+            <AlertDialogAction onClick={deleteBusiness} className="bg-error hover:bg-red-600">حذف</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

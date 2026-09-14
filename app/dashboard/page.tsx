@@ -60,9 +60,9 @@ export default function DashboardPage() {
     return (
       <div className="container mx-auto px-4 max-w-7xl py-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-100 rounded w-1/4" />
-          <div className="h-40 bg-gray-100 rounded-2xl" />
-          <div className="h-64 bg-gray-100 rounded-2xl" />
+          <div className="h-8 bg-muted rounded w-1/4" />
+          <div className="h-40 bg-muted rounded-2xl" />
+          <div className="h-64 bg-muted rounded-2xl" />
         </div>
       </div>
     );
@@ -73,13 +73,13 @@ export default function DashboardPage() {
   if (businesses.length === 0) {
     return (
       <div className="container mx-auto px-4 max-w-2xl py-20 text-center">
-        <div className="w-20 h-20 rounded-2xl bg-teal-50 flex items-center justify-center mx-auto mb-5">
-          <Store className="w-10 h-10 text-teal-500" />
+        <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5">
+          <Store className="w-10 h-10 text-primary" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">هنوز کسب‌وکاری ثبت نکرده‌اید</h1>
-        <p className="text-gray-500 mb-6">برای شروع، اولین کسب‌وکار خود را ثبت کنید.</p>
+        <h1 className="text-2xl font-bold text-text-primary mb-2">هنوز کسب‌وکاری ثبت نکرده‌اید</h1>
+        <p className="text-text-muted mb-6">برای شروع، اولین کسب‌وکار خود را ثبت کنید.</p>
         <Link href="/register-business">
-          <Button className="bg-teal-600 hover:bg-teal-700 text-white gap-2">
+          <Button className="bg-primary hover:bg-primary-dark text-white gap-2">
             <Plus className="w-5 h-5" /> ثبت کسب‌وکار
           </Button>
         </Link>
@@ -92,9 +92,9 @@ export default function DashboardPage() {
       case 'CONFIRMED':
         return <span className="flex items-center gap-1 text-green-600 text-sm font-medium"><CheckCircle2 className="w-4 h-4" /> تأیید شده</span>;
       case 'PENDING':
-        return <span className="flex items-center gap-1 text-amber-600 text-sm font-medium"><AlertCircle className="w-4 h-4" /> در انتظار</span>;
+        return <span className="flex items-center gap-1 text-warning text-sm font-medium"><AlertCircle className="w-4 h-4" /> در انتظار</span>;
       case 'CANCELLED':
-        return <span className="flex items-center gap-1 text-red-500 text-sm font-medium"><XCircle className="w-4 h-4" /> لغو شده</span>;
+        return <span className="flex items-center gap-1 text-error text-sm font-medium"><XCircle className="w-4 h-4" /> لغو شده</span>;
       case 'COMPLETED':
         return <span className="flex items-center gap-1 text-blue-600 text-sm font-medium"><CheckCircle2 className="w-4 h-4" /> تکمیل شده</span>;
       default:
@@ -105,9 +105,9 @@ export default function DashboardPage() {
   return (
     <div className="container mx-auto px-4 max-w-7xl py-8">
       <div className="flex items-center gap-3 mb-6">
-        <LayoutDashboard className="w-6 h-6 text-teal-600" />
-        <h1 className="text-2xl font-bold text-gray-800">پنل مدیریت</h1>
-        <span className="text-gray-400 text-sm">— {user.name}</span>
+        <LayoutDashboard className="w-6 h-6 text-primary" />
+        <h1 className="text-2xl font-bold text-text-primary">پنل مدیریت</h1>
+        <span className="text-text-muted text-sm">— {user.name}</span>
       </div>
 
       {/* Business selector */}
@@ -118,7 +118,7 @@ export default function DashboardPage() {
               key={b.slug}
               onClick={() => setSelectedBiz(b.slug)}
               className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
-                selectedBiz === b.slug ? 'bg-teal-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-teal-400'
+                selectedBiz === b.slug ? 'bg-primary text-white' : 'bg-surface border border-border text-text-secondary hover:border-teal-400'
               }`}
             >
               {b.name}
@@ -131,38 +131,38 @@ export default function DashboardPage() {
         <>
           {/* Stats cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div className="bg-surface rounded-2xl border border-border p-5">
               <div className="flex items-center gap-2 mb-2">
-                <Calendar className="w-4 h-4 text-teal-500" />
-                <span className="text-sm text-gray-500">کل رزروها</span>
+                <Calendar className="w-4 h-4 text-primary" />
+                <span className="text-sm text-text-muted">کل رزروها</span>
               </div>
-              <p className="text-2xl font-bold text-gray-800">{toPersianDigits(currentBiz._count.bookings)}</p>
+              <p className="text-2xl font-bold text-text-primary">{toPersianDigits(currentBiz._count.bookings)}</p>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div className="bg-surface rounded-2xl border border-border p-5">
               <div className="flex items-center gap-2 mb-2">
-                <Scissors className="w-4 h-4 text-teal-500" />
-                <span className="text-sm text-gray-500">خدمات</span>
+                <Scissors className="w-4 h-4 text-primary" />
+                <span className="text-sm text-text-muted">خدمات</span>
               </div>
-              <p className="text-2xl font-bold text-gray-800">{toPersianDigits(currentBiz.services.length)}</p>
+              <p className="text-2xl font-bold text-text-primary">{toPersianDigits(currentBiz.services.length)}</p>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div className="bg-surface rounded-2xl border border-border p-5">
               <div className="flex items-center gap-2 mb-2">
-                <Users className="w-4 h-4 text-teal-500" />
-                <span className="text-sm text-gray-500">متخصصین</span>
+                <Users className="w-4 h-4 text-primary" />
+                <span className="text-sm text-text-muted">متخصصین</span>
               </div>
-              <p className="text-2xl font-bold text-gray-800">{toPersianDigits(currentBiz.staff.length)}</p>
+              <p className="text-2xl font-bold text-text-primary">{toPersianDigits(currentBiz.staff.length)}</p>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div className="bg-surface rounded-2xl border border-border p-5">
               <div className="flex items-center gap-2 mb-2">
-                <Star className="w-4 h-4 text-teal-500" />
-                <span className="text-sm text-gray-500">نظرات</span>
+                <Star className="w-4 h-4 text-primary" />
+                <span className="text-sm text-text-muted">نظرات</span>
               </div>
-              <p className="text-2xl font-bold text-gray-800">{toPersianDigits(currentBiz._count.reviews)}</p>
+              <p className="text-2xl font-bold text-text-primary">{toPersianDigits(currentBiz._count.reviews)}</p>
             </div>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-            <TabsList className="bg-white border border-gray-100 rounded-xl p-1 w-full justify-start gap-1 h-auto overflow-x-auto">
+            <TabsList className="bg-surface border border-border rounded-xl p-1 w-full justify-start gap-1 h-auto overflow-x-auto">
               <TabsTrigger value="overview" className="rounded-lg px-4 py-2 text-sm">نگاه کلی</TabsTrigger>
               <TabsTrigger value="bookings" className="rounded-lg px-4 py-2 text-sm">رزروها</TabsTrigger>
               <TabsTrigger value="services" className="rounded-lg px-4 py-2 text-sm">خدمات</TabsTrigger>
@@ -173,36 +173,36 @@ export default function DashboardPage() {
             {/* Overview */}
             <TabsContent value="overview" className="mt-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-2xl border border-gray-100 p-6">
-                  <h3 className="font-bold text-gray-800 mb-4">آخرین رزروها</h3>
+                <div className="bg-surface rounded-2xl border border-border p-6">
+                  <h3 className="font-bold text-text-primary mb-4">آخرین رزروها</h3>
                   <div className="space-y-3">
                     {recentBookings.filter((b) => b.businessId === currentBiz.id).slice(0, 5).map((booking) => (
-                      <div key={booking.id} className="flex items-center justify-between border-b border-gray-50 pb-3 last:border-0">
+                      <div key={booking.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0">
                         <div>
-                          <p className="font-medium text-gray-800 text-sm">{booking.customerName}</p>
-                          <p className="text-xs text-gray-400">{booking.service?.name || '—'}</p>
+                          <p className="font-medium text-text-primary text-sm">{booking.customerName}</p>
+                          <p className="text-xs text-text-muted">{booking.service?.name || '—'}</p>
                         </div>
                         <div className="text-left">
                           {statusBadge(booking.status)}
-                          <p className="text-xs text-gray-400 mt-1">{formatDateShortFA(new Date(booking.date))} - {formatTime(booking.startTime)}</p>
+                          <p className="text-xs text-text-muted mt-1">{formatDateShortFA(new Date(booking.date))} - {formatTime(booking.startTime)}</p>
                         </div>
                       </div>
                     ))}
                     {recentBookings.filter((b) => b.businessId === currentBiz.id).length === 0 && (
-                      <p className="text-gray-400 text-sm text-center py-4">رزروی وجود ندارد.</p>
+                      <p className="text-text-muted text-sm text-center py-4">رزروی وجود ندارد.</p>
                     )}
                   </div>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-gray-100 p-6">
-                  <h3 className="font-bold text-gray-800 mb-4">اطلاعات کسب‌وکار</h3>
+                <div className="bg-surface rounded-2xl border border-border p-6">
+                  <h3 className="font-bold text-text-primary mb-4">اطلاعات کسب‌وکار</h3>
                   <div className="space-y-3 text-sm">
-                    <div className="flex justify-between"><span className="text-gray-500">نام</span><span className="font-medium text-gray-800">{currentBiz.name}</span></div>
-                    <div className="flex justify-between"><span className="text-gray-500">دسته‌بندی</span><span className="font-medium text-gray-800">{currentBiz.category}</span></div>
-                    <div className="flex justify-between"><span className="text-gray-500">شهر</span><span className="font-medium text-gray-800">{currentBiz.city}</span></div>
-                    <div className="flex justify-between"><span className="text-gray-500">تأیید شده</span><span className="font-medium text-gray-800">{currentBiz.isVerified ? 'بله' : 'خیر'}</span></div>
-                    <div className="flex justify-between"><span className="text-gray-500">تأیید خودکار</span><span className="font-medium text-gray-800">{currentBiz.autoConfirm ? 'بله' : 'خیر'}</span></div>
-                    <div className="flex justify-between"><span className="text-gray-500">ویژه</span><span className="font-medium text-gray-800">{currentBiz.isFeatured ? 'بله' : 'خیر'}</span></div>
+                    <div className="flex justify-between"><span className="text-text-muted">نام</span><span className="font-medium text-text-primary">{currentBiz.name}</span></div>
+                    <div className="flex justify-between"><span className="text-text-muted">دسته‌بندی</span><span className="font-medium text-text-primary">{currentBiz.category}</span></div>
+                    <div className="flex justify-between"><span className="text-text-muted">شهر</span><span className="font-medium text-text-primary">{currentBiz.city}</span></div>
+                    <div className="flex justify-between"><span className="text-text-muted">تأیید شده</span><span className="font-medium text-text-primary">{currentBiz.isVerified ? 'بله' : 'خیر'}</span></div>
+                    <div className="flex justify-between"><span className="text-text-muted">تأیید خودکار</span><span className="font-medium text-text-primary">{currentBiz.autoConfirm ? 'بله' : 'خیر'}</span></div>
+                    <div className="flex justify-between"><span className="text-text-muted">ویژه</span><span className="font-medium text-text-primary">{currentBiz.isFeatured ? 'بله' : 'خیر'}</span></div>
                   </div>
                   <Link href={`/salon/${currentBiz.slug}`} className="mt-4 block">
                     <Button variant="outline" className="w-full">مشاهده صفحه کسب‌وکار</Button>
@@ -213,13 +213,13 @@ export default function DashboardPage() {
 
             {/* Bookings */}
             <TabsContent value="bookings" className="mt-4">
-              <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+              <div className="bg-surface rounded-2xl border border-border overflow-hidden">
                 {recentBookings.filter((b) => b.businessId === currentBiz.id).length === 0 ? (
-                  <div className="p-8 text-center text-gray-400">رزروی وجود ندارد.</div>
+                  <div className="p-8 text-center text-text-muted">رزروی وجود ندارد.</div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
-                      <thead className="bg-gray-50 text-gray-500">
+                      <thead className="bg-muted text-text-muted">
                         <tr>
                           <th className="text-right p-4 font-medium">مشتری</th>
                           <th className="text-right p-4 font-medium">خدمت</th>
@@ -231,15 +231,15 @@ export default function DashboardPage() {
                       </thead>
                       <tbody>
                         {recentBookings.filter((b) => b.businessId === currentBiz.id).map((booking) => (
-                          <tr key={booking.id} className="border-t border-gray-50">
+                          <tr key={booking.id} className="border-t border-border">
                             <td className="p-4">
-                              <p className="font-medium text-gray-800">{booking.customerName}</p>
-                              <p className="text-xs text-gray-400" dir="ltr">{toPersianDigits(booking.customerPhone)}</p>
+                              <p className="font-medium text-text-primary">{booking.customerName}</p>
+                              <p className="text-xs text-text-muted" dir="ltr">{toPersianDigits(booking.customerPhone)}</p>
                             </td>
-                            <td className="p-4 text-gray-600">{booking.service?.name || '—'}</td>
-                            <td className="p-4 text-gray-600">{formatDateShortFA(new Date(booking.date))}</td>
-                            <td className="p-4 text-gray-600">{formatTime(booking.startTime)}</td>
-                            <td className="p-4"><span className="font-mono text-teal-600" dir="ltr">{booking.confirmationCode}</span></td>
+                            <td className="p-4 text-text-secondary">{booking.service?.name || '—'}</td>
+                            <td className="p-4 text-text-secondary">{formatDateShortFA(new Date(booking.date))}</td>
+                            <td className="p-4 text-text-secondary">{formatTime(booking.startTime)}</td>
+                            <td className="p-4"><span className="font-mono text-primary" dir="ltr">{booking.confirmationCode}</span></td>
                             <td className="p-4">{statusBadge(booking.status)}</td>
                           </tr>
                         ))}
@@ -297,22 +297,22 @@ function ServicesManager({ businessSlug, services: initialServices }: { business
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-6">
+    <div className="bg-surface rounded-2xl border border-border p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-gray-800">مدیریت خدمات</h3>
-        <Button size="sm" onClick={() => setShowForm(!showForm)} className="bg-teal-600 hover:bg-teal-700 text-white gap-1">
+        <h3 className="font-bold text-text-primary">مدیریت خدمات</h3>
+        <Button size="sm" onClick={() => setShowForm(!showForm)} className="bg-primary hover:bg-primary-dark text-white gap-1">
           <Plus className="w-4 h-4" /> افزودن خدمت
         </Button>
       </div>
 
       {showForm && (
-        <div className="bg-gray-50 rounded-xl p-4 mb-4 space-y-3">
+        <div className="bg-muted rounded-xl p-4 mb-4 space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="نام خدمت" className="h-10 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500" />
-            <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="قیمت (تومان)" className="h-10 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500" />
+            <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="نام خدمت" className="h-10 rounded-lg border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary" />
+            <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="قیمت (تومان)" className="h-10 rounded-lg border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <select value={form.durationMinutes} onChange={(e) => setForm({ ...form, durationMinutes: e.target.value })} className="h-10 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500 bg-white">
+            <select value={form.durationMinutes} onChange={(e) => setForm({ ...form, durationMinutes: e.target.value })} className="h-10 rounded-lg border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary bg-surface">
               <option value="15">۱۵ دقیقه</option>
               <option value="30">۳۰ دقیقه</option>
               <option value="45">۴۵ دقیقه</option>
@@ -320,27 +320,27 @@ function ServicesManager({ businessSlug, services: initialServices }: { business
               <option value="90">۱.۵ ساعت</option>
               <option value="120">۲ ساعت</option>
             </select>
-            <input type="text" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="توضیحات (اختیاری)" className="h-10 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500" />
+            <input type="text" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="توضیحات (اختیاری)" className="h-10 rounded-lg border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary" />
           </div>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <Button size="sm" onClick={handleAdd} className="bg-teal-600 hover:bg-teal-700 text-white">ذخیره</Button>
+          {error && <p className="text-error text-sm">{error}</p>}
+          <Button size="sm" onClick={handleAdd} className="bg-primary hover:bg-primary-dark text-white">ذخیره</Button>
         </div>
       )}
 
       <div className="space-y-2">
         {services.map((s) => (
-          <div key={s.id} className="flex items-center justify-between border-b border-gray-50 pb-3 last:border-0">
+          <div key={s.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0">
             <div>
-              <h4 className="font-medium text-gray-800">{s.name}</h4>
-              {s.description && <p className="text-xs text-gray-400">{s.description}</p>}
+              <h4 className="font-medium text-text-primary">{s.name}</h4>
+              {s.description && <p className="text-xs text-text-muted">{s.description}</p>}
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-teal-600 font-bold text-sm">{formatPrice(s.price)}</span>
-              <span className="text-gray-400 text-sm">{formatDuration(s.durationMinutes)}</span>
+              <span className="text-primary font-bold text-sm">{formatPrice(s.price)}</span>
+              <span className="text-text-muted text-sm">{formatDuration(s.durationMinutes)}</span>
             </div>
           </div>
         ))}
-        {services.length === 0 && <p className="text-gray-400 text-sm text-center py-4">خدمتی ثبت نشده است.</p>}
+        {services.length === 0 && <p className="text-text-muted text-sm text-center py-4">خدمتی ثبت نشده است.</p>}
       </div>
     </div>
   );
@@ -372,36 +372,36 @@ function StaffManager({ businessSlug, staff: initialStaff }: { businessSlug: str
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-6">
+    <div className="bg-surface rounded-2xl border border-border p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-gray-800">مدیریت متخصصین</h3>
-        <Button size="sm" onClick={() => setShowForm(!showForm)} className="bg-teal-600 hover:bg-teal-700 text-white gap-1">
+        <h3 className="font-bold text-text-primary">مدیریت متخصصین</h3>
+        <Button size="sm" onClick={() => setShowForm(!showForm)} className="bg-primary hover:bg-primary-dark text-white gap-1">
           <Plus className="w-4 h-4" /> افزودن متخصص
         </Button>
       </div>
 
       {showForm && (
-        <div className="bg-gray-50 rounded-xl p-4 mb-4 space-y-3">
-          <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="نام متخصص" className="w-full h-10 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500" />
-          <input type="text" value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} placeholder="تخصص (اختیاری)" className="w-full h-10 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500" />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <Button size="sm" onClick={handleAdd} className="bg-teal-600 hover:bg-teal-700 text-white">ذخیره</Button>
+        <div className="bg-muted rounded-xl p-4 mb-4 space-y-3">
+          <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="نام متخصص" className="w-full h-10 rounded-lg border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary" />
+          <input type="text" value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} placeholder="تخصص (اختیاری)" className="w-full h-10 rounded-lg border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary" />
+          {error && <p className="text-error text-sm">{error}</p>}
+          <Button size="sm" onClick={handleAdd} className="bg-primary hover:bg-primary-dark text-white">ذخیره</Button>
         </div>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {staff.map((s) => (
-          <div key={s.id} className="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
-            <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center flex-shrink-0">
-              <Users className="w-6 h-6 text-teal-400" />
+          <div key={s.id} className="flex items-center gap-3 bg-muted rounded-xl p-4">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Users className="w-6 h-6 text-primary-light" />
             </div>
             <div>
-              <h4 className="font-medium text-gray-800">{s.name}</h4>
-              {s.specialty && <p className="text-sm text-gray-500">{s.specialty}</p>}
+              <h4 className="font-medium text-text-primary">{s.name}</h4>
+              {s.specialty && <p className="text-sm text-text-muted">{s.specialty}</p>}
             </div>
           </div>
         ))}
-        {staff.length === 0 && <p className="text-gray-400 text-sm col-span-full text-center py-4">متخصصی ثبت نشده است.</p>}
+        {staff.length === 0 && <p className="text-text-muted text-sm col-span-full text-center py-4">متخصصی ثبت نشده است.</p>}
       </div>
     </div>
   );
@@ -442,19 +442,19 @@ function HoursManager({ businessSlug, hours: initialHours }: { businessSlug: str
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-6">
+    <div className="bg-surface rounded-2xl border border-border p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-gray-800">ساعات کاری</h3>
-        <Button size="sm" onClick={handleSave} disabled={saving} className="bg-teal-600 hover:bg-teal-700 text-white gap-1">
+        <h3 className="font-bold text-text-primary">ساعات کاری</h3>
+        <Button size="sm" onClick={handleSave} disabled={saving} className="bg-primary hover:bg-primary-dark text-white gap-1">
           {saving ? 'در حال ذخیره...' : saved ? 'ذخیره شد' : 'ذخیره تغییرات'}
         </Button>
       </div>
 
       <div className="space-y-3">
         {hours.map((h, idx) => (
-          <div key={h.id} className="flex items-center gap-4 border-b border-gray-50 pb-3 last:border-0">
-            <span className="font-medium text-gray-700 w-24">{DAY_NAMES_FA[h.dayOfWeek]}</span>
-            <label className="flex items-center gap-2 text-sm text-gray-600">
+          <div key={h.id} className="flex items-center gap-4 border-b border-border pb-3 last:border-0">
+            <span className="font-medium text-text-secondary w-24">{DAY_NAMES_FA[h.dayOfWeek]}</span>
+            <label className="flex items-center gap-2 text-sm text-text-secondary">
               <input
                 type="checkbox"
                 checked={h.isClosed}
@@ -469,15 +469,15 @@ function HoursManager({ businessSlug, hours: initialHours }: { businessSlug: str
                   type="time"
                   value={h.openTime}
                   onChange={(e) => updateHour(idx, 'openTime', e.target.value)}
-                  className="h-9 rounded-lg border border-gray-200 px-2 text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                  className="h-9 rounded-lg border border-border px-2 text-sm outline-none focus:ring-2 focus:ring-primary"
                   dir="ltr"
                 />
-                <span className="text-gray-400">تا</span>
+                <span className="text-text-muted">تا</span>
                 <input
                   type="time"
                   value={h.closeTime}
                   onChange={(e) => updateHour(idx, 'closeTime', e.target.value)}
-                  className="h-9 rounded-lg border border-gray-200 px-2 text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                  className="h-9 rounded-lg border border-border px-2 text-sm outline-none focus:ring-2 focus:ring-primary"
                   dir="ltr"
                 />
               </div>

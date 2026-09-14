@@ -46,25 +46,25 @@ export default async function CityCategoryPage({ params }: Props) {
 
   return (
     <div className="container mx-auto px-4 max-w-7xl py-8">
-      <nav className="text-sm text-gray-400 mb-4 flex items-center gap-2">
-        <Link href="/" className="hover:text-teal-600">خانه</Link>
+      <nav className="text-sm text-text-muted mb-4 flex items-center gap-2">
+        <Link href="/" className="hover:text-primary">خانه</Link>
         <span>/</span>
-        <Link href={`/city/${params.citySlug}`} className="hover:text-teal-600">{city.name}</Link>
+        <Link href={`/city/${params.citySlug}`} className="hover:text-primary">{city.name}</Link>
         <span>/</span>
-        <span className="text-gray-600">{category.name}</span>
+        <span className="text-text-secondary">{category.name}</span>
       </nav>
 
-      <div className="bg-gradient-to-br from-teal-600 to-cyan-700 rounded-3xl p-8 md:p-12 text-white mb-8">
+      <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl p-8 md:p-12 text-white mb-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-3">{category.name} در {city.name}</h1>
-        <p className="text-teal-50 text-lg">بهترین {category.name}های {city.name} را پیدا کنید و بدون انتظار نوبت رزرو کنید.</p>
+        <p className="text-primary-foreground/80 text-lg">بهترین {category.name}های {city.name} را پیدا کنید و بدون انتظار نوبت رزرو کنید.</p>
       </div>
 
-      <div className="mb-4 flex items-center gap-2 text-gray-500 text-sm">
+      <div className="mb-4 flex items-center gap-2 text-text-muted text-sm">
         <MapPin className="w-4 h-4" /> {toPersianDigits(businessData.length)} {category.name} در {city.name}
       </div>
 
       {businessData.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center text-gray-400">
+        <div className="bg-surface rounded-2xl border border-border p-12 text-center text-text-muted">
           هنوز {category.name}ای در {city.name} ثبت نشده است.
         </div>
       ) : (

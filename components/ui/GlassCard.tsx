@@ -24,8 +24,8 @@ const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
         {...props}
       >
         {gradient && (
-          <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-50"
-            style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(168,85,247,0.08))' }}
+          <div className="absolute inset-0 rounded-xl pointer-events-none opacity-50"
+            style={{ background: 'linear-gradient(135deg, rgba(13,115,119,0.06), rgba(20,168,173,0.06))' }}
           />
         )}
         <div className="relative z-10">{children}</div>

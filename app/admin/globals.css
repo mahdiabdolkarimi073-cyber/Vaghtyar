@@ -1,78 +1,79 @@
-/* Admin Panel - Light Theme */
+/* Admin Panel - Light Theme with Teal Design System */
 .admin-body {
-  background: #f8fafc;
-  color: #1e293b;
+  background: #F8FAFC;
+  color: #1E293B;
   min-height: 100vh;
+  font-family: 'Vazirmatn', 'Inter', sans-serif;
 }
 
 .admin-card {
-  background: white;
+  background: #FFFFFF;
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #E2E8F0;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .admin-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(13, 115, 119, 0.12);
 }
 
 .admin-sidebar {
-  background: white;
-  border-left: 1px solid #e2e8f0;
+  background: #FFFFFF;
+  border-left: 1px solid #E2E8F0;
 }
 
 .admin-input {
-  background: white;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  color: #1e293b;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  color: #1E293B;
   transition: all 0.2s ease;
 }
 
 .admin-input:focus {
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
+  border-color: #0D7377;
+  box-shadow: 0 0 0 3px rgba(13, 115, 119, 0.12);
   outline: none;
 }
 
 .admin-input::placeholder {
-  color: #94a3b8;
+  color: #94A3B8;
 }
 
 .admin-table th {
-  background: #f1f5f9;
+  background: #F1F5F9;
   color: #475569;
   font-weight: 600;
   font-size: 0.875rem;
 }
 
 .admin-table tr:hover td {
-  background: #f8fafc;
+  background: #F8FAFC;
 }
 
 .admin-gradient-primary {
-  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+  background: linear-gradient(135deg, #0D7377 0%, #14A8AD 100%);
 }
 
 .admin-gradient-sky {
-  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  background: linear-gradient(135deg, #14A8AD 0%, #0D7377 100%);
 }
 
 .admin-gradient-emerald {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #4CAF82 0%, #36906B 100%);
 }
 
 .admin-gradient-amber {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
 }
 
 .admin-gradient-rose {
-  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
 }
 
 .admin-gradient-text {
-  background: linear-gradient(135deg, #8b5cf6, #0ea5e9);
+  background: linear-gradient(135deg, #0D7377, #14A8AD);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -88,7 +89,7 @@
 }
 
 .admin-skeleton {
-  background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%);
+  background: linear-gradient(90deg, #E2E8F0 0%, #F1F5F9 50%, #E2E8F0 100%);
   background-size: 200% 100%;
   animation: admin-shimmer 1.5s infinite;
 }

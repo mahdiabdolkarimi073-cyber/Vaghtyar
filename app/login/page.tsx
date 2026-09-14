@@ -65,19 +65,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-br from-teal-50 via-white to-cyan-50 px-4 py-12">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-br from-primary/5 via-white to-primary-light/5 px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Calendar className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">نوبت‌یار</h1>
-          <p className="text-gray-500 mt-1">به پلتفرم رزرو آنلاین نوبت خوش آمدید</p>
+          <h1 className="text-2xl font-bold text-text-primary">نوبت‌یار</h1>
+          <p className="text-text-muted mt-1">به پلتفرم رزرو آنلاین نوبت خوش آمدید</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-surface rounded-2xl shadow-card border border-border p-6">
           <Tabs value={tab} onValueChange={(v) => { setTab(v as 'login' | 'register'); setError(''); setSuccess(''); }}>
-            <TabsList className="bg-gray-50 rounded-xl p-1 w-full mb-6 h-auto">
+            <TabsList className="bg-muted rounded-xl p-1 w-full mb-6 h-auto">
               <TabsTrigger value="login" className="rounded-lg py-2 flex-1">ورود</TabsTrigger>
               <TabsTrigger value="register" className="rounded-lg py-2 flex-1">ثبت‌نام</TabsTrigger>
             </TabsList>
@@ -85,29 +85,29 @@ export default function LoginPage() {
             <TabsContent value="login">
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">شماره موبایل</label>
+                  <label className="text-sm font-medium text-text-secondary mb-1 block">شماره موبایل</label>
                   <div className="relative">
-                    <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                     <input
                       type="tel"
                       dir="ltr"
                       value={loginForm.phone}
                       onChange={(e) => setLoginForm({ ...loginForm, phone: e.target.value })}
                       placeholder="09XXXXXXXXX"
-                      className="w-full h-12 rounded-xl border border-gray-200 pr-10 px-4 text-sm outline-none focus:ring-2 focus:ring-teal-500 text-right"
+                      className="w-full h-12 rounded-xl border border-border pr-10 px-4 text-sm outline-none focus:ring-2 focus:ring-primary text-right"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">رمز عبور</label>
+                  <label className="text-sm font-medium text-text-secondary mb-1 block">رمز عبور</label>
                   <div className="relative">
-                    <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                     <input
                       type="password"
                       value={loginForm.password}
                       onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                       placeholder="••••••••"
-                      className="w-full h-12 rounded-xl border border-gray-200 pr-10 px-4 text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full h-12 rounded-xl border border-border pr-10 px-4 text-sm outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
                 </div>
@@ -119,7 +119,7 @@ export default function LoginPage() {
                 <Button
                   onClick={handleLogin}
                   disabled={loading || !loginForm.phone || !loginForm.password}
-                  className="w-full bg-teal-600 hover:bg-teal-700 text-white h-12 rounded-xl"
+                  className="w-full bg-primary hover:bg-primary-dark text-white h-12 rounded-xl"
                 >
                   {loading ? 'در حال ورود...' : 'ورود'}
                 </Button>
@@ -129,67 +129,67 @@ export default function LoginPage() {
             <TabsContent value="register">
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">نام و نام خانوادگی</label>
+                  <label className="text-sm font-medium text-text-secondary mb-1 block">نام و نام خانوادگی</label>
                   <div className="relative">
-                    <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                     <input
                       type="text"
                       value={registerForm.name}
                       onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })}
                       placeholder="نام شما"
-                      className="w-full h-12 rounded-xl border border-gray-200 pr-10 px-4 text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full h-12 rounded-xl border border-border pr-10 px-4 text-sm outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">شماره موبایل</label>
+                  <label className="text-sm font-medium text-text-secondary mb-1 block">شماره موبایل</label>
                   <div className="relative">
-                    <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                     <input
                       type="tel"
                       dir="ltr"
                       value={registerForm.phone}
                       onChange={(e) => setRegisterForm({ ...registerForm, phone: e.target.value })}
                       placeholder="09XXXXXXXXX"
-                      className="w-full h-12 rounded-xl border border-gray-200 pr-10 px-4 text-sm outline-none focus:ring-2 focus:ring-teal-500 text-right"
+                      className="w-full h-12 rounded-xl border border-border pr-10 px-4 text-sm outline-none focus:ring-2 focus:ring-primary text-right"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">رمز عبور</label>
+                  <label className="text-sm font-medium text-text-secondary mb-1 block">رمز عبور</label>
                   <div className="relative">
-                    <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                     <input
                       type="password"
                       value={registerForm.password}
                       onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
                       placeholder="حداقل ۶ کاراکتر"
-                      className="w-full h-12 rounded-xl border border-gray-200 pr-10 px-4 text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full h-12 rounded-xl border border-border pr-10 px-4 text-sm outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">نوع حساب</label>
+                  <label className="text-sm font-medium text-text-secondary mb-2 block">نوع حساب</label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
                       onClick={() => setRegisterForm({ ...registerForm, role: 'CUSTOMER' })}
                       className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
-                        registerForm.role === 'CUSTOMER' ? 'border-teal-500 bg-teal-50' : 'border-gray-200'
+                        registerForm.role === 'CUSTOMER' ? 'border-teal-500 bg-primary/10' : 'border-border'
                       }`}
                     >
-                      <User className="w-6 h-6 text-teal-600" />
-                      <span className="text-sm font-medium text-gray-700">مشتری</span>
+                      <User className="w-6 h-6 text-primary" />
+                      <span className="text-sm font-medium text-text-secondary">مشتری</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setRegisterForm({ ...registerForm, role: 'BUSINESS_OWNER' })}
                       className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
-                        registerForm.role === 'BUSINESS_OWNER' ? 'border-teal-500 bg-teal-50' : 'border-gray-200'
+                        registerForm.role === 'BUSINESS_OWNER' ? 'border-teal-500 bg-primary/10' : 'border-border'
                       }`}
                     >
-                      <Store className="w-6 h-6 text-teal-600" />
-                      <span className="text-sm font-medium text-gray-700">صاحب کسب‌وکار</span>
+                      <Store className="w-6 h-6 text-primary" />
+                      <span className="text-sm font-medium text-text-secondary">صاحب کسب‌وکار</span>
                     </button>
                   </div>
                 </div>
@@ -206,7 +206,7 @@ export default function LoginPage() {
                 <Button
                   onClick={handleRegister}
                   disabled={loading || !registerForm.name || !registerForm.phone || !registerForm.password}
-                  className="w-full bg-teal-600 hover:bg-teal-700 text-white h-12 rounded-xl"
+                  className="w-full bg-primary hover:bg-primary-dark text-white h-12 rounded-xl"
                 >
                   {loading ? 'در حال ثبت‌نام...' : 'ثبت‌نام'}
                 </Button>
@@ -215,8 +215,8 @@ export default function LoginPage() {
           </Tabs>
         </div>
 
-        <p className="text-center text-sm text-gray-400 mt-6">
-          <Link href="/" className="hover:text-teal-600 transition-colors">بازگشت به صفحه اصلی</Link>
+        <p className="text-center text-sm text-text-muted mt-6">
+          <Link href="/" className="hover:text-primary transition-colors">بازگشت به صفحه اصلی</Link>
         </p>
       </div>
     </div>

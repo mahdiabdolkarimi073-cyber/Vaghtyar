@@ -26,7 +26,7 @@ export default function DataTable<T extends Record<string, any>>({
       <div className="admin-card rounded-2xl overflow-hidden">
         <div className="h-12 admin-skeleton" />
         {[1, 2, 3, 4, 5].map(i => (
-          <div key={i} className="h-14 border-b border-slate-100 admin-skeleton" />
+          <div key={i} className="h-14 border-b border-border admin-skeleton" />
         ))}
       </div>
     );
@@ -35,8 +35,8 @@ export default function DataTable<T extends Record<string, any>>({
   if (data.length === 0) {
     return (
       <div className="admin-card rounded-2xl p-12 text-center">
-        <Inbox className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-        <p className="text-slate-400 text-sm">{emptyMessage}</p>
+        <Inbox className="w-12 h-12 text-text-muted mx-auto mb-3" />
+        <p className="text-text-muted text-sm">{emptyMessage}</p>
       </div>
     );
   }
@@ -55,9 +55,9 @@ export default function DataTable<T extends Record<string, any>>({
         </thead>
         <tbody>
           {data.map((row, i) => (
-            <tr key={rowKey ? rowKey(row) : i} className="border-b border-slate-100 last:border-0">
+            <tr key={rowKey ? rowKey(row) : i} className="border-b border-border last:border-0">
               {columns.map(col => (
-                <td key={col.key} className="px-4 py-3 text-sm text-slate-600">
+                <td key={col.key} className="px-4 py-3 text-sm text-text-secondary">
                   {col.render ? col.render(row) : row[col.key]}
                 </td>
               ))}

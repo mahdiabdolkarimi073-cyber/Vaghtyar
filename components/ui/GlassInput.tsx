@@ -13,20 +13,20 @@ export const GlassInput = forwardRef<HTMLInputElement, GlassInputProps>(
     return (
       <div className="space-y-1.5">
         {label && (
-          <label className="block text-sm font-medium text-secondary-custom mb-1.5">
+          <label className="block text-sm font-medium text-text-secondary mb-1.5">
             {label}
           </label>
         )}
         <input
           ref={ref}
           className={cn(
-            'glass-input w-full px-4 py-2.5 text-sm',
-            error && 'border-red-500/50 focus:border-red-500 focus:shadow-red-500/20',
+            'glass-input w-full px-4 py-3 text-sm',
+            error && 'border-error focus:border-error focus:shadow-error/20',
             className
           )}
           {...props}
         />
-        {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
+        {error && <p className="text-xs text-error mt-1">{error}</p>}
       </div>
     );
   }
@@ -44,20 +44,20 @@ export const GlassTextarea = forwardRef<HTMLTextAreaElement, GlassTextareaProps>
     return (
       <div className="space-y-1.5">
         {label && (
-          <label className="block text-sm font-medium text-secondary-custom mb-1.5">
+          <label className="block text-sm font-medium text-text-secondary mb-1.5">
             {label}
           </label>
         )}
         <textarea
           ref={ref}
           className={cn(
-            'glass-input w-full px-4 py-2.5 text-sm resize-none',
-            error && 'border-red-500/50',
+            'glass-input w-full px-4 py-3 text-sm resize-none',
+            error && 'border-error',
             className
           )}
           {...props}
         />
-        {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
+        {error && <p className="text-xs text-error mt-1">{error}</p>}
       </div>
     );
   }

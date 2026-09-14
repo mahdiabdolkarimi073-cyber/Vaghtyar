@@ -37,7 +37,7 @@ export default function AdminSettingsPage() {
 
   const input = (key: string, label: string, type = 'text') => (
     <div>
-      <label className="text-sm text-slate-600 mb-1 block">{label}</label>
+      <label className="text-sm text-text-secondary mb-1 block">{label}</label>
       <input
         type={type} value={settings[key] || ''} onChange={e => setSettings({...settings, [key]: e.target.value})}
         className="admin-input w-full h-10 px-4 text-sm" dir={type === 'text' ? 'rtl' : 'ltr'}
@@ -62,7 +62,7 @@ export default function AdminSettingsPage() {
         <AdminHeader title="تنظیمات سیستم" />
         <div className="p-4 lg:p-6 max-w-3xl mx-auto">
           <Tabs defaultValue="general">
-            <TabsList className="bg-white border border-slate-200 rounded-xl p-1 flex flex-wrap">
+            <TabsList className="bg-surface border border-border rounded-xl p-1 flex flex-wrap">
               <TabsTrigger value="general" className="rounded-lg">عمومی</TabsTrigger>
               <TabsTrigger value="payment" className="rounded-lg">درگاه پرداخت</TabsTrigger>
               <TabsTrigger value="sms" className="rounded-lg">پیامک</TabsTrigger>
@@ -72,7 +72,7 @@ export default function AdminSettingsPage() {
 
             <TabsContent value="general">
               <div className="admin-card p-6 space-y-4">
-                <h3 className="text-sm font-bold text-slate-700">تنظیمات عمومی</h3>
+                <h3 className="text-sm font-bold text-text-secondary">تنظیمات عمومی</h3>
                 {input('site_name', 'نام سایت')}
                 {input('site_tagline', 'شعار سایت')}
                 <button onClick={() => save(['site_name', 'site_tagline'])} disabled={saving} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 disabled:opacity-50">
@@ -83,9 +83,9 @@ export default function AdminSettingsPage() {
 
             <TabsContent value="payment">
               <div className="admin-card p-6 space-y-4">
-                <h3 className="text-sm font-bold text-slate-700">درگاه پرداخت</h3>
+                <h3 className="text-sm font-bold text-text-secondary">درگاه پرداخت</h3>
                 <div>
-                  <label className="text-sm text-slate-600 mb-1 block">ارائه‌دهنده</label>
+                  <label className="text-sm text-text-secondary mb-1 block">ارائه‌دهنده</label>
                   <select value={settings.payment_provider || ''} onChange={e => setSettings({...settings, payment_provider: e.target.value})} className="admin-input w-full h-10 px-4 text-sm">
                     <option value="zarinpal">زرین‌پال</option>
                     <option value="idpay">آیدی‌پی</option>
@@ -102,9 +102,9 @@ export default function AdminSettingsPage() {
 
             <TabsContent value="sms">
               <div className="admin-card p-6 space-y-4">
-                <h3 className="text-sm font-bold text-slate-700">سرویس پیامک</h3>
+                <h3 className="text-sm font-bold text-text-secondary">سرویس پیامک</h3>
                 <div>
-                  <label className="text-sm text-slate-600 mb-1 block">ارائه‌دهنده</label>
+                  <label className="text-sm text-text-secondary mb-1 block">ارائه‌دهنده</label>
                   <select value={settings.sms_provider || ''} onChange={e => setSettings({...settings, sms_provider: e.target.value})} className="admin-input w-full h-10 px-4 text-sm">
                     <option value="kavenegar">کاوه‌نگار</option>
                     <option value="farapayamak">فراپیامک</option>
@@ -121,9 +121,9 @@ export default function AdminSettingsPage() {
 
             <TabsContent value="terms">
               <div className="admin-card p-6 space-y-4">
-                <h3 className="text-sm font-bold text-slate-700">قوانین و مقررات</h3>
+                <h3 className="text-sm font-bold text-text-secondary">قوانین و مقررات</h3>
                 <div>
-                  <label className="text-sm text-slate-600 mb-1 block">متن قوانین</label>
+                  <label className="text-sm text-text-secondary mb-1 block">متن قوانین</label>
                   <textarea value={settings.terms_text || ''} onChange={e => setSettings({...settings, terms_text: e.target.value})} className="admin-input w-full p-3 text-sm" rows={10} />
                 </div>
                 <button onClick={() => save(['terms_text'])} disabled={saving} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 disabled:opacity-50">
@@ -134,11 +134,11 @@ export default function AdminSettingsPage() {
 
             <TabsContent value="contact">
               <div className="admin-card p-6 space-y-4">
-                <h3 className="text-sm font-bold text-slate-700">اطلاعات تماس</h3>
+                <h3 className="text-sm font-bold text-text-secondary">اطلاعات تماس</h3>
                 {input('contact_phone', 'تلفن', 'text')}
                 {input('contact_email', 'ایمیل', 'email')}
                 <div>
-                  <label className="text-sm text-slate-600 mb-1 block">آدرس</label>
+                  <label className="text-sm text-text-secondary mb-1 block">آدرس</label>
                   <textarea value={settings.contact_address || ''} onChange={e => setSettings({...settings, contact_address: e.target.value})} className="admin-input w-full p-3 text-sm" rows={3} />
                 </div>
                 <button onClick={() => save(['contact_phone', 'contact_email', 'contact_address'])} disabled={saving} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 disabled:opacity-50">

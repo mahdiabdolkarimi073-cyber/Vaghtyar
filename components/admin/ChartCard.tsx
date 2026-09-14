@@ -15,7 +15,7 @@ export default function ChartCard({ title, children, className, isLoading }: Cha
   }
   return (
     <div className={cn('admin-card p-5 admin-animate', className)}>
-      <h3 className="text-sm font-bold text-slate-700 mb-4">{title}</h3>
+      <h3 className="text-sm font-bold text-text-secondary mb-4">{title}</h3>
       {children}
     </div>
   );

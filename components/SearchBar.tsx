@@ -34,13 +34,13 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 flex flex-col md:flex-row gap-3">
+    <div className="bg-surface rounded-2xl shadow-card-hover p-4 md:p-6 flex flex-col md:flex-row gap-3 border border-border">
       <div className="flex-1">
-        <label className="text-xs text-gray-500 mb-1 block">دسته‌بندی</label>
+        <label className="text-xs text-text-secondary mb-1 block">دسته‌بندی</label>
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full h-12 rounded-xl border border-gray-200 px-4 text-gray-700 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none"
+          className="w-full h-12 rounded-xl border border-border px-4 text-text-primary bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
         >
           <option value="">همه دسته‌ها</option>
           {categories.map((c) => (
@@ -49,11 +49,11 @@ export default function SearchBar() {
         </select>
       </div>
       <div className="flex-1">
-        <label className="text-xs text-gray-500 mb-1 block">شهر</label>
+        <label className="text-xs text-text-secondary mb-1 block">شهر</label>
         <select
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          className="w-full h-12 rounded-xl border border-gray-200 px-4 text-gray-700 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none"
+          className="w-full h-12 rounded-xl border border-border px-4 text-text-primary bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
         >
           <option value="">همه شهرها</option>
           {cities.map((c) => (
@@ -62,22 +62,22 @@ export default function SearchBar() {
         </select>
       </div>
       <div className="flex-1">
-        <label className="text-xs text-gray-500 mb-1 block">محله</label>
+        <label className="text-xs text-text-secondary mb-1 block">محله</label>
         <div className="relative">
-          <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
           <input
             type="text"
             value={neighborhood}
             onChange={(e) => setNeighborhood(e.target.value)}
             placeholder="نام محله..."
-            className="w-full h-12 rounded-xl border border-gray-200 pr-10 px-4 text-gray-700 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none"
+            className="w-full h-12 rounded-xl border border-border pr-10 px-4 text-text-primary bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
           />
         </div>
       </div>
       <div className="flex items-end">
         <Button
           onClick={handleSearch}
-          className="h-12 px-8 bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2 w-full md:w-auto"
+          className="h-12 px-8 gap-2 w-full md:w-auto"
         >
           <Search className="w-5 h-5" />
           جستجو

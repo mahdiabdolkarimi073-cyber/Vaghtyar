@@ -36,9 +36,9 @@ export default function PaymentCallbackPage() {
   return (
     <div className="min-h-screen flex items-center justify-center" dir="rtl">
       <div className="text-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-400 mx-auto mb-3" />
-        <p className="text-sm text-secondary-custom">در حال تأیید پرداخت...</p>
-        {error && <p className="text-sm text-red-400 mt-2">{error}</p>}
+        <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
+        <p className="text-sm text-text-secondary">در حال تأیید پرداخت...</p>
+        {error && <p className="text-sm text-error mt-2">{error}</p>}
       </div>
     </div>
   );

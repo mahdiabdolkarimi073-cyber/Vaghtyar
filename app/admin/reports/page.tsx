@@ -59,7 +59,7 @@ export default function AdminReportsPage() {
           </div>
 
           <Tabs value={tab} onValueChange={setTab}>
-            <TabsList className="bg-white border border-slate-200 rounded-xl p-1">
+            <TabsList className="bg-surface border border-border rounded-xl p-1">
               <TabsTrigger value="revenue" className="rounded-lg">درآمد</TabsTrigger>
               <TabsTrigger value="businesses" className="rounded-lg">کسب‌وکارها</TabsTrigger>
               <TabsTrigger value="appointments" className="rounded-lg">نوبت‌ها</TabsTrigger>

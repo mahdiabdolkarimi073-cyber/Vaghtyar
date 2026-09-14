@@ -9,22 +9,22 @@ interface StatsCardProps {
   value: string | number;
   subtitle?: string;
   icon: React.ReactNode;
-  gradient: 'violet' | 'sky' | 'emerald' | 'amber' | 'rose';
+  gradient: 'primary' | 'accent' | 'success' | 'warning' | 'danger';
   trend?: { value: number; isPositive: boolean };
   isLoading?: boolean;
 }
 
 const gradients = {
-  violet: 'admin-gradient-primary',
-  sky: 'admin-gradient-sky',
-  emerald: 'admin-gradient-emerald',
-  amber: 'admin-gradient-amber',
-  rose: 'admin-gradient-rose',
+  primary: 'admin-gradient-primary',
+  accent: 'admin-gradient-sky',
+  success: 'admin-gradient-emerald',
+  warning: 'admin-gradient-amber',
+  danger: 'admin-gradient-rose',
 };
 
 export default function StatsCard({ title, value, subtitle, icon, gradient, trend, isLoading }: StatsCardProps) {
   const [displayValue, setDisplayValue] = useState(0);
-  const rafRef = useRef<number>();
+  const rafRef = useRef<number | undefined>(undefined);
 
   const numValue = typeof value === 'number' ? value : 0;
 
@@ -54,17 +54,17 @@ export default function StatsCard({ title, value, subtitle, icon, gradient, tren
           {icon}
         </div>
         {trend && (
-          <div className={cn('flex items-center gap-1 text-xs font-medium', trend.isPositive ? 'text-emerald-600' : 'text-rose-500')}>
+          <div className={cn('flex items-center gap-1 text-xs font-medium', trend.isPositive ? 'text-secondary' : 'text-error')}>
             {trend.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
             {Math.abs(trend.value)}%
           </div>
         )}
       </div>
-      <div className="text-2xl font-bold text-slate-800">
+      <div className="text-2xl font-bold text-text-primary">
         {typeof value === 'number' ? displayValue.toLocaleString('en-US') : value}
       </div>
-      <div className="text-sm text-slate-500 mt-1">{title}</div>
-      {subtitle && <div className="text-xs text-slate-400 mt-0.5">{subtitle}</div>}
+      <div className="text-sm text-text-secondary mt-1">{title}</div>
+      {subtitle && <div className="text-xs text-text-muted mt-0.5">{subtitle}</div>}
     </div>
   );
 }

@@ -8,12 +8,12 @@ interface GlassBadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const variants = {
-  default: 'bg-white/5 text-secondary-custom border-white/10',
-  success: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20',
-  warning: 'bg-amber-500/15 text-amber-300 border-amber-500/20',
-  danger: 'bg-red-500/15 text-red-300 border-red-500/20',
-  info: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/20',
-  primary: 'bg-indigo-500/15 text-indigo-300 border-indigo-500/20',
+  default: 'bg-muted text-text-secondary border-border',
+  success: 'bg-secondary/10 text-secondary border-secondary/20',
+  warning: 'bg-warning/10 text-warning border-warning/20',
+  danger: 'bg-error/10 text-error border-error/20',
+  info: 'bg-primary/10 text-primary border-primary/20',
+  primary: 'bg-primary/10 text-primary border-primary/20',
 };
 
 export default function GlassBadge({ className, variant = 'default', children, ...props }: GlassBadgeProps) {

@@ -40,12 +40,12 @@ export default function AdminLoginPage() {
             <Shield className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold admin-gradient-text mb-1">پنل مدیریت نوبت‌یار</h1>
-          <p className="text-sm text-slate-500">برای ورود اطلاعات خود را وارد کنید</p>
+          <p className="text-sm text-text-muted">برای ورود اطلاعات خود را وارد کنید</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-sm text-slate-600 mb-1 block">شماره موبایل</label>
+            <label className="text-sm text-text-secondary mb-1 block">شماره موبایل</label>
             <input
               type="tel"
               value={phone}
@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
             />
           </div>
           <div>
-            <label className="text-sm text-slate-600 mb-1 block">رمز عبور</label>
+            <label className="text-sm text-text-secondary mb-1 block">رمز عبور</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -70,7 +70,7 @@ export default function AdminLoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -79,7 +79,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="admin-gradient-primary text-white w-full h-11 rounded-xl font-medium text-sm shadow-md shadow-violet-500/25 hover:shadow-lg hover:shadow-violet-500/30 transition-all disabled:opacity-50"
+            className="admin-gradient-primary text-white w-full h-11 rounded-xl font-medium text-sm shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-violet-500/30 transition-all disabled:opacity-50"
           >
             {loading ? 'در حال ورود...' : 'ورود'}
           </button>

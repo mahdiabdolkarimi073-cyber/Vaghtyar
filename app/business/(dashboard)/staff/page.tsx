@@ -105,12 +105,12 @@ export default function StaffPage() {
     finally { setDeleteId(null); }
   };
 
-  if (loading) return <div className="glass h-96 rounded-2xl glass-shimmer" />;
+  if (loading) return <div className="bg-surface border border-border rounded-xl shadow-card h-96 glass-shimmer" />;
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-primary-custom">مدیریت کارکنان</h2>
+        <h2 className="text-lg font-bold text-text-primary">مدیریت کارکنان</h2>
         <GradientButton onClick={openAdd} size="sm" disabled={staffLimit !== null && !staffLimit.allowed}>
           {staffLimit !== null && !staffLimit.allowed ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
           افزودن کارکن
@@ -119,11 +119,11 @@ export default function StaffPage() {
 
       {staff.length === 0 ? (
         <GlassCard className="p-12 text-center">
-          <div className="inline-flex w-16 h-16 rounded-2xl bg-indigo-500/15 items-center justify-center mb-4">
-            <Users className="w-8 h-8 text-indigo-400" />
+          <div className="inline-flex w-16 h-16 rounded-2xl bg-primary/10 items-center justify-center mb-4">
+            <Users className="w-8 h-8 text-primary" />
           </div>
-          <h3 className="text-lg font-bold text-primary-custom mb-2">هنوز کارکنی اضافه نکرده‌اید</h3>
-          <p className="text-sm text-secondary-custom mb-4">برای شروع، اولین کارکن خود را اضافه کنید</p>
+          <h3 className="text-lg font-bold text-text-primary mb-2">هنوز کارکنی اضافه نکرده‌اید</h3>
+          <p className="text-sm text-text-secondary mb-4">برای شروع، اولین کارکن خود را اضافه کنید</p>
           <GradientButton onClick={openAdd} size="md"><Plus className="w-4 h-4" /> افزودن اولین کارکن</GradientButton>
         </GlassCard>
       ) : (
@@ -136,22 +136,22 @@ export default function StaffPage() {
                     {s.name.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-primary-custom">{s.name}</h3>
-                    <p className="text-xs text-secondary-custom">{s.specialty || 'بدون تخصص'}</p>
+                    <h3 className="text-sm font-bold text-text-primary">{s.name}</h3>
+                    <p className="text-xs text-text-secondary">{s.specialty || 'بدون تخصص'}</p>
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => openEdit(s)} className="p-1.5 rounded-lg hover:bg-white/5 text-secondary-custom hover:text-primary-custom"><Edit2 className="w-4 h-4" /></button>
-                  <button onClick={() => setDeleteId(s.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-secondary-custom hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                  <button onClick={() => openEdit(s)} className="p-1.5 rounded-lg hover:bg-muted text-text-secondary hover:text-text-primary"><Edit2 className="w-4 h-4" /></button>
+                  <button onClick={() => setDeleteId(s.id)} className="p-1.5 rounded-lg hover:bg-error/10 text-text-secondary hover:text-error"><Trash2 className="w-4 h-4" /></button>
                 </div>
               </div>
-              {s.bio && <p className="text-xs text-secondary-custom mb-3 line-clamp-2">{s.bio}</p>}
+              {s.bio && <p className="text-xs text-text-secondary mb-3 line-clamp-2">{s.bio}</p>}
               <div className="flex flex-wrap gap-1 mb-3">
                 {s.services.map(sv => <GlassBadge key={sv.id} variant="primary">{sv.name}</GlassBadge>)}
               </div>
-              <div className="flex items-center justify-between pt-3 border-t border-white/5">
-                <span className="text-xs text-secondary-custom">نوبت‌های امروز</span>
-                <span className="text-sm font-bold text-primary-custom">{toPersianDigits(s.todayAppointmentCount)}</span>
+              <div className="flex items-center justify-between pt-3 border-t border-border">
+                <span className="text-xs text-text-secondary">نوبت‌های امروز</span>
+                <span className="text-sm font-bold text-text-primary">{toPersianDigits(s.todayAppointmentCount)}</span>
               </div>
             </GlassCard>
           ))}
@@ -163,39 +163,39 @@ export default function StaffPage() {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setModalOpen(false)} />
           <GlassCard strong className="relative p-6 w-full max-w-md animate-scale-in max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-primary-custom">{editingId ? 'ویرایش کارکن' : 'افزودن کارکن'}</h3>
-              <button onClick={() => setModalOpen(false)} className="text-secondary-custom"><X className="w-5 h-5" /></button>
+              <h3 className="text-lg font-bold text-text-primary">{editingId ? 'ویرایش کارکن' : 'افزودن کارکن'}</h3>
+              <button onClick={() => setModalOpen(false)} className="text-text-secondary"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-secondary-custom mb-1.5">نام</label>
+                <label className="block text-sm text-text-secondary mb-1.5">نام</label>
                 <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm" placeholder="نام و نام خانوادگی" />
               </div>
               <div>
-                <label className="block text-sm text-secondary-custom mb-1.5">تخصص</label>
+                <label className="block text-sm text-text-secondary mb-1.5">تخصص</label>
                 <input value={form.specialty} onChange={e => setForm({ ...form, specialty: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm" placeholder="مثال: آرایشگر" />
               </div>
               <div>
-                <label className="block text-sm text-secondary-custom mb-1.5">بیوگرافی</label>
+                <label className="block text-sm text-text-secondary mb-1.5">بیوگرافی</label>
                 <textarea value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm resize-none" rows={2} />
               </div>
               <div>
-                <label className="block text-sm text-secondary-custom mb-1.5">خدمات قابل انجام</label>
+                <label className="block text-sm text-text-secondary mb-1.5">خدمات قابل انجام</label>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {services.map(sv => (
-                    <label key={sv.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 cursor-pointer">
+                    <label key={sv.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted cursor-pointer">
                       <input type="checkbox" checked={selectedServices.includes(sv.id)} onChange={e => {
                         if (e.target.checked) setSelectedServices([...selectedServices, sv.id]);
                         else setSelectedServices(selectedServices.filter(id => id !== sv.id));
-                      }} className="rounded border-white/20 bg-white/5" />
-                      <span className="text-sm text-primary-custom">{sv.name}</span>
+                      }} className="rounded border-border bg-muted" />
+                      <span className="text-sm text-text-primary">{sv.name}</span>
                     </label>
                   ))}
-                  {services.length === 0 && <p className="text-xs text-secondary-custom">ابتدا خدمتی اضافه کنید</p>}
+                  {services.length === 0 && <p className="text-xs text-text-secondary">ابتدا خدمتی اضافه کنید</p>}
                 </div>
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-secondary-custom hover:bg-white/5 text-sm">انصراف</button>
+                <button onClick={() => setModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-border text-text-secondary hover:bg-muted text-sm">انصراف</button>
                 <GradientButton onClick={handleSave} loading={saving} className="flex-1" size="md">{editingId ? 'به‌روزرسانی' : 'افزودن'}</GradientButton>
               </div>
             </div>
@@ -207,15 +207,15 @@ export default function StaffPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setLimitModalOpen(false)} />
           <GlassCard strong className="relative p-6 w-full max-w-sm text-center animate-scale-in">
-            <div className="inline-flex w-14 h-14 rounded-2xl bg-amber-500/15 items-center justify-center mb-4">
-              <Lock className="w-7 h-7 text-amber-400" />
+            <div className="inline-flex w-14 h-14 rounded-2xl bg-warning/10 items-center justify-center mb-4">
+              <Lock className="w-7 h-7 text-warning" />
             </div>
-            <h3 className="text-lg font-bold text-primary-custom mb-2">محدودیت پلن</h3>
-            <p className="text-sm text-secondary-custom mb-4">
+            <h3 className="text-lg font-bold text-text-primary mb-2">محدودیت پلن</h3>
+            <p className="text-sm text-text-secondary mb-4">
               شما به حداکثر تعداد کارکنان در پلن {staffLimit.planName} رسیده‌اید. برای افزایش محدودیت، پلن خود را ارتقا دهید.
             </p>
             <div className="flex gap-3">
-              <button onClick={() => setLimitModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-secondary-custom hover:bg-white/5 text-sm">بستن</button>
+              <button onClick={() => setLimitModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-border text-text-secondary hover:bg-muted text-sm">بستن</button>
               <GradientButton onClick={() => { setLimitModalOpen(false); window.location.href = '/business/subscription'; }} className="flex-1" size="md">ارتقا پلن</GradientButton>
             </div>
           </GlassCard>
@@ -226,10 +226,10 @@ export default function StaffPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setDeleteId(null)} />
           <GlassCard strong className="relative p-6 w-full max-w-sm text-center animate-scale-in">
-            <h3 className="text-lg font-bold text-primary-custom mb-2">حذف کارکن</h3>
-            <p className="text-sm text-secondary-custom mb-4">آیا از حذف این کارکن مطمئن هستید؟</p>
+            <h3 className="text-lg font-bold text-text-primary mb-2">حذف کارکن</h3>
+            <p className="text-sm text-text-secondary mb-4">آیا از حذف این کارکن مطمئن هستید؟</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-secondary-custom hover:bg-white/5 text-sm">انصراف</button>
+              <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 rounded-xl border border-border text-text-secondary hover:bg-muted text-sm">انصراف</button>
               <GradientButton variant="danger" onClick={handleDelete} className="flex-1" size="md">حذف</GradientButton>
             </div>
           </GlassCard>

@@ -32,28 +32,28 @@ export default function PaymentSuccessPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4" dir="rtl">
       <GlassCard strong className="p-8 w-full max-w-md text-center">
-        <div className="inline-flex w-20 h-20 rounded-full bg-emerald-500/15 items-center justify-center mb-4 animate-scale-in">
-          <CheckCircle2 className="w-12 h-12 text-emerald-400" />
+        <div className="inline-flex w-20 h-20 rounded-full bg-secondary/10 items-center justify-center mb-4 animate-scale-in">
+          <CheckCircle2 className="w-12 h-12 text-secondary" />
         </div>
-        <h1 className="text-xl font-bold text-primary-custom mb-2">پرداخت با موفقیت انجام شد</h1>
+        <h1 className="text-xl font-bold text-text-primary mb-2">پرداخت با موفقیت انجام شد</h1>
 
         <div className="space-y-3 mb-6 text-right mt-4">
           {subscription && (
             <>
-              <div className="flex justify-between p-3 rounded-xl bg-white/5">
-                <span className="text-sm text-secondary-custom">پلن</span>
-                <span className="text-sm font-bold text-primary-custom">{subscription.plan.name}</span>
+              <div className="flex justify-between p-3 rounded-xl bg-surface/5">
+                <span className="text-sm text-text-secondary">پلن</span>
+                <span className="text-sm font-bold text-text-primary">{subscription.plan.name}</span>
               </div>
-              <div className="flex justify-between p-3 rounded-xl bg-white/5">
-                <span className="text-sm text-secondary-custom">تاریخ انقضا</span>
-                <span className="text-sm text-primary-custom">{formatDateShortFA(new Date(subscription.endDate))}</span>
+              <div className="flex justify-between p-3 rounded-xl bg-surface/5">
+                <span className="text-sm text-text-secondary">تاریخ انقضا</span>
+                <span className="text-sm text-text-primary">{formatDateShortFA(new Date(subscription.endDate))}</span>
               </div>
             </>
           )}
           {refId && (
-            <div className="flex justify-between p-3 rounded-xl bg-white/5">
-              <span className="text-sm text-secondary-custom">کد پیگیری</span>
-              <span className="text-sm text-primary-custom">{toPersianDigits(refId)}</span>
+            <div className="flex justify-between p-3 rounded-xl bg-surface/5">
+              <span className="text-sm text-text-secondary">کد پیگیری</span>
+              <span className="text-sm text-text-primary">{toPersianDigits(refId)}</span>
             </div>
           )}
         </div>

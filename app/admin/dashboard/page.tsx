@@ -80,13 +80,13 @@ export default function AdminDashboardPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div>
-              <h3 className="text-sm font-bold text-slate-700 mb-3">کسب‌وکارهای اخیر</h3>
+              <h3 className="text-sm font-bold text-text-secondary mb-3">کسب‌وکارهای اخیر</h3>
               <DataTable
                 columns={[
                   { key: 'name', header: 'نام' },
                   { key: 'category', header: 'دسته' },
                   { key: 'status', header: 'وضعیت', render: (r) => <StatusBadge status={r.status} variant={statusVariantMap[r.status] || 'neutral'}>{statusLabelMap[r.status] || r.status}</StatusBadge> },
-                  { key: 'createdAt', header: 'تاریخ', render: (r) => <span className="text-xs text-slate-400">{formatDateShortFA(new Date(r.createdAt))}</span> },
+                  { key: 'createdAt', header: 'تاریخ', render: (r) => <span className="text-xs text-text-muted">{formatDateShortFA(new Date(r.createdAt))}</span> },
                 ]}
                 data={data?.recentBusinesses || []}
                 isLoading={loading}
@@ -94,7 +94,7 @@ export default function AdminDashboardPage() {
               />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-700 mb-3">پرداخت‌های اخیر</h3>
+              <h3 className="text-sm font-bold text-text-secondary mb-3">پرداخت‌های اخیر</h3>
               <DataTable
                 columns={[
                   { key: 'business', header: 'کسب‌وکار', render: (r) => r.business?.name || '-' },

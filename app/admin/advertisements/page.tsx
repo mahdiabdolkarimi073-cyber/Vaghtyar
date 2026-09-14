@@ -64,7 +64,7 @@ export default function AdminAdvertisementsPage() {
         <AdminHeader title="مدیریت تبلیغات" />
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-4">
           <div className="flex justify-end">
-            <button onClick={() => setShowAdd(true)} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-md shadow-violet-500/25">
+            <button onClick={() => setShowAdd(true)} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-md shadow-primary/25">
               <Plus className="w-4 h-4" /> افزودن تبلیغ
             </button>
           </div>
@@ -74,7 +74,7 @@ export default function AdminAdvertisementsPage() {
               {[1,2,3].map(i => <div key={i} className="admin-card p-5 h-40 admin-skeleton rounded-2xl" />)}
             </div>
           ) : data.length === 0 ? (
-            <div className="admin-card rounded-2xl p-12 text-center text-slate-400">تبلیغی وجود ندارد</div>
+            <div className="admin-card rounded-2xl p-12 text-center text-text-muted">تبلیغی وجود ندارد</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {data.map((ad) => {
@@ -89,13 +89,13 @@ export default function AdminAdvertisementsPage() {
                         {d > 0 ? `${toPersianDigits(d)} روز` : 'منقضی'}
                       </StatusBadge>
                     </div>
-                    <h3 className="font-bold text-slate-800 mb-1">{ad.business?.name || '-'}</h3>
-                    <div className="text-xs text-slate-400 mb-2 flex items-center gap-1">
+                    <h3 className="font-bold text-text-primary mb-1">{ad.business?.name || '-'}</h3>
+                    <div className="text-xs text-text-muted mb-2 flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       {formatDateShortFA(new Date(ad.startDate))} تا {formatDateShortFA(new Date(ad.endDate))}
                     </div>
-                    <div className="text-sm text-slate-600 mb-3">{formatPrice(ad.price)}</div>
-                    <button onClick={() => setDeleteId(ad.id)} className="text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg text-xs font-medium flex items-center gap-1">
+                    <div className="text-sm text-text-secondary mb-3">{formatPrice(ad.price)}</div>
+                    <button onClick={() => setDeleteId(ad.id)} className="text-error hover:bg-error/10 p-1.5 rounded-lg text-xs font-medium flex items-center gap-1">
                       <Trash2 className="w-3 h-3" /> حذف
                     </button>
                   </div>
@@ -110,23 +110,23 @@ export default function AdminAdvertisementsPage() {
         <DialogContent>
           <DialogHeader><DialogTitle>افزودن تبلیغ</DialogTitle></DialogHeader>
           <div className="space-y-3">
-            <div><label className="text-sm text-slate-600 mb-1 block">کسب‌وکار</label>
+            <div><label className="text-sm text-text-secondary mb-1 block">کسب‌وکار</label>
               <select value={form.businessId} onChange={e => setForm({...form, businessId: e.target.value})} className="admin-input w-full h-10 px-4 text-sm">
                 <option value="">انتخاب کنید</option>
                 {businesses.map((b: any) => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>
             </div>
-            <div><label className="text-sm text-slate-600 mb-1 block">نوع</label>
+            <div><label className="text-sm text-text-secondary mb-1 block">نوع</label>
               <select value={form.type} onChange={e => setForm({...form, type: e.target.value})} className="admin-input w-full h-10 px-4 text-sm">
                 <option value="FEATURED">ویژه</option>
                 <option value="BANNER">بنر</option>
               </select>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div><label className="text-sm text-slate-600 mb-1 block">شروع</label><input type="date" value={form.startDate} onChange={e => setForm({...form, startDate: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
-              <div><label className="text-sm text-slate-600 mb-1 block">پایان</label><input type="date" value={form.endDate} onChange={e => setForm({...form, endDate: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
+              <div><label className="text-sm text-text-secondary mb-1 block">شروع</label><input type="date" value={form.startDate} onChange={e => setForm({...form, startDate: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
+              <div><label className="text-sm text-text-secondary mb-1 block">پایان</label><input type="date" value={form.endDate} onChange={e => setForm({...form, endDate: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
             </div>
-            <div><label className="text-sm text-slate-600 mb-1 block">قیمت (تومان)</label><input type="number" value={form.price} onChange={e => setForm({...form, price: Number(e.target.value)})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
+            <div><label className="text-sm text-text-secondary mb-1 block">قیمت (تومان)</label><input type="number" value={form.price} onChange={e => setForm({...form, price: Number(e.target.value)})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
           </div>
           <DialogFooter>
             <button onClick={() => setShowAdd(false)} className="admin-input px-4 py-2 rounded-xl text-sm">انصراف</button>
@@ -138,7 +138,7 @@ export default function AdminAdvertisementsPage() {
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader><AlertDialogTitle>حذف تبلیغ</AlertDialogTitle><AlertDialogDescription>آیا از حذف این تبلیغ اطمینان دارید؟</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={deleteAd} className="bg-rose-500 hover:bg-rose-600">حذف</AlertDialogAction></AlertDialogFooter>
+          <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={deleteAd} className="bg-error hover:bg-red-600">حذف</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>

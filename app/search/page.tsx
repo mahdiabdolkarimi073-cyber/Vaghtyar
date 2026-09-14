@@ -88,22 +88,22 @@ export default function SearchPage() {
   return (
     <div className="container mx-auto px-4 max-w-7xl py-6">
       {/* Search bar */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6 flex flex-col md:flex-row gap-3">
-        <select value={category} onChange={(e) => setCategory(e.target.value)} className="h-11 rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500">
+      <div className="bg-surface rounded-xl shadow-card border border-border p-4 mb-6 flex flex-col md:flex-row gap-3">
+        <select value={category} onChange={(e) => setCategory(e.target.value)} className="h-11 rounded-xl border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary">
           <option value="">همه دسته‌ها</option>
           {categories.map(c => <option key={c.id} value={c.slug}>{c.name}</option>)}
         </select>
-        <select value={city} onChange={(e) => setCity(e.target.value)} className="h-11 rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500">
+        <select value={city} onChange={(e) => setCity(e.target.value)} className="h-11 rounded-xl border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary">
           <option value="">همه شهرها</option>
           {cities.map(c => <option key={c.id} value={c.slug}>{c.name}</option>)}
         </select>
-        <input type="text" placeholder="محله..." value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} className="h-11 rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500 flex-1" />
-        <select value={sort} onChange={(e) => setSort(e.target.value)} className="h-11 rounded-xl border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500">
+        <input type="text" placeholder="محله..." value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} className="h-11 rounded-xl border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary flex-1" />
+        <select value={sort} onChange={(e) => setSort(e.target.value)} className="h-11 rounded-xl border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary">
           <option value="newest">جدیدترین</option>
           <option value="rating">بالاترین امتیاز</option>
           <option value="price">ارزان‌ترین</option>
         </select>
-        <Button onClick={applyFilters} className="bg-teal-600 hover:bg-teal-700 text-white h-11 px-6">جستجو</Button>
+        <Button onClick={applyFilters} className="bg-primary hover:bg-primary-dark text-white h-11 px-6">جستجو</Button>
         <Button variant="outline" onClick={() => setShowFilters(!showFilters)} className="h-11 gap-2 md:hidden">
           <SlidersHorizontal className="w-4 h-4" /> فیلتر
         </Button>
@@ -112,23 +112,23 @@ export default function SearchPage() {
       <div className="flex gap-6">
         {/* Sidebar Filters */}
         <aside className={`${showFilters ? 'block' : 'hidden'} md:block w-full md:w-64 flex-shrink-0`}>
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-5 sticky top-20">
+          <div className="bg-surface rounded-xl border border-border p-5 space-y-5 sticky top-20">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-gray-800">فیلترها</h3>
-              <button onClick={clearFilters} className="text-xs text-teal-600 hover:text-teal-700">پاک کردن</button>
+              <h3 className="font-bold text-text-primary">فیلترها</h3>
+              <button onClick={clearFilters} className="text-xs text-primary hover:text-primary">پاک کردن</button>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">باز الان</label>
+              <label className="text-sm font-medium text-text-secondary mb-2 block">باز الان</label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={isOpen} onChange={(e) => setIsOpen(e.target.checked)} className="w-4 h-4 rounded accent-teal-600" />
-                <span className="text-sm text-gray-600">فقط بازها</span>
+                <input type="checkbox" checked={isOpen} onChange={(e) => setIsOpen(e.target.checked)} className="w-4 h-4 rounded accent-primary" />
+                <span className="text-sm text-text-secondary">فقط بازها</span>
               </label>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">حداقل امتیاز</label>
-              <select value={minRating} onChange={(e) => setMinRating(e.target.value)} className="w-full h-10 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500">
+              <label className="text-sm font-medium text-text-secondary mb-2 block">حداقل امتیاز</label>
+              <select value={minRating} onChange={(e) => setMinRating(e.target.value)} className="w-full h-10 rounded-lg border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary">
                 <option value="">همه</option>
                 <option value="3">۳ ستاره و بالاتر</option>
                 <option value="4">۴ ستاره و بالاتر</option>
@@ -137,38 +137,38 @@ export default function SearchPage() {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">حداکثر قیمت (تومان)</label>
-              <input type="number" placeholder="مثلا ۲۰۰۰۰۰" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="w-full h-10 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:ring-2 focus:ring-teal-500" />
+              <label className="text-sm font-medium text-text-secondary mb-2 block">حداکثر قیمت (تومان)</label>
+              <input type="number" placeholder="مثلا ۲۰۰۰۰۰" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="w-full h-10 rounded-lg border border-border px-3 text-sm outline-none focus:ring-2 focus:ring-primary" />
             </div>
 
-            <Button onClick={applyFilters} className="w-full bg-teal-600 hover:bg-teal-700 text-white">اعمال فیلتر</Button>
+            <Button onClick={applyFilters} className="w-full bg-primary hover:bg-primary-dark text-white">اعمال فیلتر</Button>
           </div>
         </aside>
 
         {/* Results */}
         <div className="flex-1">
-          <div className="mb-4 text-gray-500 text-sm">
+          <div className="mb-4 text-text-muted text-sm">
             {loading ? 'در حال جستجو...' : `${toPersianDigits(pagination.total)} کسب‌وکار یافت شد`}
           </div>
 
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-pulse">
-                  <div className="h-48 bg-gray-100" />
+                <div key={i} className="bg-surface rounded-xl border border-border overflow-hidden animate-pulse">
+                  <div className="h-48 bg-muted" />
                   <div className="p-5 space-y-3">
-                    <div className="h-5 bg-gray-100 rounded w-3/4" />
-                    <div className="h-4 bg-gray-100 rounded w-1/2" />
-                    <div className="h-10 bg-gray-100 rounded" />
+                    <div className="h-5 bg-muted rounded w-3/4" />
+                    <div className="h-4 bg-muted rounded w-1/2" />
+                    <div className="h-10 bg-muted rounded" />
                   </div>
                 </div>
               ))}
             </div>
           ) : businesses.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
-              <MapPin className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-600 mb-2">کسب‌وکاری یافت نشد</h3>
-              <p className="text-gray-400 text-sm">فیلترها را تغییر دهید یا دوباره جستجو کنید.</p>
+            <div className="bg-surface rounded-xl border border-border p-12 text-center">
+              <MapPin className="w-12 h-12 text-text-muted mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-text-secondary mb-2">کسب‌وکاری یافت نشد</h3>
+              <p className="text-text-muted text-sm">فیلترها را تغییر دهید یا دوباره جستجو کنید.</p>
             </div>
           ) : (
             <>
@@ -183,7 +183,7 @@ export default function SearchPage() {
                       key={p}
                       onClick={() => { setPage(p); updateUrl(); window.scrollTo(0, 0); }}
                       className={`w-10 h-10 rounded-lg font-medium text-sm transition-colors ${
-                        p === page ? 'bg-teal-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                        p === page ? 'bg-primary text-white' : 'bg-surface border border-border text-text-secondary hover:bg-muted'
                       }`}
                     >
                       {toPersianDigits(p)}

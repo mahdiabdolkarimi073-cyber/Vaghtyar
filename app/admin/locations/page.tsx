@@ -57,7 +57,7 @@ export default function AdminLocationsPage() {
         <AdminHeader title="شهرها و محله‌ها" />
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-4">
           <div className="flex justify-end">
-            <button onClick={() => setShowAdd(true)} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-md shadow-violet-500/25">
+            <button onClick={() => setShowAdd(true)} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-md shadow-primary/25">
               <Plus className="w-4 h-4" /> افزودن محله
             </button>
           </div>
@@ -67,24 +67,24 @@ export default function AdminLocationsPage() {
               {[1,2,3,4,5,6].map(i => <div key={i} className="admin-card p-5 h-28 admin-skeleton rounded-2xl" />)}
             </div>
           ) : data.length === 0 ? (
-            <div className="admin-card rounded-2xl p-12 text-center text-slate-400">شهری ثبت نشده است</div>
+            <div className="admin-card rounded-2xl p-12 text-center text-text-muted">شهری ثبت نشده است</div>
           ) : (
             data.map((city: any) => (
               <div key={city.id} className="admin-card p-5">
                 <div className="flex items-center gap-2 mb-4">
-                  <MapPin className="w-5 h-5 text-violet-500" />
-                  <h3 className="font-bold text-slate-800">{city.name}</h3>
+                  <MapPin className="w-5 h-5 text-primary" />
+                  <h3 className="font-bold text-text-primary">{city.name}</h3>
                   <StatusBadge variant="primary">{toPersianDigits(city.businessCount || 0)} کسب‌وکار</StatusBadge>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {<span className="text-sm text-slate-400">محله‌ها در صفحه کسب‌وکارها قابل مدیریت هستند</span>
+                  {<span className="text-sm text-text-muted">محله‌ها در صفحه کسب‌وکارها قابل مدیریت هستند</span>
                 </div>
               </div>
             ))
           )}
 
-          <div className="admin-card p-5 border-dashed border-2 border-slate-200 text-center">
-            <p className="text-sm text-slate-400">بزودی: امکان افزودن شهر جدید</p>
+          <div className="admin-card p-5 border-dashed border-2 border-border text-center">
+            <p className="text-sm text-text-muted">بزودی: امکان افزودن شهر جدید</p>
           </div>
         </div>
       </div>
@@ -93,8 +93,8 @@ export default function AdminLocationsPage() {
         <DialogContent>
           <DialogHeader><DialogTitle>افزودن محله</DialogTitle></DialogHeader>
           <div className="space-y-3">
-            <div><label className="text-sm text-slate-600 mb-1 block">نام محله</label><input value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" /></div>
-            <div><label className="text-sm text-slate-600 mb-1 block">شهر</label>
+            <div><label className="text-sm text-text-secondary mb-1 block">نام محله</label><input value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" /></div>
+            <div><label className="text-sm text-text-secondary mb-1 block">شهر</label>
               <select value={form.cityId} onChange={e => setForm({...form, cityId: e.target.value})} className="admin-input w-full h-10 px-4 text-sm">
                 <option value="">انتخاب شهر</option>
                 {data.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -111,7 +111,7 @@ export default function AdminLocationsPage() {
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader><AlertDialogTitle>حذف محله</AlertDialogTitle><AlertDialogDescription>آیا از حذف این محله اطمینان دارید؟</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={deleteLocation} className="bg-rose-500 hover:bg-rose-600">حذف</AlertDialogAction></AlertDialogFooter>
+          <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={deleteLocation} className="bg-error hover:bg-red-600">حذف</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>

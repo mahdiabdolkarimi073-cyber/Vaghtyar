@@ -86,22 +86,22 @@ export default function JalaliCalendar({ onSelect, selectedDate, disabledDates, 
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+    <div className="bg-surface rounded-xl border border-border p-4 shadow-card">
       <div className="flex items-center justify-between mb-4">
-        <button onClick={prevMonth} className="w-9 h-9 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors">
-          <ChevronRight className="w-5 h-5 text-gray-600" />
+        <button onClick={prevMonth} className="w-9 h-9 rounded-lg hover:bg-muted flex items-center justify-center transition-colors">
+          <ChevronRight className="w-5 h-5 text-text-secondary" />
         </button>
-        <h3 className="font-bold text-gray-800">
+        <h3 className="font-bold text-text-primary">
           {MONTH_NAMES_FA[jm - 1]} {toPersianDigits(jy)}
         </h3>
-        <button onClick={nextMonth} className="w-9 h-9 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors">
-          <ChevronLeft className="w-5 h-5 text-gray-600" />
+        <button onClick={nextMonth} className="w-9 h-9 rounded-lg hover:bg-muted flex items-center justify-center transition-colors">
+          <ChevronLeft className="w-5 h-5 text-text-secondary" />
         </button>
       </div>
 
       <div className="grid grid-cols-7 gap-1 mb-2">
         {DAY_NAMES_SHORT_FA.map((d, i) => (
-          <div key={i} className="text-center text-xs text-gray-400 font-medium py-1">{d}</div>
+          <div key={i} className="text-center text-xs text-text-muted font-medium py-1">{d}</div>
         ))}
       </div>
 
@@ -114,8 +114,8 @@ export default function JalaliCalendar({ onSelect, selectedDate, disabledDates, 
             className={`
               h-10 rounded-lg text-sm font-medium transition-all
               ${day === null ? 'cursor-default' : ''}
-              ${isDisabled(day) ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-600'}
-              ${isSelected(day) ? 'bg-teal-600 text-white hover:bg-teal-600 hover:text-white' : ''}
+              ${isDisabled(day) ? 'text-text-muted cursor-not-allowed' : 'text-text-primary hover:bg-primary/10 hover:text-primary'}
+              ${isSelected(day) ? 'bg-primary text-white hover:bg-primary hover:text-white shadow-soft' : ''}
             `}
           >
             {day !== null && toPersianDigits(day)}

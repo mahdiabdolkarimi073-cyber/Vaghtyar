@@ -10,60 +10,81 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        vazir: ['Vazirmatn', 'Inter', 'sans-serif'],
+        vazirmatn: ['Vazirmatn', 'Inter', 'sans-serif'],
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'gradient-primary': 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
-        'gradient-accent': 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+      colors: {
+        background: '#F8FAFC',
+        foreground: '#1E293B',
+        surface: '#FFFFFF',
+        primary: {
+          DEFAULT: '#0D7377',
+          light: '#14A8AD',
+          dark: '#095C60',
+          foreground: '#FFFFFF',
+        },
+        secondary: {
+          DEFAULT: '#4CAF82',
+          foreground: '#FFFFFF',
+        },
+        warning: {
+          DEFAULT: '#F59E0B',
+          foreground: '#FFFFFF',
+        },
+        error: {
+          DEFAULT: '#EF4444',
+          foreground: '#FFFFFF',
+        },
+        success: {
+          DEFAULT: '#4CAF82',
+          foreground: '#FFFFFF',
+        },
+        card: {
+          DEFAULT: '#FFFFFF',
+          foreground: '#1E293B',
+        },
+        popover: {
+          DEFAULT: '#FFFFFF',
+          foreground: '#1E293B',
+        },
+        muted: {
+          DEFAULT: '#F1F5F9',
+          foreground: '#94A3B8',
+        },
+        accent: {
+          DEFAULT: '#0D7377',
+          foreground: '#FFFFFF',
+        },
+        destructive: {
+          DEFAULT: '#EF4444',
+          foreground: '#FFFFFF',
+        },
+        border: '#E2E8F0',
+        input: '#E2E8F0',
+        ring: '#0D7377',
+        text: {
+          primary: '#1E293B',
+          secondary: '#64748B',
+          muted: '#94A3B8',
+        },
+        chart: {
+          '1': '#0D7377',
+          '2': '#14A8AD',
+          '3': '#4CAF82',
+          '4': '#F59E0B',
+          '5': '#EF4444',
+        },
       },
       borderRadius: {
+        xl: '12px',
         lg: '16px',
         md: '12px',
         sm: '8px',
       },
-      colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
-        },
+      boxShadow: {
+        soft: '0 2px 8px rgba(13, 115, 119, 0.08)',
+        card: '0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)',
+        'card-hover': '0 10px 30px rgba(13, 115, 119, 0.12)',
+        primary: '0 4px 14px rgba(13, 115, 119, 0.25)',
       },
       keyframes: {
         'accordion-down': {

@@ -79,7 +79,7 @@ export default function AdminUsersPage() {
         <AdminHeader title="مدیریت کاربران" />
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-4">
           <div className="flex justify-end">
-            <button onClick={() => setShowAdd(true)} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-md shadow-violet-500/25">
+            <button onClick={() => setShowAdd(true)} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-md shadow-primary/25">
               <UserPlus className="w-4 h-4" /> افزودن مدیر
             </button>
           </div>
@@ -89,7 +89,7 @@ export default function AdminUsersPage() {
               { key: 'name', header: 'نام' },
               { key: 'phone', header: 'موبایل' },
               { key: 'role', header: 'نقش', render: r => <StatusBadge status={r.role} variant={roleVariantMap[r.role] || 'neutral'}>{roleLabelMap[r.role] || r.role}</StatusBadge> },
-              { key: 'createdAt', header: 'تاریخ عضویت', render: r => <span className="text-xs text-slate-400">{formatDateShortFA(new Date(r.createdAt))}</span> },
+              { key: 'createdAt', header: 'تاریخ عضویت', render: r => <span className="text-xs text-text-muted">{formatDateShortFA(new Date(r.createdAt))}</span> },
               { key: 'actions', header: 'عملیات', render: r => (
                 <div className="flex items-center gap-2">
                   <Select onValueChange={v => changeRole(r.id, v)}>
@@ -100,7 +100,7 @@ export default function AdminUsersPage() {
                       <SelectItem value="CUSTOMER">مشتری</SelectItem>
                     </SelectContent>
                   </Select>
-                  <button onClick={() => setDeleteId(r.id)} className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50"><Trash2 className="w-4 h-4" /></button>
+                  <button onClick={() => setDeleteId(r.id)} className="p-1.5 rounded-lg text-error hover:bg-error/10"><Trash2 className="w-4 h-4" /></button>
                 </div>
               )},
             ]}
@@ -115,9 +115,9 @@ export default function AdminUsersPage() {
         <DialogContent>
           <DialogHeader><DialogTitle>افزودن مدیر جدید</DialogTitle></DialogHeader>
           <div className="space-y-3">
-            <div><label className="text-sm text-slate-600 mb-1 block">نام</label><input value={newUser.name} onChange={e => setNewUser({...newUser, name: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" /></div>
-            <div><label className="text-sm text-slate-600 mb-1 block">موبایل</label><input value={newUser.phone} onChange={e => setNewUser({...newUser, phone: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
-            <div><label className="text-sm text-slate-600 mb-1 block">رمز عبور</label><input type="password" value={newUser.password} onChange={e => setNewUser({...newUser, password: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
+            <div><label className="text-sm text-text-secondary mb-1 block">نام</label><input value={newUser.name} onChange={e => setNewUser({...newUser, name: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" /></div>
+            <div><label className="text-sm text-text-secondary mb-1 block">موبایل</label><input value={newUser.phone} onChange={e => setNewUser({...newUser, phone: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
+            <div><label className="text-sm text-text-secondary mb-1 block">رمز عبور</label><input type="password" value={newUser.password} onChange={e => setNewUser({...newUser, password: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
           </div>
           <DialogFooter>
             <button onClick={() => setShowAdd(false)} className="admin-input px-4 py-2 rounded-xl text-sm">انصراف</button>
@@ -129,7 +129,7 @@ export default function AdminUsersPage() {
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader><AlertDialogTitle>حذف کاربر</AlertDialogTitle><AlertDialogDescription>آیا از حذف این کاربر اطمینان دارید؟</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={deleteUser} className="bg-rose-500 hover:bg-rose-600">حذف</AlertDialogAction></AlertDialogFooter>
+          <AlertDialogFooter><AlertDialogCancel>انصراف</AlertDialogCancel><AlertDialogAction onClick={deleteUser} className="bg-error hover:bg-red-600">حذف</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>

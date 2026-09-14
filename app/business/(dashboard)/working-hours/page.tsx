@@ -89,33 +89,33 @@ export default function WorkingHoursPage() {
     } catch { toast.error('خطا در حذف'); }
   };
 
-  if (loading) return <div className="glass h-96 rounded-2xl glass-shimmer" />;
+  if (loading) return <div className="bg-surface border border-border rounded-xl shadow-card h-96 glass-shimmer" />;
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-primary-custom">ساعات کاری و تعطیلی‌ها</h2>
+        <h2 className="text-lg font-bold text-text-primary">ساعات کاری و تعطیلی‌ها</h2>
         <GradientButton onClick={() => setHolidayModalOpen(true)} size="sm" variant="accent"><CalendarPlus className="w-4 h-4" /> افزودن تعطیلی</GradientButton>
       </div>
 
       <GlassCard className="p-5">
-        <h3 className="text-sm font-bold text-primary-custom mb-4">برنامه هفتگی</h3>
+        <h3 className="text-sm font-bold text-text-primary mb-4">برنامه هفتگی</h3>
         <div className="space-y-2">
           {DAYS.map((dayName, idx) => {
             const hour = hours.find(h => h.dayOfWeek === idx);
             if (!hour) return null;
             return (
-              <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5">
-                <div className="w-24 text-sm font-medium text-primary-custom">{dayName}</div>
-                <button onClick={() => updateHour(idx, 'isClosed', !hour.isClosed)} className={`relative w-10 h-6 rounded-full transition-colors ${!hour.isClosed ? 'bg-emerald-500' : 'bg-white/10'}`}>
-                  <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${!hour.isClosed ? 'left-0.5' : 'right-0.5'}`} />
+              <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-muted">
+                <div className="w-24 text-sm font-medium text-text-primary">{dayName}</div>
+                <button onClick={() => updateHour(idx, 'isClosed', !hour.isClosed)} className={`relative w-10 h-6 rounded-full transition-colors ${!hour.isClosed ? 'bg-secondary' : 'bg-muted'}`}>
+                  <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-surface transition-all ${!hour.isClosed ? 'left-0.5' : 'right-0.5'}`} />
                 </button>
                 {hour.isClosed ? (
-                  <span className="text-sm text-secondary-custom">تعطیل</span>
+                  <span className="text-sm text-text-secondary">تعطیل</span>
                 ) : (
                   <div className="flex items-center gap-2 flex-1">
                     <input type="time" value={hour.startTime || '09:00'} onChange={e => updateHour(idx, 'startTime', e.target.value)} className="glass-input px-3 py-2 text-sm" />
-                    <span className="text-secondary-custom text-xs">تا</span>
+                    <span className="text-text-secondary text-xs">تا</span>
                     <input type="time" value={hour.endTime || '18:00'} onChange={e => updateHour(idx, 'endTime', e.target.value)} className="glass-input px-3 py-2 text-sm" />
                   </div>
                 )}
@@ -129,21 +129,21 @@ export default function WorkingHoursPage() {
       </GlassCard>
 
       <GlassCard className="p-5">
-        <h3 className="text-sm font-bold text-primary-custom mb-4">تعطیلی‌های خاص</h3>
+        <h3 className="text-sm font-bold text-text-primary mb-4">تعطیلی‌های خاص</h3>
         {holidays.length === 0 ? (
-          <p className="text-sm text-secondary-custom text-center py-6">تعطیلی خاصی ثبت نشده است</p>
+          <p className="text-sm text-text-secondary text-center py-6">تعطیلی خاصی ثبت نشده است</p>
         ) : (
           <div className="space-y-2">
             {holidays.map(h => {
               const d = new Date(h.date);
               const j = toJalali(d.getFullYear(), d.getMonth() + 1, d.getDate());
               return (
-                <div key={h.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                <div key={h.id} className="flex items-center justify-between p-3 rounded-xl bg-muted">
                   <div>
-                    <div className="text-sm text-primary-custom">{toPersianDigits(j.jd)} {['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][j.jm - 1]} {toPersianDigits(j.jy)}</div>
-                    {h.reason && <div className="text-xs text-secondary-custom mt-0.5">{h.reason}</div>}
+                    <div className="text-sm text-text-primary">{toPersianDigits(j.jd)} {['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][j.jm - 1]} {toPersianDigits(j.jy)}</div>
+                    {h.reason && <div className="text-xs text-text-secondary mt-0.5">{h.reason}</div>}
                   </div>
-                  <button onClick={() => deleteHoliday(h.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-secondary-custom hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                  <button onClick={() => deleteHoliday(h.id)} className="p-1.5 rounded-lg hover:bg-error/10 text-text-secondary hover:text-error"><Trash2 className="w-4 h-4" /></button>
                 </div>
               );
             })}
@@ -155,18 +155,18 @@ export default function WorkingHoursPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setHolidayModalOpen(false)} />
           <GlassCard strong className="relative p-6 w-full max-w-sm animate-scale-in">
-            <h3 className="text-lg font-bold text-primary-custom mb-4">افزودن تعطیلی</h3>
+            <h3 className="text-lg font-bold text-text-primary mb-4">افزودن تعطیلی</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-secondary-custom mb-1.5">تاریخ</label>
+                <label className="block text-sm text-text-secondary mb-1.5">تاریخ</label>
                 <input type="date" value={holidayDate} onChange={e => setHolidayDate(e.target.value)} className="glass-input w-full px-4 py-2.5 text-sm" />
               </div>
               <div>
-                <label className="block text-sm text-secondary-custom mb-1.5">دلیل (اختیاری)</label>
+                <label className="block text-sm text-text-secondary mb-1.5">دلیل (اختیاری)</label>
                 <input value={holidayReason} onChange={e => setHolidayReason(e.target.value)} className="glass-input w-full px-4 py-2.5 text-sm" placeholder="مثال: تعطیلی نوروز" />
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setHolidayModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-secondary-custom hover:bg-white/5 text-sm">انصراف</button>
+                <button onClick={() => setHolidayModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-border text-text-secondary hover:bg-muted text-sm">انصراف</button>
                 <GradientButton onClick={addHoliday} loading={addingHoliday} className="flex-1" size="md">افزودن</GradientButton>
               </div>
             </div>
