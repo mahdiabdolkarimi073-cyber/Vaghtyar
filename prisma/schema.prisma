@@ -116,6 +116,7 @@ model Business {
   subscription          Subscription?
   payments              Payment[]
   appointments          Appointment[]
+  advertisements        Advertisement[]
 }
 
 model BusinessHours {
@@ -307,10 +308,12 @@ model City {
 }
 
 model SmsLog {
-  id      String   @id @default(cuid())
+  id      String    @id @default(cuid())
   phone   String
   message String
-  sentAt  DateTime @default(now())
+  status  SmsStatus @default(SENT)
+  type    String?
+  sentAt  DateTime  @default(now())
 }
 
 model Plan {
@@ -346,4 +349,50 @@ model Payment {
   status     PaymentStatus @default(PENDING)
   createdAt  DateTime      @default(now())
   business   Business      @relation(fields: [businessId], references: [id])
+}
+
+enum AdType {
+  FEATURED
+  BANNER
+}
+
+enum SmsStatus {
+  SENT
+  FAILED
+  PENDING
+}
+
+enum NotificationType {
+  BUSINESS_REGISTERED
+  PAYMENT_RECEIVED
+  SUBSCRIPTION_EXPIRING
+  REVIEW_REPORTED
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model Advertisement {
+  id         String   @id @default(cuid())
+  businessId String
+  type       AdType
+  startDate  DateTime
+  endDate    DateTime
+  price      Float
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  business   Business @relation(fields: [businessId], references: [id])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
 }

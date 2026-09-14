@@ -1,0 +1,99 @@
+/* Admin Panel - Light Theme */
+.admin-body {
+  background: #f8fafc;
+  color: #1e293b;
+  min-height: 100vh;
+}
+
+.admin-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.admin-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.admin-sidebar {
+  background: white;
+  border-left: 1px solid #e2e8f0;
+}
+
+.admin-input {
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  color: #1e293b;
+  transition: all 0.2s ease;
+}
+
+.admin-input:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139,92,246,0.12);
+  outline: none;
+}
+
+.admin-input::placeholder {
+  color: #94a3b8;
+}
+
+.admin-table th {
+  background: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.admin-table tr:hover td {
+  background: #f8fafc;
+}
+
+.admin-gradient-primary {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+}
+
+.admin-gradient-sky {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+}
+
+.admin-gradient-emerald {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.admin-gradient-amber {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.admin-gradient-rose {
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+}
+
+.admin-gradient-text {
+  background: linear-gradient(135deg, #8b5cf6, #0ea5e9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes admin-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-animate {
+  animation: admin-fade-in 0.4s ease-out;
+}
+
+.admin-skeleton {
+  background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%);
+  background-size: 200% 100%;
+  animation: admin-shimmer 1.5s infinite;
+}
+
+@keyframes admin-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
