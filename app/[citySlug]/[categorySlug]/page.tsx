@@ -13,8 +13,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = await prisma.category.findUnique({ where: { slug: params.categorySlug } });
   if (!city || !category) return { title: 'یافت نشد | نوبت‌یار' };
   return {
-    title: `${category.name} در ${city.name} | نوبت‌یار`,
+    title: `${category.name} در ${city.name}`,
     description: `لیست ${category.name}های ${city.name}. نوبت خود را آنلاین و بدون انتظار رزرو کنید.`,
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir'}/${params.citySlug}/${params.categorySlug}`,
+    },
   };
 }
 
@@ -44,8 +47,22 @@ export default async function CityCategoryPage({ params }: Props) {
     };
   });
 
+  const categoryJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${category.name} در ${city.name}`,
+    description: `لیست ${category.name}های ${city.name}. نوبت خود را آنلاین رزرو کنید.`,
+    inLanguage: 'fa-IR',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir'}/${params.citySlug}/${params.categorySlug}`,
+    isPartOf: { '@type': 'WebSite', name: 'نوبت‌یار' },
+  };
+
   return (
     <div className="container mx-auto px-4 max-w-7xl py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(categoryJsonLd) }}
+      />
       <nav className="text-sm text-text-muted mb-4 flex items-center gap-2">
         <Link href="/" className="hover:text-primary">خانه</Link>
         <span>/</span>

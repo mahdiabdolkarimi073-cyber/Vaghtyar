@@ -24,6 +24,7 @@ export default function Footer() {
               <li><Link href="/" className="hover:text-primary-light transition-colors">خانه</Link></li>
               <li><Link href="/search" className="hover:text-primary-light transition-colors">جستجوی کسب‌وکار</Link></li>
               <li><Link href="/register-business" className="hover:text-primary-light transition-colors">ثبت کسب‌وکار</Link></li>
+              <li><Link href="/about" className="hover:text-primary-light transition-colors">درباره ما</Link></li>
               <li><Link href="/contact" className="hover:text-primary-light transition-colors">تماس با ما</Link></li>
             </ul>
           </div>
@@ -34,6 +35,12 @@ export default function Footer() {
               <li><Link href="/city/kerman" className="hover:text-primary-light transition-colors">کرمان</Link></li>
               <li><Link href="/city/tehran" className="hover:text-primary-light transition-colors">تهران</Link></li>
               <li><Link href="/city/isfahan" className="hover:text-primary-light transition-colors">اصفهان</Link></li>
+            </ul>
+            <h3 className="text-white font-semibold mb-4 mt-6">راهنما</h3>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/faq" className="hover:text-primary-light transition-colors">سوالات متداول</Link></li>
+              <li><Link href="/terms" className="hover:text-primary-light transition-colors">قوانین و مقررات</Link></li>
+              <li><Link href="/privacy" className="hover:text-primary-light transition-colors">حریم خصوصی</Link></li>
             </ul>
           </div>
 
@@ -57,6 +64,11 @@ export default function Footer() {
             <span className="flex items-center gap-1"><ShieldCheck className="w-4 h-4 text-primary-light" /> پرداخت امن</span>
             <span className="flex items-center gap-1"><BadgeCheck className="w-4 h-4 text-primary-light" /> کسب‌وکارهای تأییدشده</span>
             <span className="flex items-center gap-1"><Headphones className="w-4 h-4 text-primary-light" /> پشتیبانی ۲۴/۷</span>
+          </div>
+          <div className="flex gap-4 text-xs text-slate-500">
+            <Link href="/terms" className="hover:text-primary-light transition-colors">قوانین</Link>
+            <Link href="/privacy" className="hover:text-primary-light transition-colors">حریم خصوصی</Link>
+            <Link href="/faq" className="hover:text-primary-light transition-colors">سوالات متداول</Link>
           </div>
           <p className="text-xs text-slate-500">© ۱۴۰۴ نوبت‌یار. تمامی حقوق محفوظ است.</p>
         </div>

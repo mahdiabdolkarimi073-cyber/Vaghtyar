@@ -8,11 +8,28 @@ import { toPersianDigits } from '@/lib/constants';
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', phone: '', message: '' });
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = () => {
-    setSent(true);
-    setForm({ name: '', phone: '', message: '' });
-    setTimeout(() => setSent(false), 4000);
+  const handleSubmit = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'خطا در ارسال پیام');
+      setSent(true);
+      setForm({ name: '', phone: '', message: '' });
+      setTimeout(() => setSent(false), 4000);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -90,12 +107,17 @@ export default function ContactPage() {
                 className="w-full rounded-xl border border-border px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
+            {error && (
+              <div className="bg-error/10 border border-error/20 rounded-xl p-3 text-sm text-error">
+                {error}
+              </div>
+            )}
             <Button
               onClick={handleSubmit}
-              disabled={!form.name || !form.phone || !form.message}
+              disabled={!form.name || !form.phone || !form.message || loading}
               className="w-full bg-primary hover:bg-primary-dark text-white h-12 rounded-xl gap-2"
             >
-              <Send className="w-4 h-4" /> ارسال پیام
+              <Send className="w-4 h-4" /> {loading ? 'در حال ارسال...' : 'ارسال پیام'}
             </Button>
           </div>
         )}

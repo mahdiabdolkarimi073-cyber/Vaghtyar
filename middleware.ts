@@ -19,6 +19,7 @@ const PUBLIC_API_ROUTES = [
   '/api/public/book',
   '/api/bookings',
   '/api/businesses',
+  '/api/contact',
 ];
 
 function isPublicRoute(pathname: string): boolean {

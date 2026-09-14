@@ -12,8 +12,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const city = await prisma.city.findUnique({ where: { slug: params.citySlug } });
   if (!city) return { title: 'شهر یافت نشد | نوبت‌یار' };
   return {
-    title: `رزرو نوبت در ${city.name} | نوبت‌یار`,
+    title: `رزرو نوبت در ${city.name}`,
     description: `لیست سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌های ${city.name}. نوبت خود را آنلاین و بدون انتظار رزرو کنید.`,
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir'}/city/${params.citySlug}`,
+    },
   };
 }
 
@@ -51,8 +54,25 @@ export default async function CityPage({ params }: Props) {
     };
   });
 
+  const cityJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `رزرو نوبت در ${city.name}`,
+    description: `لیست سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌های ${city.name}`,
+    inLanguage: 'fa-IR',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir'}/city/${params.citySlug}`,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'نوبت‌یار',
+    },
+  };
+
   return (
     <div className="container mx-auto px-4 max-w-7xl py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(cityJsonLd) }}
+      />
       <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl p-8 md:p-12 text-white mb-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-3">رزرو نوبت در {city.name}</h1>
         <p className="text-primary-foreground/80 text-lg">سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌های {city.name} را پیدا کنید و آنلاین نوبت رزرو کنید.</p>
