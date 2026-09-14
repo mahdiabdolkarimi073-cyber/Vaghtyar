@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getUserFromRequest } from '@/lib/auth';
 import { generateConfirmationCode } from '@/lib/constants';
-import { sendSms } from '@/lib/sms';
+import { sendSms } from '@/lib/sms-service';
 
 export async function POST(req: NextRequest) {
   try {
@@ -148,10 +148,36 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Send SMS
-    const statusText = booking.status === 'CONFIRMED' ? 'تایید شد' : 'در انتظار تایید است';
-    const smsMessage = `${customerName} عزیز، نوبت شما در ${business.name} برای ${service.name} در تاریخ ${date} ساعت ${startTime} ${statusText}. کد پیگیری: ${confirmationCode}`;
-    await sendSms(customerPhone, smsMessage);
+    // Send SMS to customer
+    if (booking.status === 'CONFIRMED') {
+      await sendSms({
+        businessId,
+        recipientPhone: customerPhone,
+        recipientType: 'CUSTOMER',
+        smsType: 'APPOINTMENT_CONFIRM',
+        templateData: {
+          salonName: business.name,
+          service: service.name,
+          date,
+          time: startTime,
+          code: confirmationCode,
+        },
+      });
+    }
+
+    // Send SMS to business
+    await sendSms({
+      businessId,
+      recipientPhone: business.phone || customerPhone,
+      recipientType: 'BUSINESS',
+      smsType: 'NEW_BOOKING_NOTIFY',
+      templateData: {
+        customerName,
+        service: service.name,
+        date,
+        time: startTime,
+      },
+    });
 
     return NextResponse.json({ booking });
   } catch (error) {

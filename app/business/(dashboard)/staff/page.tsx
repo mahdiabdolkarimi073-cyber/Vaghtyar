@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Edit2, Trash2, Users, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Users, X, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import GlassCard from '@/components/ui/GlassCard';
 import GradientButton from '@/components/ui/GradientButton';
@@ -24,6 +24,13 @@ interface Service { id: string; name: string; }
 
 const emptyForm = { name: '', specialty: '', bio: '' };
 
+interface PlanLimit {
+  allowed: boolean;
+  limit: number | null;
+  current: number;
+  planName: string;
+}
+
 export default function StaffPage() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [services, setServices] = useState<Service[]>([]);
@@ -34,22 +41,32 @@ export default function StaffPage() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [staffLimit, setStaffLimit] = useState<PlanLimit | null>(null);
+  const [limitModalOpen, setLimitModalOpen] = useState(false);
 
   const fetchStaff = useCallback(async () => {
     try {
-      const [staffData, svcData] = await Promise.all([
+      const [staffData, svcData, limits] = await Promise.all([
         businessFetch<StaffMember[]>('/api/business/staff'),
         businessFetch<Service[]>('/api/business/services'),
+        businessFetch<{ maxStaff: PlanLimit }>('/api/business/plan-limits'),
       ]);
       setStaff(staffData);
       setServices(svcData);
+      setStaffLimit(limits.maxStaff);
     } catch { toast.error('خطا در بارگذاری'); }
     finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchStaff(); }, [fetchStaff]);
 
-  const openAdd = () => { setEditingId(null); setForm(emptyForm); setSelectedServices([]); setModalOpen(true); };
+  const openAdd = () => {
+    if (staffLimit && !staffLimit.allowed) {
+      setLimitModalOpen(true);
+      return;
+    }
+    setEditingId(null); setForm(emptyForm); setSelectedServices([]); setModalOpen(true);
+  };
   const openEdit = async (s: StaffMember) => {
     setEditingId(s.id);
     setForm({ name: s.name, specialty: s.specialty || '', bio: s.bio || '' });
@@ -94,7 +111,10 @@ export default function StaffPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-primary-custom">مدیریت کارکنان</h2>
-        <GradientButton onClick={openAdd} size="sm"><Plus className="w-4 h-4" /> افزودن کارکن</GradientButton>
+        <GradientButton onClick={openAdd} size="sm" disabled={staffLimit !== null && !staffLimit.allowed}>
+          {staffLimit !== null && !staffLimit.allowed ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          افزودن کارکن
+        </GradientButton>
       </div>
 
       {staff.length === 0 ? (
@@ -178,6 +198,25 @@ export default function StaffPage() {
                 <button onClick={() => setModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-secondary-custom hover:bg-white/5 text-sm">انصراف</button>
                 <GradientButton onClick={handleSave} loading={saving} className="flex-1" size="md">{editingId ? 'به‌روزرسانی' : 'افزودن'}</GradientButton>
               </div>
+            </div>
+          </GlassCard>
+        </div>
+      )}
+
+      {limitModalOpen && staffLimit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setLimitModalOpen(false)} />
+          <GlassCard strong className="relative p-6 w-full max-w-sm text-center animate-scale-in">
+            <div className="inline-flex w-14 h-14 rounded-2xl bg-amber-500/15 items-center justify-center mb-4">
+              <Lock className="w-7 h-7 text-amber-400" />
+            </div>
+            <h3 className="text-lg font-bold text-primary-custom mb-2">محدودیت پلن</h3>
+            <p className="text-sm text-secondary-custom mb-4">
+              شما به حداکثر تعداد کارکنان در پلن {staffLimit.planName} رسیده‌اید. برای افزایش محدودیت، پلن خود را ارتقا دهید.
+            </p>
+            <div className="flex gap-3">
+              <button onClick={() => setLimitModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-secondary-custom hover:bg-white/5 text-sm">بستن</button>
+              <GradientButton onClick={() => { setLimitModalOpen(false); window.location.href = '/business/subscription'; }} className="flex-1" size="md">ارتقا پلن</GradientButton>
             </div>
           </GlassCard>
         </div>

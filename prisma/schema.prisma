@@ -47,6 +47,25 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum SmsRecipientType {
+  CUSTOMER
+  BUSINESS
+}
+
+enum SmsType {
+  APPOINTMENT_CONFIRM
+  APPOINTMENT_REMINDER
+  NEW_BOOKING_NOTIFY
+  APPOINTMENT_CANCEL
+}
+
+enum SmsLogStatus {
+  PENDING
+  SENT
+  FAILED
+  SIMULATED
+}
+
 model User {
   id           String     @id @default(cuid())
   name         String
@@ -117,6 +136,7 @@ model Business {
   payments              Payment[]
   appointments          Appointment[]
   advertisements        Advertisement[]
+  smsLogs               SmsLog[]
 }
 
 model BusinessHours {
@@ -308,26 +328,42 @@ model City {
 }
 
 model SmsLog {
-  id      String    @id @default(cuid())
-  phone   String
-  message String
-  status  SmsStatus @default(SENT)
-  type    String?
-  sentAt  DateTime  @default(now())
+  id             String          @id @default(cuid())
+  businessId      String
+  appointmentId  String?
+  recipientPhone  String
+  recipientType   SmsRecipientType @default(CUSTOMER)
+  smsType         SmsType
+  messageBody     String
+  status          SmsLogStatus    @default(SIMULATED)
+  sentAt         DateTime?
+  createdAt       DateTime        @default(now())
+  business        Business        @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+  @@index([smsType])
+  @@index([status])
 }
 
 model Plan {
-  id            String   @id @default(cuid())
-  name          String
-  price         Int
-  maxStaff      Int
-  maxServices   Int
-  hasSms        Boolean  @default(false)
-  hasReports    Boolean  @default(false)
-  hasCustomSms  Boolean  @default(false)
-  hasApi        Boolean  @default(false)
-  hasPriority   Boolean  @default(false)
-  subscriptions Subscription[]
+  id                  String   @id @default(cuid())
+  name                String
+  price               Int
+  maxServices         Int?
+  maxStaff            Int?
+  hasManualConfirm    Boolean  @default(false)
+  smsConfirmQuota     Int?
+  hasSmsReminder      Boolean  @default(false)
+  hasRevenueReport    Boolean  @default(false)
+  hasMarketplacePage  Boolean  @default(false)
+  hasFeaturedListing  Boolean  @default(false)
+  hasCustomerReviews  Boolean  @default(false)
+  hasDiscountCodes    Boolean  @default(false)
+  hasCustomerNotes    Boolean  @default(false)
+  hasPhoneSupport     Boolean  @default(false)
+  isActive            Boolean  @default(true)
+  subscriptions       Subscription[]
+  payments            Payment[]
 }
 
 model Subscription {
@@ -337,18 +373,28 @@ model Subscription {
   startDate  DateTime
   endDate    DateTime
   isActive   Boolean  @default(true)
+  paymentId  String?
+  createdAt  DateTime @default(now())
   business   Business @relation(fields: [businessId], references: [id])
   plan       Plan     @relation(fields: [planId], references: [id])
 }
 
 model Payment {
-  id         String        @id @default(cuid())
-  businessId String
-  planId     String
-  amount     Int
-  status     PaymentStatus @default(PENDING)
-  createdAt  DateTime      @default(now())
-  business   Business      @relation(fields: [businessId], references: [id])
+  id             String        @id @default(cuid())
+  businessId     String
+  planId         String
+  amount         Int
+  status         PaymentStatus @default(PENDING)
+  transactionId String?
+  authority      String?
+  refId          String?
+  paymentMethod  String        @default("zarinpal")
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+  business       Business      @relation(fields: [businessId], references: [id])
+  plan           Plan          @relation(fields: [planId], references: [id])
+
+  @@index([businessId])
 }
 
 enum AdType {
@@ -356,11 +402,7 @@ enum AdType {
   BANNER
 }
 
-enum SmsStatus {
-  SENT
-  FAILED
-  PENDING
-}
+
 
 enum NotificationType {
   BUSINESS_REGISTERED

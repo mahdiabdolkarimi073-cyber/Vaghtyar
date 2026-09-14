@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
   LayoutDashboard, Scissors, Users, Clock, Calendar, UserCheck,
-  BarChart3, Settings, CreditCard, LogOut, Menu, X, Bell, ChevronLeft
+  BarChart3, Settings, CreditCard, LogOut, Menu, X, Bell, ChevronLeft, MessageSquare, Receipt
 } from 'lucide-react';
 import BackgroundOrbs from '@/components/ui/BackgroundOrbs';
 
@@ -17,6 +17,8 @@ const NAV_ITEMS = [
   { href: '/business/calendar', label: 'تقویم نوبت‌ها', icon: Calendar },
   { href: '/business/customers', label: 'مشتریان', icon: UserCheck },
   { href: '/business/reports', label: 'گزارش‌ها', icon: BarChart3 },
+  { href: '/business/sms', label: 'پیامک', icon: MessageSquare },
+  { href: '/business/payments', label: 'پرداخت‌ها', icon: Receipt },
   { href: '/business/settings', label: 'تنظیمات', icon: Settings },
   { href: '/business/subscription', label: 'اشتراک', icon: CreditCard },
 ];

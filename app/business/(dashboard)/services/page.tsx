@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Edit2, Trash2, GripVertical, Scissors } from 'lucide-react';
+import { Plus, Edit2, Trash2, GripVertical, Scissors, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import GlassCard from '@/components/ui/GlassCard';
 import GradientButton from '@/components/ui/GradientButton';
@@ -21,6 +21,13 @@ interface Service {
 
 const emptyForm = { name: '', durationMinutes: 30, price: 0, description: '' };
 
+interface PlanLimit {
+  allowed: boolean;
+  limit: number | null;
+  current: number;
+  planName: string;
+}
+
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,18 +36,30 @@ export default function ServicesPage() {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [serviceLimit, setServiceLimit] = useState<PlanLimit | null>(null);
+  const [limitModalOpen, setLimitModalOpen] = useState(false);
 
   const fetchServices = useCallback(async () => {
     try {
-      const data = await businessFetch<Service[]>('/api/business/services');
+      const [data, limits] = await Promise.all([
+        businessFetch<Service[]>('/api/business/services'),
+        businessFetch<{ maxServices: PlanLimit }>('/api/business/plan-limits'),
+      ]);
       setServices(data);
+      setServiceLimit(limits.maxServices);
     } catch { toast.error('خطا در بارگذاری خدمات'); }
     finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchServices(); }, [fetchServices]);
 
-  const openAdd = () => { setEditingId(null); setForm(emptyForm); setModalOpen(true); };
+  const openAdd = () => {
+    if (serviceLimit && !serviceLimit.allowed) {
+      setLimitModalOpen(true);
+      return;
+    }
+    setEditingId(null); setForm(emptyForm); setModalOpen(true);
+  };
   const openEdit = (s: Service) => { setEditingId(s.id); setForm({ name: s.name, durationMinutes: s.durationMinutes, price: s.price, description: s.description || '' }); setModalOpen(true); };
 
   const handleSave = async () => {
@@ -89,7 +108,10 @@ export default function ServicesPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-primary-custom">مدیریت خدمات</h2>
-        <GradientButton onClick={openAdd} size="sm"><Plus className="w-4 h-4" /> افزودن خدمت</GradientButton>
+        <GradientButton onClick={openAdd} size="sm" disabled={serviceLimit !== null && !serviceLimit.allowed}>
+          {serviceLimit !== null && !serviceLimit.allowed ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          افزودن خدمت
+        </GradientButton>
       </div>
 
       {services.length === 0 ? (
@@ -171,6 +193,25 @@ export default function ServicesPage() {
                 <button onClick={() => setModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-secondary-custom hover:bg-white/5 text-sm">انصراف</button>
                 <GradientButton onClick={handleSave} loading={saving} className="flex-1" size="md">{editingId ? 'به‌روزرسانی' : 'افزودن'}</GradientButton>
               </div>
+            </div>
+          </GlassCard>
+        </div>
+      )}
+
+      {limitModalOpen && serviceLimit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setLimitModalOpen(false)} />
+          <GlassCard strong className="relative p-6 w-full max-w-sm text-center animate-scale-in">
+            <div className="inline-flex w-14 h-14 rounded-2xl bg-amber-500/15 items-center justify-center mb-4">
+              <Lock className="w-7 h-7 text-amber-400" />
+            </div>
+            <h3 className="text-lg font-bold text-primary-custom mb-2">محدودیت پلن</h3>
+            <p className="text-sm text-secondary-custom mb-4">
+              شما به حداکثر تعداد خدمات در پلن {serviceLimit.planName} رسیده‌اید. برای افزایش محدودیت، پلن خود را ارتقا دهید.
+            </p>
+            <div className="flex gap-3">
+              <button onClick={() => setLimitModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-secondary-custom hover:bg-white/5 text-sm">بستن</button>
+              <GradientButton onClick={() => { setLimitModalOpen(false); window.location.href = '/business/subscription'; }} className="flex-1" size="md">ارتقا پلن</GradientButton>
             </div>
           </GlassCard>
         </div>

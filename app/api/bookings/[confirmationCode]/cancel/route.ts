@@ -6,8 +6,9 @@ export async function PUT(
   { params }: { params: { confirmationCode: string } }
 ) {
   try {
+    const code = params.confirmationCode;
     const booking = await prisma.booking.findUnique({
-      where: { confirmationCode: params.confirmationCode },
+      where: { confirmationCode: code },
     });
 
     if (!booking) {
@@ -23,7 +24,7 @@ export async function PUT(
     }
 
     const updated = await prisma.booking.update({
-      where: { confirmationCode: params.confirmationCode },
+      where: { id: booking.id },
       data: { status: 'CANCELLED' },
     });
 

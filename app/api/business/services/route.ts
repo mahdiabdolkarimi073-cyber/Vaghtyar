@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
+import { checkPlanLimit } from '@/lib/plan-limits';
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get('x-business-id');
@@ -27,6 +28,14 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const parsed = createSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
+
+  const limit = await checkPlanLimit(businessId, 'maxServices');
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: `شما به حداکثر تعداد خدمات در پلن ${limit.planName} رسیده‌اید. برای افزایش محدودیت، پلن خود را ارتقا دهید.`, limitReached: true, limitType: 'maxServices' },
+      { status: 403 }
+    );
+  }
 
   const count = await prisma.service.count({ where: { businessId } });
   const service = await prisma.service.create({

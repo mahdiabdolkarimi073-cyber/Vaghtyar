@@ -10,10 +10,12 @@ const PUBLIC_API_ROUTES = [
   '/api/auth/login',
   '/api/categories',
   '/api/cities',
+  '/api/plans',
   '/api/business/auth/register',
   '/api/business/auth/login',
   '/api/business/auth/forgot-password',
   '/api/admin/auth/login',
+  '/api/cron/send-reminders',
 ];
 
 function isPublicRoute(pathname: string): boolean {
@@ -88,6 +90,22 @@ export async function middleware(req: NextRequest) {
       }
       const requestHeaders = new Headers(req.headers);
       requestHeaders.set('x-admin-id', decoded.userId);
+      return NextResponse.next({ request: { headers: requestHeaders } });
+    } catch {
+      return NextResponse.json({ error: 'توکن نامعتبر' }, { status: 401 });
+    }
+  }
+
+  // Payment API routes — verify business token
+  if (pathname.startsWith('/api/payment/') && !pathname.startsWith('/api/payment/callback')) {
+    const token = req.cookies.get(BUSINESS_COOKIE)?.value;
+    if (!token) {
+      return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+    }
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as { businessId: string };
+      const requestHeaders = new Headers(req.headers);
+      requestHeaders.set('x-business-id', decoded.businessId);
       return NextResponse.next({ request: { headers: requestHeaders } });
     } catch {
       return NextResponse.json({ error: 'توکن نامعتبر' }, { status: 401 });
