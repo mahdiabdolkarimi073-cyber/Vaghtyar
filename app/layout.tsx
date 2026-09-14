@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'نوبت‌یار | رزرو آنلاین نوبت',
     description: 'بدون انتظار، بدون معطلی. نوبت خود را آنلاین رزرو کنید.',
-    images: [{ url: 'https://bolt.new/static/og_default.png' }],
   },
 };
 
@@ -22,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-vazir bg-gray-50 text-gray-800 antialiased">
+      <body className="font-vazir antialiased min-h-screen">
         <AuthProvider>
           <Header />
           <main>{children}</main>

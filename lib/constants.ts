@@ -1,3 +1,5 @@
+import { toJalali } from './jalali';
+
 export const DAY_NAMES_FA = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'];
 
 export const DAY_NAMES_SHORT_FA = ['ی', 'د', 'س', 'چ', 'پ', 'ج', 'ش'];
@@ -28,17 +30,19 @@ export function formatTime(time: string): string {
   return toPersianDigits(time);
 }
 
+export function dateToJalali(date: Date): { jy: number; jm: number; jd: number } {
+  return toJalali(date.getFullYear(), date.getMonth() + 1, date.getDate());
+}
+
 export function formatDateFA(date: Date): string {
-  const { toJalali } = require('date-fns-jalali');
-  const jalali = toJalali(date);
+  const j = dateToJalali(date);
   const dayName = DAY_NAMES_FA[date.getDay()];
-  return `${dayName} ${toPersianDigits(jalali.day)} ${MONTH_NAMES_FA[jalali.month - 1]} ${toPersianDigits(jalali.year)}`;
+  return `${dayName} ${toPersianDigits(j.jd)} ${MONTH_NAMES_FA[j.jm - 1]} ${toPersianDigits(j.jy)}`;
 }
 
 export function formatDateShortFA(date: Date): string {
-  const { toJalali } = require('date-fns-jalali');
-  const jalali = toJalali(date);
-  return `${toPersianDigits(jalali.day)} ${MONTH_NAMES_FA[jalali.month - 1]} ${toPersianDigits(jalali.year)}`;
+  const j = dateToJalali(date);
+  return `${toPersianDigits(j.jd)} ${MONTH_NAMES_FA[j.jm - 1]} ${toPersianDigits(j.jy)}`;
 }
 
 export function getDayOfWeek(date: Date): number {

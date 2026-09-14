@@ -20,6 +20,33 @@ enum BookingStatus {
   COMPLETED
 }
 
+enum BusinessStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  NO_SHOW
+  CANCELLED
+}
+
+enum AppointmentSource {
+  ONLINE
+  MANUAL
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
 model User {
   id           String     @id @default(cuid())
   name         String
@@ -44,29 +71,51 @@ model Session {
 }
 
 model Business {
-  id                  String          @id @default(cuid())
-  slug                String          @unique
-  name                String
-  category            String
-  city                String
-  neighborhood        String?
-  address             String?
-  phone               String?
-  coverImage          String?
-  profileImage        String?
-  description         String?
-  isVerified          Boolean         @default(false)
-  isFeatured          Boolean         @default(false)
-  autoConfirm         Boolean         @default(false)
-  minAdvanceBookingHours Int          @default(2)
-  createdAt           DateTime        @default(now())
-  ownerId             String
-  owner               User            @relation(fields: [ownerId], references: [id])
-  hours               BusinessHours[]
-  staff               Staff[]
-  services            Service[]
-  bookings            Booking[]
-  reviews             Review[]
+  id                    String          @id @default(cuid())
+  slug                  String          @unique
+  name                  String
+  category              String
+  categoryId            String?
+  city                  String          @default("کرمان")
+  neighborhood          String?
+  address               String?
+  phone                 String?
+  email                 String?
+  coverImage            String?
+  profileImage          String?
+  photos                String[]
+  description           String?
+  isVerified            Boolean         @default(false)
+  isFeatured            Boolean         @default(false)
+  autoConfirm           Boolean         @default(false)
+  autoApprove           Boolean         @default(false)
+  minAdvanceBookingHours Int           @default(2)
+  minAdvanceHours       Int             @default(1)
+  maxAdvanceDays        Int             @default(30)
+  allowCustomerCancel   Boolean         @default(true)
+  reminderHoursBefore   Int             @default(24)
+  confirmationSmsTemplate String?
+  reminderSmsTemplate   String?
+  status                BusinessStatus  @default(PENDING)
+  passwordHash          String?
+  ownerFirstName        String?
+  ownerLastName         String?
+  ownerMobile           String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  ownerId               String
+  owner                 User            @relation(fields: [ownerId], references: [id])
+  hours                BusinessHours[]
+  staff                Staff[]
+  services             Service[]
+  bookings             Booking[]
+  reviews              Review[]
+  workingHours          WorkingHours[]
+  holidays              Holiday[]
+  customers             Customer[]
+  subscription          Subscription?
+  payments              Payment[]
+  appointments          Appointment[]
 }
 
 model BusinessHours {
@@ -81,16 +130,62 @@ model BusinessHours {
   @@index([businessId])
 }
 
-model Staff {
+model WorkingHours {
   id         String   @id @default(cuid())
   businessId String
-  name       String
-  photo      String?
-  specialty  String?
-  business   Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  bookings   Booking[]
+  dayOfWeek  Int
+  isClosed   Boolean  @default(false)
+  startTime  String?
+  endTime    String?
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
   @@index([businessId])
+}
+
+model Holiday {
+  id         String   @id @default(cuid())
+  businessId String
+  date       DateTime
+  reason     String?
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+}
+
+model Staff {
+  id           String   @id @default(cuid())
+  businessId   String
+  name         String
+  photo        String?
+  specialty    String?
+  bio          String?
+  isActive     Boolean  @default(true)
+  business     Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  staffServices StaffService[]
+  workingHours  StaffWorkingHours[]
+  bookings      Booking[]
+  appointments  Appointment[]
+
+  @@index([businessId])
+}
+
+model StaffService {
+  staffId   String
+  serviceId String
+  staff     Staff   @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  @@id([staffId, serviceId])
+}
+
+model StaffWorkingHours {
+  id        String   @id @default(cuid())
+  staffId   String
+  dayOfWeek Int
+  isClosed  Boolean  @default(false)
+  startTime String?
+  endTime   String?
+  useBusinessDefault Boolean @default(true)
+  staff     Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
 }
 
 model Service {
@@ -100,8 +195,12 @@ model Service {
   durationMinutes Int
   price           Int
   description     String?
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
   business        Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
   bookings        Booking[]
+  staffServices   StaffService[]
+  appointments    Appointment[]
 
   @@index([businessId])
 }
@@ -114,22 +213,68 @@ model Booking {
   customerId      String?
   customerName    String
   customerPhone   String
-  customerNote   String?
+  customerNote    String?
   date            DateTime
   startTime       String
   endTime         String
   status          BookingStatus @default(PENDING)
   confirmationCode String      @unique
   createdAt       DateTime      @default(now())
-  business       Business      @relation(fields: [businessId], references: [id])
-  service        Service       @relation(fields: [serviceId], references: [id])
-  staff          Staff?        @relation(fields: [staffId], references: [id])
-  customer       User?         @relation("CustomerBookings", fields: [customerId], references: [id])
-  review         Review?
+  business        Business      @relation(fields: [businessId], references: [id])
+  service         Service       @relation(fields: [serviceId], references: [id])
+  staff           Staff?        @relation(fields: [staffId], references: [id])
+  customer        User?         @relation("CustomerBookings", fields: [customerId], references: [id])
+  review          Review?
 
   @@index([businessId])
   @@index([staffId])
   @@index([customerId])
+}
+
+model Appointment {
+  id           String            @id @default(cuid())
+  businessId   String
+  customerId   String
+  serviceId    String
+  staffId      String
+  startTime    DateTime
+  endTime      DateTime
+  status       AppointmentStatus @default(PENDING)
+  source       AppointmentSource @default(ONLINE)
+  internalNote String?
+  cancelReason String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  business     Business          @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  customer     Customer         @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  service      Service          @relation(fields: [serviceId], references: [id])
+  staff        Staff            @relation(fields: [staffId], references: [id])
+
+  @@index([businessId])
+  @@index([customerId])
+  @@index([staffId])
+}
+
+model Customer {
+  id           String   @id @default(cuid())
+  businessId   String
+  name         String
+  mobile       String
+  isBlocked    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  notes        CustomerNote[]
+  appointments Appointment[]
+  business     Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+}
+
+model CustomerNote {
+  id         String   @id @default(cuid())
+  customerId String
+  content    String
+  createdAt  DateTime @default(now())
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 }
 
 model Review {
@@ -166,4 +311,39 @@ model SmsLog {
   phone   String
   message String
   sentAt  DateTime @default(now())
+}
+
+model Plan {
+  id            String   @id @default(cuid())
+  name          String
+  price         Int
+  maxStaff      Int
+  maxServices   Int
+  hasSms        Boolean  @default(false)
+  hasReports    Boolean  @default(false)
+  hasCustomSms  Boolean  @default(false)
+  hasApi        Boolean  @default(false)
+  hasPriority   Boolean  @default(false)
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id         String   @id @default(cuid())
+  businessId String   @unique
+  planId     String
+  startDate  DateTime
+  endDate    DateTime
+  isActive   Boolean  @default(true)
+  business   Business @relation(fields: [businessId], references: [id])
+  plan       Plan     @relation(fields: [planId], references: [id])
+}
+
+model Payment {
+  id         String        @id @default(cuid())
+  businessId String
+  planId     String
+  amount     Int
+  status     PaymentStatus @default(PENDING)
+  createdAt  DateTime      @default(now())
+  business   Business      @relation(fields: [businessId], references: [id])
 }

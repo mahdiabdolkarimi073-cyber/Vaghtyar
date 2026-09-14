@@ -1,0 +1,178 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { Plus, Trash2, CalendarPlus } from 'lucide-react';
+import { toast } from 'sonner';
+import GlassCard from '@/components/ui/GlassCard';
+import GradientButton from '@/components/ui/GradientButton';
+import { businessFetch } from '@/lib/business-api';
+import { toPersianDigits, formatDateShortFA } from '@/lib/constants';
+import { toJalali } from '@/lib/jalali';
+
+interface WorkingHour {
+  id: string;
+  dayOfWeek: number;
+  isClosed: boolean;
+  startTime: string | null;
+  endTime: string | null;
+}
+
+interface Holiday {
+  id: string;
+  date: string;
+  reason: string | null;
+}
+
+const DAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
+
+export default function WorkingHoursPage() {
+  const [hours, setHours] = useState<WorkingHour[]>([]);
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [holidayModalOpen, setHolidayModalOpen] = useState(false);
+  const [holidayDate, setHolidayDate] = useState('');
+  const [holidayReason, setHolidayReason] = useState('');
+  const [addingHoliday, setAddingHoliday] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const [h, hol] = await Promise.all([
+        businessFetch<WorkingHour[]>('/api/business/working-hours'),
+        businessFetch<Holiday[]>('/api/business/holidays'),
+      ]);
+      setHours(h);
+      setHolidays(hol);
+    } catch { toast.error('خطا در بارگذاری'); }
+    finally { setLoading(false); }
+  }, []);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  const updateHour = (dayOfWeek: number, field: string, value: unknown) => {
+    setHours(prev => prev.map(h => h.dayOfWeek === dayOfWeek ? { ...h, [field]: value } : h));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await businessFetch('/api/business/working-hours', { method: 'PUT', body: JSON.stringify(hours.map(h => ({
+        dayOfWeek: h.dayOfWeek,
+        isClosed: h.isClosed,
+        startTime: h.startTime,
+        endTime: h.endTime,
+      }))) });
+      toast.success('ساعات کاری ذخیره شد');
+    } catch { toast.error('خطا در ذخیره'); }
+    finally { setSaving(false); }
+  };
+
+  const addHoliday = async () => {
+    if (!holidayDate) { toast.error('تاریخ را انتخاب کنید'); return; }
+    setAddingHoliday(true);
+    try {
+      const h = await businessFetch<Holiday>('/api/business/holidays', { method: 'POST', body: JSON.stringify({ date: holidayDate, reason: holidayReason }) });
+      setHolidays(prev => [h, ...prev]);
+      setHolidayModalOpen(false);
+      setHolidayDate('');
+      setHolidayReason('');
+      toast.success('تعطیلی اضافه شد');
+    } catch { toast.error('خطا در افزودن'); }
+    finally { setAddingHoliday(false); }
+  };
+
+  const deleteHoliday = async (id: string) => {
+    try {
+      await businessFetch(`/api/business/holidays/${id}`, { method: 'DELETE' });
+      setHolidays(prev => prev.filter(h => h.id !== id));
+      toast.success('تعطیلی حذف شد');
+    } catch { toast.error('خطا در حذف'); }
+  };
+
+  if (loading) return <div className="glass h-96 rounded-2xl glass-shimmer" />;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold text-primary-custom">ساعات کاری و تعطیلی‌ها</h2>
+        <GradientButton onClick={() => setHolidayModalOpen(true)} size="sm" variant="accent"><CalendarPlus className="w-4 h-4" /> افزودن تعطیلی</GradientButton>
+      </div>
+
+      <GlassCard className="p-5">
+        <h3 className="text-sm font-bold text-primary-custom mb-4">برنامه هفتگی</h3>
+        <div className="space-y-2">
+          {DAYS.map((dayName, idx) => {
+            const hour = hours.find(h => h.dayOfWeek === idx);
+            if (!hour) return null;
+            return (
+              <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5">
+                <div className="w-24 text-sm font-medium text-primary-custom">{dayName}</div>
+                <button onClick={() => updateHour(idx, 'isClosed', !hour.isClosed)} className={`relative w-10 h-6 rounded-full transition-colors ${!hour.isClosed ? 'bg-emerald-500' : 'bg-white/10'}`}>
+                  <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${!hour.isClosed ? 'left-0.5' : 'right-0.5'}`} />
+                </button>
+                {hour.isClosed ? (
+                  <span className="text-sm text-secondary-custom">تعطیل</span>
+                ) : (
+                  <div className="flex items-center gap-2 flex-1">
+                    <input type="time" value={hour.startTime || '09:00'} onChange={e => updateHour(idx, 'startTime', e.target.value)} className="glass-input px-3 py-2 text-sm" />
+                    <span className="text-secondary-custom text-xs">تا</span>
+                    <input type="time" value={hour.endTime || '18:00'} onChange={e => updateHour(idx, 'endTime', e.target.value)} className="glass-input px-3 py-2 text-sm" />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-4 flex justify-end">
+          <GradientButton onClick={handleSave} loading={saving} size="md">ذخیره تغییرات</GradientButton>
+        </div>
+      </GlassCard>
+
+      <GlassCard className="p-5">
+        <h3 className="text-sm font-bold text-primary-custom mb-4">تعطیلی‌های خاص</h3>
+        {holidays.length === 0 ? (
+          <p className="text-sm text-secondary-custom text-center py-6">تعطیلی خاصی ثبت نشده است</p>
+        ) : (
+          <div className="space-y-2">
+            {holidays.map(h => {
+              const d = new Date(h.date);
+              const j = toJalali(d.getFullYear(), d.getMonth() + 1, d.getDate());
+              return (
+                <div key={h.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                  <div>
+                    <div className="text-sm text-primary-custom">{toPersianDigits(j.jd)} {['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][j.jm - 1]} {toPersianDigits(j.jy)}</div>
+                    {h.reason && <div className="text-xs text-secondary-custom mt-0.5">{h.reason}</div>}
+                  </div>
+                  <button onClick={() => deleteHoliday(h.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-secondary-custom hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </GlassCard>
+
+      {holidayModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setHolidayModalOpen(false)} />
+          <GlassCard strong className="relative p-6 w-full max-w-sm animate-scale-in">
+            <h3 className="text-lg font-bold text-primary-custom mb-4">افزودن تعطیلی</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-secondary-custom mb-1.5">تاریخ</label>
+                <input type="date" value={holidayDate} onChange={e => setHolidayDate(e.target.value)} className="glass-input w-full px-4 py-2.5 text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm text-secondary-custom mb-1.5">دلیل (اختیاری)</label>
+                <input value={holidayReason} onChange={e => setHolidayReason(e.target.value)} className="glass-input w-full px-4 py-2.5 text-sm" placeholder="مثال: تعطیلی نوروز" />
+              </div>
+              <div className="flex gap-3">
+                <button onClick={() => setHolidayModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-secondary-custom hover:bg-white/5 text-sm">انصراف</button>
+                <GradientButton onClick={addHoliday} loading={addingHoliday} className="flex-1" size="md">افزودن</GradientButton>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -17,6 +17,7 @@ import {
   DAY_NAMES_FA, formatDateShortFA
 } from '@/lib/constants';
 import type { Business, Service, Staff, BusinessHours, Review } from '@/lib/types';
+import BusinessCard from '@/components/BusinessCard';
 
 const MapView = dynamic(() => import('@/components/MapView'), { ssr: false });
 
@@ -32,6 +33,7 @@ export default function SalonPage() {
   const params = useParams();
   const slug = params.slug as string;
   const [business, setBusiness] = useState<BusinessDetail | null>(null);
+  const [similarBusinesses, setSimilarBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', bookingCode: '', customerName: '' });
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
@@ -41,6 +43,9 @@ export default function SalonPage() {
       .then(setBusiness)
       .catch(() => setBusiness(null))
       .finally(() => setLoading(false));
+    apiFetch<{ businesses: Business[] }>(`/api/businesses/${slug}/similar`)
+      .then((data) => setSimilarBusinesses(data.businesses))
+      .catch(() => setSimilarBusinesses([]));
   }, [slug]);
 
   if (loading) {
@@ -335,10 +340,16 @@ export default function SalonPage() {
         </Tabs>
 
         {/* Similar businesses */}
-        <div className="mb-10">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">کسب‌وکارهای مشابه در محله</h2>
-          <p className="text-gray-400 text-sm">به‌زودی...</p>
-        </div>
+        {similarBusinesses.length > 0 && (
+          <div className="mb-10">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">کسب‌وکارهای مشابه</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {similarBusinesses.map((b) => (
+                <BusinessCard key={b.id} business={b} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

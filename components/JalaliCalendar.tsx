@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
-import { toJalali } from 'date-fns-jalali';
+import { toJalali, toGregorian, isLeapJalaliYear } from '@/lib/jalali';
 import { DAY_NAMES_SHORT_FA, MONTH_NAMES_FA, toPersianDigits } from '@/lib/constants';
 
 interface Props {
@@ -12,6 +12,12 @@ interface Props {
   minDate?: Date;
 }
 
+function getDaysInJalaliMonth(jy: number, jm: number): number {
+  const monthLengths = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+  if (jm === 12 && isLeapJalaliYear(jy)) return 30;
+  return monthLengths[jm - 1];
+}
+
 export default function JalaliCalendar({ onSelect, selectedDate, disabledDates, minDate }: Props) {
   const [viewDate, setViewDate] = useState(new Date());
 
@@ -19,39 +25,16 @@ export default function JalaliCalendar({ onSelect, selectedDate, disabledDates, 
   today.setHours(0, 0, 0, 0);
   const minDateVal = minDate || today;
 
-  const jalali = toJalali(viewDate);
-  const year = jalali.year;
-  const month = jalali.month; // 1-12
+  const j = toJalali(viewDate.getFullYear(), viewDate.getMonth() + 1, viewDate.getDate());
+  const jy = j.jy;
+  const jm = j.jm;
 
-  // Get first day of Jalali month
-  const firstOfMonthGregorian = new Date(viewDate);
-  // We need to figure out the Gregorian date of the 1st of the current Jalali month
-  // toJalali gives us the jalali date of viewDate. We need the gregorian date of jalali 1st.
-  // Easier: build from the known jalali year/month.
-  // Use date-fns-jalali's toGregorian if available, otherwise compute manually.
-  // date-fns-jalali exports toGregorian.
-  let toGregorian: (j: { year: number; month: number; day: number }) => Date;
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const mod = require('date-fns-jalali');
-    toGregorian = mod.toGregorian;
-  } catch {
-    // Fallback: use the viewDate's day offset
-    toGregorian = (j) => new Date(j.year, j.month - 1, j.day);
-  }
+  const g = toGregorian(jy, jm, 1);
+  const firstJalaliDate = new Date(g.gy, g.gm - 1, g.gd);
+  const firstDayOfWeek = firstJalaliDate.getDay();
 
-  const firstJalaliDate = toGregorian({ year, month, day: 1 });
-  const firstDayOfWeek = firstJalaliDate.getDay(); // 0=Saturday in JS getDay() is 0=Sunday
+  const daysInMonth = getDaysInJalaliMonth(jy, jm);
 
-  // Number of days in Jalali month
-  const jalaliMonthDays = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
-  // Leap year check for Esfand (month 12)
-  const isLeap = (((((year - 474) % 2820) + 2820) % 2820) * 682) % 2816) < 682;
-  const daysInMonth = month === 12 && isLeap ? 30 : jalaliMonthDays[month - 1];
-
-  // In Persian calendar, Saturday = 0 (first day of week)
-  // JS getDay(): Sunday=0, Monday=1, ..., Saturday=6
-  // Persian week starts on Saturday (JS 6), so we shift: (jsDay + 1) % 7
   const startOffset = (firstDayOfWeek + 1) % 7;
 
   const days: (number | null)[] = [];
@@ -70,9 +53,14 @@ export default function JalaliCalendar({ onSelect, selectedDate, disabledDates, 
     setViewDate(next);
   };
 
+  const getGregorianForDay = (day: number): Date => {
+    const gr = toGregorian(jy, jm, day);
+    return new Date(gr.gy, gr.gm - 1, gr.gd);
+  };
+
   const handleDayClick = (day: number | null) => {
     if (day === null) return;
-    const gregDate = toGregorian({ year, month, day });
+    const gregDate = getGregorianForDay(day);
     gregDate.setHours(0, 0, 0, 0);
 
     if (gregDate < minDateVal) return;
@@ -83,7 +71,7 @@ export default function JalaliCalendar({ onSelect, selectedDate, disabledDates, 
 
   const isDisabled = (day: number | null) => {
     if (day === null) return true;
-    const gregDate = toGregorian({ year, month, day });
+    const gregDate = getGregorianForDay(day);
     gregDate.setHours(0, 0, 0, 0);
     if (gregDate < minDateVal) return true;
     if (disabledDates && disabledDates.has(gregDate.getTime())) return true;
@@ -92,7 +80,7 @@ export default function JalaliCalendar({ onSelect, selectedDate, disabledDates, 
 
   const isSelected = (day: number | null) => {
     if (day === null || !selectedDate) return false;
-    const gregDate = toGregorian({ year, month, day });
+    const gregDate = getGregorianForDay(day);
     gregDate.setHours(0, 0, 0, 0);
     return selectedDate.getTime() === gregDate.getTime();
   };
@@ -104,7 +92,7 @@ export default function JalaliCalendar({ onSelect, selectedDate, disabledDates, 
           <ChevronRight className="w-5 h-5 text-gray-600" />
         </button>
         <h3 className="font-bold text-gray-800">
-          {MONTH_NAMES_FA[month - 1]} {toPersianDigits(year)}
+          {MONTH_NAMES_FA[jm - 1]} {toPersianDigits(jy)}
         </h3>
         <button onClick={nextMonth} className="w-9 h-9 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors">
           <ChevronLeft className="w-5 h-5 text-gray-600" />
