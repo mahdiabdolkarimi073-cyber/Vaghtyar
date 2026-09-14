@@ -144,6 +144,12 @@
     cursor: not-allowed;
     transform: none;
   }
+
+  .glass-shimmer {
+    background: linear-gradient(90deg, #E2E8F0 0%, #F1F5F9 50%, #E2E8F0 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
 }
 
 @layer utilities {
@@ -152,13 +158,6 @@
   .text-tertiary-custom { color: #94A3B8; }
   .bg-base { background: #F8FAFC; }
   .bg-surface { background: #FFFFFF; }
-}
-
-  .glass-shimmer {
-    background: linear-gradient(90deg, #E2E8F0 0%, #F1F5F9 50%, #E2E8F0 100%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-  }
 }
 
 @keyframes shimmer {

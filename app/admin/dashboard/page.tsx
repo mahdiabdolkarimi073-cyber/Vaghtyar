@@ -46,10 +46,10 @@ export default function AdminDashboardPage() {
         <AdminHeader title="داشبورد" />
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatsCard title="کسب‌وکارها" value={data?.businesses.total ?? 0} subtitle={`فعال: ${toPersianDigits(data?.businesses.active ?? 0)} / در انتظار: ${toPersianDigits(data?.businesses.pending ?? 0)}`} icon={<Building2 className="w-5 h-5" />} gradient="violet" isLoading={loading} />
-            <StatsCard title="نوبت‌های امروز" value={data?.appointments.today ?? 0} subtitle={`این ماه: ${toPersianDigits(data?.appointments.thisMonth ?? 0)}`} icon={<Calendar className="w-5 h-5" />} gradient="sky" isLoading={loading} />
-            <StatsCard title="درآمد این ماه" value={formatPrice(data?.revenue.thisMonth ?? 0)} icon={<DollarSign className="w-5 h-5" />} gradient="emerald" isLoading={loading} />
-            <StatsCard title="اشتراک‌های فعال" value={data?.activeSubscriptions ?? 0} icon={<Star className="w-5 h-5" />} gradient="amber" isLoading={loading} />
+            <StatsCard title="کسب‌وکارها" value={data?.businesses.total ?? 0} subtitle={`فعال: ${toPersianDigits(data?.businesses.active ?? 0)} / در انتظار: ${toPersianDigits(data?.businesses.pending ?? 0)}`} icon={<Building2 className="w-5 h-5" />} gradient="primary" isLoading={loading} />
+            <StatsCard title="نوبت‌های امروز" value={data?.appointments.today ?? 0} subtitle={`این ماه: ${toPersianDigits(data?.appointments.thisMonth ?? 0)}`} icon={<Calendar className="w-5 h-5" />} gradient="accent" isLoading={loading} />
+            <StatsCard title="درآمد این ماه" value={formatPrice(data?.revenue.thisMonth ?? 0)} icon={<DollarSign className="w-5 h-5" />} gradient="success" isLoading={loading} />
+            <StatsCard title="اشتراک‌های فعال" value={data?.activeSubscriptions ?? 0} icon={<Star className="w-5 h-5" />} gradient="warning" isLoading={loading} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

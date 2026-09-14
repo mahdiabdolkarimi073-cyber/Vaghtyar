@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 
 interface StatusBadgeProps {
-  status: string;
+  status?: string;
   variant?: 'success' | 'warning' | 'danger' | 'info' | 'primary' | 'neutral';
   children?: React.ReactNode;
 }

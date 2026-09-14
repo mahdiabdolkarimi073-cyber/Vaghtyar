@@ -77,7 +77,7 @@ export default function AdminLocationsPage() {
                   <StatusBadge variant="primary">{toPersianDigits(city.businessCount || 0)} کسب‌وکار</StatusBadge>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {<span className="text-sm text-text-muted">محله‌ها در صفحه کسب‌وکارها قابل مدیریت هستند</span>
+                  <span className="text-sm text-text-muted">محله‌ها در صفحه کسب‌وکارها قابل مدیریت هستند</span>
                 </div>
               </div>
             ))

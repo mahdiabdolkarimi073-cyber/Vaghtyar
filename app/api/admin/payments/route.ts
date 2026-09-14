@@ -26,12 +26,12 @@ export async function GET(req: NextRequest) {
     }
 
     if (startDateParam || endDateParam) {
-      where.createdAt = {};
+      (where as any).createdAt = {};
       if (startDateParam) {
-        where.createdAt.gte = new Date(startDateParam);
+        (where as any).createdAt.gte = new Date(startDateParam);
       }
       if (endDateParam) {
-        where.createdAt.lte = new Date(endDateParam);
+        (where as any).createdAt.lte = new Date(endDateParam);
       }
     }
 

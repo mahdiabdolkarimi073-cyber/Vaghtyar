@@ -27,7 +27,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     smsType: 'APPOINTMENT_CANCEL',
     templateData: {
       salonName: appointment.business.name,
-      date: appointment.startTime,
+      date: appointment.startTime.toISOString().split('T')[0],
       time: appointment.startTime.toTimeString().slice(0, 5),
     },
   });

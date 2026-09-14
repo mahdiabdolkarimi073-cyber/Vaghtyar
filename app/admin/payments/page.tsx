@@ -68,10 +68,10 @@ export default function AdminPaymentsPage() {
         <AdminHeader title="مدیریت پرداخت‌ها" />
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatsCard title="درآمد کل" value={formatPrice(summary.total)} icon={<DollarSign className="w-5 h-5" />} gradient="emerald" isLoading={loading} />
-            <StatsCard title="پرداخت‌های موفق" value={summary.successful} icon={<CheckCircle className="w-5 h-5" />} gradient="sky" isLoading={loading} />
-            <StatsCard title="پرداخت‌های ناموفق" value={summary.failed} icon={<XCircle className="w-5 h-5" />} gradient="rose" isLoading={loading} />
-            <StatsCard title="بازگشت‌ها" value={summary.refunded} icon={<RotateCcw className="w-5 h-5" />} gradient="amber" isLoading={loading} />
+            <StatsCard title="درآمد کل" value={formatPrice(summary.total)} icon={<DollarSign className="w-5 h-5" />} gradient="success" isLoading={loading} />
+            <StatsCard title="پرداخت‌های موفق" value={summary.successful} icon={<CheckCircle className="w-5 h-5" />} gradient="accent" isLoading={loading} />
+            <StatsCard title="پرداخت‌های ناموفق" value={summary.failed} icon={<XCircle className="w-5 h-5" />} gradient="danger" isLoading={loading} />
+            <StatsCard title="بازگشت‌ها" value={summary.refunded} icon={<RotateCcw className="w-5 h-5" />} gradient="warning" isLoading={loading} />
           </div>
 
           <div className="flex gap-3">

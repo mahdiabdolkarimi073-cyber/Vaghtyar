@@ -59,10 +59,10 @@ export default function AdminSmsPage() {
         <AdminHeader title="مدیریت پیامک‌ها" />
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatsCard title="کل ارسال‌ها" value={stats.totalSent} icon={<MessageSquare className="w-5 h-5" />} gradient="violet" isLoading={loading} />
-            <StatsCard title="موفق" value={stats.successful} icon={<CheckCircle className="w-5 h-5" />} gradient="emerald" isLoading={loading} />
-            <StatsCard title="ناموفق" value={stats.failed} icon={<XCircle className="w-5 h-5" />} gradient="rose" isLoading={loading} />
-            <StatsCard title="اعتبار" value={toPersianDigits(stats.creditBalance)} icon={<Send className="w-5 h-5" />} gradient="sky" isLoading={loading} />
+            <StatsCard title="کل ارسال‌ها" value={stats.totalSent} icon={<MessageSquare className="w-5 h-5" />} gradient="primary" isLoading={loading} />
+            <StatsCard title="موفق" value={stats.successful} icon={<CheckCircle className="w-5 h-5" />} gradient="success" isLoading={loading} />
+            <StatsCard title="ناموفق" value={stats.failed} icon={<XCircle className="w-5 h-5" />} gradient="danger" isLoading={loading} />
+            <StatsCard title="اعتبار" value={toPersianDigits(stats.creditBalance)} icon={<Send className="w-5 h-5" />} gradient="accent" isLoading={loading} />
           </div>
 
           <Tabs defaultValue="logs">
