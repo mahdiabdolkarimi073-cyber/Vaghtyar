@@ -41,6 +41,7 @@ export default function Footer() {
               <li><Link href="/faq" className="hover:text-primary-light transition-colors">سوالات متداول</Link></li>
               <li><Link href="/terms" className="hover:text-primary-light transition-colors">قوانین و مقررات</Link></li>
               <li><Link href="/privacy" className="hover:text-primary-light transition-colors">حریم خصوصی</Link></li>
+              <li><Link href="/cancellation-policy" className="hover:text-primary-light transition-colors">سیاست لغو نوبت</Link></li>
             </ul>
           </div>
 
@@ -69,6 +70,7 @@ export default function Footer() {
             <Link href="/terms" className="hover:text-primary-light transition-colors">قوانین</Link>
             <Link href="/privacy" className="hover:text-primary-light transition-colors">حریم خصوصی</Link>
             <Link href="/faq" className="hover:text-primary-light transition-colors">سوالات متداول</Link>
+            <Link href="/cancellation-policy" className="hover:text-primary-light transition-colors">لغو نوبت</Link>
           </div>
           <p className="text-xs text-slate-500">© ۱۴۰۴ نوبت‌یار. تمامی حقوق محفوظ است.</p>
         </div>

@@ -54,6 +54,10 @@ async function main() {
     data: { name: 'سارا احمدی', phone: '09120000004', passwordHash, role: Role.CUSTOMER },
   });
 
+  const admin = await prisma.user.create({
+    data: { name: 'مدیر سیستم', phone: '09120000000', passwordHash, role: Role.ADMIN },
+  });
+
   // Business 1
   const business1 = await prisma.business.create({
     data: {
@@ -188,12 +192,42 @@ async function main() {
   lastWeek.setDate(lastWeek.getDate() - 7);
   lastWeek.setHours(12, 0, 0, 0);
 
+  const lastWeek2 = new Date(now);
+  lastWeek2.setDate(lastWeek2.getDate() - 6);
+  lastWeek2.setHours(9, 0, 0, 0);
+
+  const lastWeek3 = new Date(now);
+  lastWeek3.setDate(lastWeek3.getDate() - 5);
+  lastWeek3.setHours(10, 0, 0, 0);
+
+  const lastWeek4 = new Date(now);
+  lastWeek4.setDate(lastWeek4.getDate() - 4);
+  lastWeek4.setHours(14, 0, 0, 0);
+
+  const lastWeek5 = new Date(now);
+  lastWeek5.setDate(lastWeek5.getDate() - 3);
+  lastWeek5.setHours(16, 0, 0, 0);
+
+  const lastWeek6 = new Date(now);
+  lastWeek6.setDate(lastWeek6.getDate() - 2);
+  lastWeek6.setHours(15, 0, 0, 0);
+
+  const lastWeek7 = new Date(now);
+  lastWeek7.setDate(lastWeek7.getDate() - 8);
+  lastWeek7.setHours(11, 0, 0, 0);
+
   const bookings = [
     { business: business1, service: service1, staff: staff1, customer: customer1, name: 'رضا کریمی', phone: '09120000003', date: tomorrow, start: '10:00', end: '10:30', status: BookingStatus.CONFIRMED, code: 'ABCD1234' },
     { business: business1, service: service2, staff: staff2, customer: customer2, name: 'سارا احمدی', phone: '09120000004', date: dayAfter, start: '14:00', end: '15:30', status: BookingStatus.PENDING, code: 'EFGH5678' },
     { business: business2, service: service5, staff: staff3, customer: null, name: 'محمد رضایی', phone: '09120000005', date: nextWeek, start: '11:00', end: '11:30', status: BookingStatus.CONFIRMED, code: 'IJKL9012' },
     { business: business1, service: service3, staff: staff2, customer: customer1, name: 'رضا کریمی', phone: '09120000003', date: yesterday, start: '15:00', end: '17:00', status: BookingStatus.COMPLETED, code: 'MNOP3456' },
     { business: business2, service: service6, staff: staff4, customer: null, name: 'فاطمه نوری', phone: '09120000006', date: lastWeek, start: '12:00', end: '13:00', status: BookingStatus.COMPLETED, code: 'QRST7890' },
+    { business: business1, service: service4, staff: staff1, customer: customer2, name: 'سارا احمدی', phone: '09120000004', date: lastWeek2, start: '09:00', end: '09:45', status: BookingStatus.COMPLETED, code: 'UVWX1111' },
+    { business: business1, service: service1, staff: staff1, customer: customer1, name: 'رضا کریمی', phone: '09120000003', date: lastWeek3, start: '10:00', end: '10:30', status: BookingStatus.COMPLETED, code: 'ZYAB2222' },
+    { business: business2, service: service7, staff: staff3, customer: null, name: 'نرگس فرهمند', phone: '09120000007', date: lastWeek4, start: '14:00', end: '14:45', status: BookingStatus.COMPLETED, code: 'CDEF3333' },
+    { business: business1, service: service2, staff: staff2, customer: customer2, name: 'مریم جعفری', phone: '09120000004', date: lastWeek5, start: '16:00', end: '17:30', status: BookingStatus.COMPLETED, code: 'GHIJ4444' },
+    { business: business2, service: service5, staff: staff4, customer: null, name: 'حسین رحیمی', phone: '09120000008', date: lastWeek6, start: '15:00', end: '15:30', status: BookingStatus.COMPLETED, code: 'KLMN5555' },
+    { business: business1, service: service4, staff: staff1, customer: null, name: 'سمیرا قاسمی', phone: '09120000009', date: lastWeek7, start: '11:00', end: '11:45', status: BookingStatus.COMPLETED, code: 'PQRS6666' },
   ];
 
   for (const b of bookings) {
@@ -219,13 +253,13 @@ async function main() {
     { business: business1, customerName: 'رضا کریمی', rating: 5, comment: 'عالی بود، خیلی راضی بودم. محیط تمیز و پرسنل حرفه‌ای.', bookingCode: 'MNOP3456' },
     { business: business1, customerName: 'سارا احمدی', rating: 4, comment: 'کیفیت کار خوب بود ولی کمی دیر شد.', bookingCode: 'ABCD1234' },
     { business: business2, customerName: 'فاطمه نوری', rating: 5, comment: 'کلینیک بسیار تمیز و دکتر عالی بود. حتما باز میام.', bookingCode: 'QRST7890' },
-    { business: business1, customerName: 'محمد علوی', rating: 5, comment: 'بهترین سالن زیبایی کرمان، پیشنهاد می‌کنم.', bookingCode: 'ABCD1234' },
-    { business: business2, customerName: 'زهرا موسوی', rating: 4, comment: 'خدمات لیزر عالی بود ولی قیمت کمی بالا.', bookingCode: 'QRST7890' },
-    { business: business1, customerName: 'نرگس فرهمند', rating: 5, comment: 'رنگ مو فوق‌العاده شد، ممنون از نگار خانم.', bookingCode: 'MNOP3456' },
+    { business: business1, customerName: 'محمد علوی', rating: 5, comment: 'بهترین سالن زیبایی کرمان، پیشنهاد می‌کنم.', bookingCode: 'UVWX1111' },
+    { business: business1, customerName: 'زهرا موسوی', rating: 4, comment: 'خدمات خوب بود ولی قیمت کمی بالا.', bookingCode: 'ZYAB2222' },
+    { business: business2, customerName: 'نرگس فرهمند', rating: 5, comment: 'پاکسازی پوست فوق‌العاده شد، ممنون.', bookingCode: 'CDEF3333' },
     { business: business2, customerName: 'علی کاظمی', rating: 3, comment: 'مشاوره خوب بود ولی وقت کمی کم شد.', bookingCode: 'IJKL9012' },
-    { business: business1, customerName: 'مریم جعفری', rating: 5, comment: 'شستشوی مو عالی بود، ممنون.', bookingCode: 'ABCD1234' },
-    { business: business2, customerName: 'حسین رحیمی', rating: 5, comment: 'پاکسازی پوست خیلی خوب انجام شد.', bookingCode: 'QRST7890' },
-    { business: business1, customerName: 'سمیرا قاسمی', rating: 4, comment: 'کارشون خوبه ولی باید زودتر برید که صف نباشه.', bookingCode: 'MNOP3456' },
+    { business: business1, customerName: 'مریم جعفری', rating: 5, comment: 'رنگ مو عالی بود، ممنون از نگار خانم.', bookingCode: 'GHIJ4444' },
+    { business: business2, customerName: 'حسین رحیمی', rating: 5, comment: 'مشاوره پوست خیلی خوب انجام شد.', bookingCode: 'KLMN5555' },
+    { business: business1, customerName: 'سمیرا قاسمی', rating: 4, comment: 'کارشون خوبه ولی باید زودتر برید که صف نباشه.', bookingCode: 'PQRS6666' },
   ];
 
   for (const r of reviews) {
@@ -247,7 +281,8 @@ async function main() {
 
   console.log('Seed completed successfully!');
   console.log(`Categories: ${categories.length}, Cities: ${cities.length}`);
-  console.log('Businesses: 2, Staff: 4, Services: 7, Bookings: 5, Reviews: 10');
+  console.log('Businesses: 2, Staff: 4, Services: 7, Bookings: 12, Reviews: 10');
+  console.log('Admin login: 09120000000 / 12345678');
 }
 
 main()

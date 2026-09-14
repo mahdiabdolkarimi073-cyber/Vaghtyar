@@ -81,35 +81,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'زمان انتخابی خارج از ساعات کاری است' }, { status: 400 });
     }
 
-    // Check for double booking
-    const startOfDay = new Date(bookingDate);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(bookingDate);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    const existingBookings = await prisma.booking.findMany({
-      where: {
-        businessId,
-        date: { gte: startOfDay, lte: endOfDay },
-        status: { in: ['PENDING', 'CONFIRMED'] },
-        ...(staffId ? { staffId } : {}),
-      },
-    });
-
-    const slotStartMin = startH * 60 + startM;
-    const slotEndMin = endMinutes;
-
-    for (const existing of existingBookings) {
-      const [bStartH, bStartM] = existing.startTime.split(':').map(Number);
-      const [bEndH, bEndM] = existing.endTime.split(':').map(Number);
-      const existingStartMin = bStartH * 60 + bStartM;
-      const existingEndMin = bEndH * 60 + bEndM;
-
-      if (slotStartMin < existingEndMin && slotEndMin > existingStartMin) {
-        return NextResponse.json({ error: 'این زمان قبلا رزرو شده است' }, { status: 400 });
-      }
-    }
-
     // Get optional customer
     let customerId: string | null = null;
     const user = await getUserFromRequest(req);
@@ -117,36 +88,80 @@ export async function POST(req: NextRequest) {
       customerId = user.id;
     }
 
-    // Generate confirmation code
-    let confirmationCode = generateConfirmationCode();
-    let codeExists = await prisma.booking.findUnique({ where: { confirmationCode } });
-    while (codeExists) {
-      confirmationCode = generateConfirmationCode();
-      codeExists = await prisma.booking.findUnique({ where: { confirmationCode } });
+    const slotStartMin = startH * 60 + startM;
+    const slotEndMin = endMinutes;
+
+    // ─── جلوگیری از رزرو مضاعف با تراکنش ───
+    const result = await prisma.$transaction(async (tx) => {
+      const startOfDay = new Date(bookingDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(bookingDate);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const existingBookings = await tx.booking.findMany({
+        where: {
+          businessId,
+          date: { gte: startOfDay, lte: endOfDay },
+          status: { in: ['PENDING', 'CONFIRMED'] },
+          ...(staffId ? { staffId } : {}),
+        },
+      });
+
+      for (const existing of existingBookings) {
+        const [bStartH, bStartM] = existing.startTime.split(':').map(Number);
+        const [bEndH, bEndM] = existing.endTime.split(':').map(Number);
+        const existingStartMin = bStartH * 60 + bStartM;
+        const existingEndMin = bEndH * 60 + bEndM;
+
+        if (slotStartMin < existingEndMin && slotEndMin > existingStartMin) {
+          throw new Error('این زمان قبلاً رزرو شده است');
+        }
+      }
+
+      let confirmationCode = generateConfirmationCode();
+      let codeExists = await tx.booking.findUnique({ where: { confirmationCode } });
+      while (codeExists) {
+        confirmationCode = generateConfirmationCode();
+        codeExists = await tx.booking.findUnique({ where: { confirmationCode } });
+      }
+
+      return tx.booking.create({
+        data: {
+          businessId,
+          serviceId,
+          staffId: staffId || null,
+          customerId,
+          customerName,
+          customerPhone,
+          customerNote: customerNote || null,
+          date: bookingDate,
+          startTime,
+          endTime,
+          status: business.autoConfirm ? 'CONFIRMED' : 'PENDING',
+          confirmationCode,
+        },
+        include: {
+          service: true,
+          business: true,
+          staff: true,
+        },
+      });
+    }).catch((err: Error) => {
+      if (err.message === 'این زمان قبلاً رزرو شده است') {
+        return { _error: err.message };
+      }
+      // Prisma unique constraint violation (P2002) — race condition caught at DB level
+      if (err && typeof err === 'object' && 'code' in err && (err as { code: string }).code === 'P2002') {
+        return { _error: 'این زمان قبلاً رزرو شده است' };
+      }
+      throw err;
+    });
+
+    if (result && typeof result === 'object' && '_error' in result) {
+      return NextResponse.json({ error: (result as { _error: string })._error }, { status: 400 });
     }
 
-    // Create booking
-    const booking = await prisma.booking.create({
-      data: {
-        businessId,
-        serviceId,
-        staffId: staffId || null,
-        customerId,
-        customerName,
-        customerPhone,
-        customerNote: customerNote || null,
-        date: bookingDate,
-        startTime,
-        endTime,
-        status: business.autoConfirm ? 'CONFIRMED' : 'PENDING',
-        confirmationCode,
-      },
-      include: {
-        service: true,
-        business: true,
-        staff: true,
-      },
-    });
+    const booking = result as Awaited<ReturnType<typeof prisma.booking.create>>;
 
     // Send SMS to customer
     if (booking.status === 'CONFIRMED') {
@@ -160,7 +175,7 @@ export async function POST(req: NextRequest) {
           service: service.name,
           date,
           time: startTime,
-          code: confirmationCode,
+          code: booking.confirmationCode,
         },
       });
     }
