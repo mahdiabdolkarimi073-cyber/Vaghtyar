@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
+import { sanitizeCustomer } from '@/lib/auth/sanitizeCustomer';
 
+/**
+ * GET /api/business/appointments
+ *
+ * دریافت لیست نوبت‌های کسب‌وکار احراز هویت شده.
+ * businessId فقط از توکن JWT استخراج می‌شود — هرگز از بدنه درخواست.
+ * شماره موبایل مشتری فقط برای مالک کسب‌وکار برگردانده می‌شود.
+ */
 export async function GET(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  // ─── استخراج businessId از JWT — نه از بدنه درخواست ───
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const { searchParams } = new URL(req.url);
   const date = searchParams.get('date');
@@ -25,7 +35,8 @@ export async function GET(req: NextRequest) {
     orderBy: { startTime: 'asc' },
   });
 
-  return NextResponse.json(appointments.map(a => ({
+  // ─── پاکسازی شماره موبایل — فقط مالک کسب‌وکار می‌بیند ───
+  const sanitized = appointments.map((a) => ({
     id: a.id,
     startTime: a.startTime.toISOString(),
     endTime: a.endTime.toISOString(),
@@ -33,8 +44,19 @@ export async function GET(req: NextRequest) {
     source: a.source,
     internalNote: a.internalNote,
     cancelReason: a.cancelReason,
-    customer: { id: a.customer.id, name: a.customer.name, mobile: a.customer.mobile, isBlocked: a.customer.isBlocked },
+    customer: sanitizeCustomer(
+      {
+        id: a.customer.id,
+        name: a.customer.name,
+        mobile: a.customer.mobile,
+        isBlocked: a.customer.isBlocked,
+      },
+      businessId,
+      a.businessId
+    ),
     service: { id: a.service.id, name: a.service.name, durationMinutes: a.service.durationMinutes, price: a.service.price },
     staff: { id: a.staff.id, name: a.staff.name },
-  })));
+  }));
+
+  return NextResponse.json(sanitized);
 }

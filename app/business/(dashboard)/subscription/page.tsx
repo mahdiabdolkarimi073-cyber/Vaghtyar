@@ -80,7 +80,7 @@ const FEATURE_LIST: { key: keyof Plan; label: string; type: 'boolean' | 'quota' 
 function formatLimitValue(value: number | null | boolean, type: 'boolean' | 'quota' | 'count'): string | boolean {
   if (type === 'boolean') return value as boolean;
   if (value === null) return 'نامحدود';
-  return toPersianDigits(value);
+  return toPersianDigits(value as number);
 }
 
 export default function SubscriptionPage() {

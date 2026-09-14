@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
+/**
+ * GET /api/business/customers
+ *
+ * دریافت لیست مشتریان — businessId از JWT.
+ * مشتریان فقط متعلق به کسب‌وکار احراز شده برگردانده می‌شوند.
+ */
 export async function GET(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const { searchParams } = new URL(req.url);
   const search = searchParams.get('search') || '';
@@ -29,6 +36,7 @@ export async function GET(req: NextRequest) {
     prisma.customer.count({ where }),
   ]);
 
+  // ─── شماره موبایل فقط برای مالک کسب‌وکار — در اینجا همه مشتریان متعلق به همین کسب‌وکار هستند ───
   const result = await Promise.all(
     customers.map(async (c) => {
       const count = await prisma.appointment.count({ where: { customerId: c.id } });

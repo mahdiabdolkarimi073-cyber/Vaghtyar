@@ -16,6 +16,9 @@ const PUBLIC_API_ROUTES = [
   '/api/business/auth/forgot-password',
   '/api/admin/auth/login',
   '/api/cron/send-reminders',
+  '/api/public/book',
+  '/api/bookings',
+  '/api/businesses',
 ];
 
 function isPublicRoute(pathname: string): boolean {
@@ -29,9 +32,12 @@ function isPublicRoute(pathname: string): boolean {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Protect admin pages
+  // Protect admin pages — check cookie OR Authorization header
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
-    const token = req.cookies.get(ADMIN_COOKIE)?.value;
+    const cookieToken = req.cookies.get(ADMIN_COOKIE)?.value;
+    const authHeader = req.headers.get('authorization');
+    const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    const token = cookieToken || bearerToken;
     if (!token) {
       const loginUrl = new URL('/admin/login', req.url);
       return NextResponse.redirect(loginUrl);
@@ -77,9 +83,12 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Admin API routes — verify admin token
+  // Admin API routes — verify admin token from cookie OR Authorization header
   if (pathname.startsWith('/api/admin/') && !pathname.startsWith('/api/admin/auth/')) {
-    const token = req.cookies.get(ADMIN_COOKIE)?.value;
+    const cookieToken = req.cookies.get(ADMIN_COOKIE)?.value;
+    const authHeader = req.headers.get('authorization');
+    const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    const token = cookieToken || bearerToken;
     if (!token) {
       return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
     }
@@ -96,9 +105,12 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Payment API routes — verify business token
+  // Payment API routes — verify business token from cookie OR Authorization header
   if (pathname.startsWith('/api/payment/') && !pathname.startsWith('/api/payment/callback')) {
-    const token = req.cookies.get(BUSINESS_COOKIE)?.value;
+    const cookieToken = req.cookies.get(BUSINESS_COOKIE)?.value;
+    const authHeader = req.headers.get('authorization');
+    const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    const token = cookieToken || bearerToken;
     if (!token) {
       return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
     }
@@ -112,9 +124,12 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Business API routes
+  // Business API routes — verify business token from cookie OR Authorization header
   if (pathname.startsWith('/api/business/') && !pathname.startsWith('/api/business/auth/')) {
-    const token = req.cookies.get(BUSINESS_COOKIE)?.value;
+    const cookieToken = req.cookies.get(BUSINESS_COOKIE)?.value;
+    const authHeader = req.headers.get('authorization');
+    const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    const token = cookieToken || bearerToken;
     if (!token) {
       return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
     }

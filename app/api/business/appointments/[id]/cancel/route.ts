@@ -1,13 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { sendSms } from '@/lib/sms-service';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
+/**
+ * PUT /api/business/appointments/[id]/cancel
+ *
+ * لغو نوبت — businessId از JWT، فیلتر با businessId در کوئری.
+ */
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
-  const body = await req.json();
+  const body = await req.json().catch(() => ({}));
+  const reason = typeof body.reason === 'string' ? body.reason.slice(0, 500) : undefined;
 
+  // ─── فیلتر با businessId از JWT ───
   const appointment = await prisma.appointment.findFirst({
     where: { id: params.id, businessId },
     include: { customer: true, service: true, staff: true, business: true },
@@ -16,7 +24,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
   const updated = await prisma.appointment.update({
     where: { id: params.id },
-    data: { status: 'CANCELLED', cancelReason: body.reason },
+    data: { status: 'CANCELLED', cancelReason: reason },
   });
 
   await sendSms({

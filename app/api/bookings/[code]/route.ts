@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// GET /api/bookings/[code] — دریافت اطلاعات رزرو با کد تأیید (بدون نیاز به احراز هویت)
 export async function GET(
   req: NextRequest,
-  { params }: { params: { confirmationCode: string } }
+  { params }: { params: { code: string } }
 ) {
   try {
     const booking = await prisma.booking.findUnique({
-      where: { confirmationCode: params.confirmationCode },
+      where: { confirmationCode: params.code },
       include: {
         business: true,
         service: true,

@@ -250,6 +250,8 @@ model Booking {
   @@index([businessId])
   @@index([staffId])
   @@index([customerId])
+  // جلوگیری از رزرو مضاعف — یک کارمند در یک تاریخ و زمان شروع فقط یک نوبت
+  @@unique([staffId, date, startTime])
 }
 
 model Appointment {
@@ -274,6 +276,8 @@ model Appointment {
   @@index([businessId])
   @@index([customerId])
   @@index([staffId])
+  // جلوگیری از رزرو مضاعف — یک کارمند نمی‌تواند دو نوبت در یک زمان شروع داشته باشد
+  @@unique([staffId, startTime])
 }
 
 model Customer {

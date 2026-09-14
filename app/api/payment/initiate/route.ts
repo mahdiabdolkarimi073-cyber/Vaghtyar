@@ -1,15 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { initiatePayment } from '@/lib/payment-service';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
+import { subscriptionUpgradeSchema } from '@/lib/validations/schemas';
 
+/**
+ * POST /api/payment/initiate
+ *
+ * شروع پرداخت — قیمت فقط از دیتابیس خوانده می‌شود.
+ * فیلدهای price، amount، discount از بدنه درخواست strip می‌شوند.
+ */
 export async function POST(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
-  const { planId } = await req.json();
-  if (!planId) return NextResponse.json({ error: 'شناسه پلن الزامی است' }, { status: 400 });
+  const body = await req.json();
 
-  const plan = await prisma.plan.findUnique({ where: { id: planId } });
+  // ─── اعتبارسنجی — فقط planId، نه price ───
+  const parsed = subscriptionUpgradeSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message || 'ورودی نامعتبر' },
+      { status: 400 }
+    );
+  }
+
+  // ─── قیمت را فقط از دیتابیس می‌خوانیم ───
+  const plan = await prisma.plan.findUnique({ where: { id: parsed.data.planId } });
   if (!plan || !plan.isActive) {
     return NextResponse.json({ error: 'پلن یافت نشد' }, { status: 404 });
   }
@@ -18,8 +35,8 @@ export async function POST(req: NextRequest) {
 
   const result = await initiatePayment({
     businessId,
-    planId,
-    amount: plan.price,
+    planId: parsed.data.planId,
+    amount: plan.price, // قیمت از دیتابیس
     callbackUrl,
   });
 

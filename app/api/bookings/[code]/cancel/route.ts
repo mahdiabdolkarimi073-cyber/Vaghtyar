@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// PUT /api/bookings/[code]/cancel — لغو رزرو با کد تأیید (بدون نیاز به احراز هویت)
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { confirmationCode: string } }
+  { params }: { params: { code: string } }
 ) {
   try {
-    const code = params.confirmationCode;
     const booking = await prisma.booking.findUnique({
-      where: { confirmationCode: code },
+      where: { confirmationCode: params.code },
     });
 
     if (!booking) {
