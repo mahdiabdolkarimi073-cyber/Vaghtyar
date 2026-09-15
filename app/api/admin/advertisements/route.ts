@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   if (!admin) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
 
   try {
-    const { businessId, type, startDate, endDate, price } = await req.json();
+    const { businessId, type, image, startDate, endDate, price } = await req.json();
 
     if (!businessId || !type || !startDate || !endDate) {
       return NextResponse.json(
@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
       data: {
         businessId,
         type,
+        image,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         price: price || 0,

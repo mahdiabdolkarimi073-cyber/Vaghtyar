@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { Plus, Edit, Trash2, Upload, X } from 'lucide-react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
 import StatusBadge from '@/components/admin/StatusBadge';
@@ -25,7 +25,8 @@ export default function AdminCategoriesPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [editing, setEditing] = useState<any | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: '', icon: '', description: '' });
+  const [form, setForm] = useState({ name: '', icon: '', image: '' });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -39,7 +40,16 @@ export default function AdminCategoriesPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  const handleImageUpload = async (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setForm(prev => ({ ...prev, image: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const save = async () => {
+    if (!form.name.trim()) { toast.error('نام دسته‌بندی الزامی است'); return; }
     try {
       if (editing) {
         await fetch(`/api/admin/categories/${editing.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
@@ -48,7 +58,7 @@ export default function AdminCategoriesPage() {
         await fetch('/api/admin/categories', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
         toast.success('دسته‌بندی ایجاد شد');
       }
-      setShowAdd(false); setEditing(null); setForm({ name: '', icon: '', description: '' });
+      setShowAdd(false); setEditing(null); setForm({ name: '', icon: '', image: '' });
       fetchData();
     } catch { toast.error('خطا'); }
   };
@@ -63,6 +73,12 @@ export default function AdminCategoriesPage() {
     } catch (e) { toast.error((e as Error).message); }
   };
 
+  const openEdit = (cat: any) => {
+    setEditing(cat);
+    setForm({ name: cat.name, icon: cat.icon || '', image: cat.image || '' });
+    setShowAdd(true);
+  };
+
   return (
     <>
       <AdminSidebar />
@@ -70,7 +86,7 @@ export default function AdminCategoriesPage() {
         <AdminHeader title="مدیریت دسته‌بندی‌ها" />
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-4">
           <div className="flex justify-end">
-            <button onClick={() => { setEditing(null); setForm({ name: '', icon: '', description: '' }); setShowAdd(true); }} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-md shadow-primary/25">
+            <button onClick={() => { setEditing(null); setForm({ name: '', icon: '', image: '' }); setShowAdd(true); }} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 shadow-md shadow-primary/25">
               <Plus className="w-4 h-4" /> افزودن دسته
             </button>
           </div>
@@ -86,15 +102,18 @@ export default function AdminCategoriesPage() {
               {data.map((cat, i) => (
                 <div key={cat.id} className={`admin-card p-5 border-r-4 ${accentBorder[accentColors[i % accentColors.length]]}`}>
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-2xl">
-                      {cat.icon || '✨'}
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden">
+                      {cat.image ? (
+                        <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-2xl">{cat.icon || '✨'}</span>
+                      )}
                     </div>
                     <StatusBadge variant="neutral">{toPersianDigits(cat._count?.businesses || 0)} کسب‌وکار</StatusBadge>
                   </div>
                   <h3 className="font-bold text-text-primary mb-1">{cat.name}</h3>
-                  {cat.description && <p className="text-sm text-text-muted">{cat.description}</p>}
                   <div className="flex gap-2 mt-3 pt-3 border-t border-border">
-                    <button onClick={() => { setEditing(cat); setForm({ name: cat.name, icon: cat.icon || '', description: '' }); setShowAdd(true); }} className="p-1.5 rounded-lg text-primary hover:bg-primary/10"><Edit className="w-4 h-4" /></button>
+                    <button onClick={() => openEdit(cat)} className="p-1.5 rounded-lg text-primary hover:bg-primary/10"><Edit className="w-4 h-4" /></button>
                     <button onClick={() => setDeleteId(cat.id)} className="p-1.5 rounded-lg text-error hover:bg-error/10"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
@@ -110,6 +129,29 @@ export default function AdminCategoriesPage() {
           <div className="space-y-3">
             <div><label className="text-sm text-text-secondary mb-1 block">نام</label><input value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" /></div>
             <div><label className="text-sm text-text-secondary mb-1 block">آیکون (اموجی)</label><input value={form.icon} onChange={e => setForm({...form, icon: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" placeholder="✂️" /></div>
+            <div>
+              <label className="text-sm text-text-secondary mb-1 block">تصویر (اختیاری)</label>
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); }} />
+              <div className="flex items-center gap-3">
+                <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden border border-border">
+                  {form.image ? (
+                    <img src={form.image} alt="preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-2xl">{form.icon || '✨'}</span>
+                  )}
+                </div>
+                {form.image ? (
+                  <button onClick={() => setForm({...form, image: ''})} className="text-error hover:bg-error/10 p-2 rounded-lg flex items-center gap-1 text-sm">
+                    <X className="w-4 h-4" /> حذف تصویر
+                  </button>
+                ) : (
+                  <button onClick={() => fileInputRef.current?.click()} className="admin-input px-3 py-2 rounded-xl text-sm flex items-center gap-2">
+                    <Upload className="w-4 h-4" /> آپلود تصویر
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-text-muted mt-1">اگر تصویر آپلود شود، به جای اموجی نمایش داده می‌شود</p>
+            </div>
           </div>
           <DialogFooter>
             <button onClick={() => setShowAdd(false)} className="admin-input px-4 py-2 rounded-xl text-sm">انصراف</button>

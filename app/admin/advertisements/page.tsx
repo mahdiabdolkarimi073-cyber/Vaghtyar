@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { Plus, Star, Image, Trash2, Calendar } from 'lucide-react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { Plus, Star, Image as ImageIcon, Trash2, Calendar, Upload, X } from 'lucide-react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
 import StatusBadge from '@/components/admin/StatusBadge';
@@ -20,7 +20,8 @@ export default function AdminAdvertisementsPage() {
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [form, setForm] = useState({ businessId: '', type: 'FEATURED', startDate: '', endDate: '', price: 0 });
+  const [form, setForm] = useState({ businessId: '', type: 'FEATURED', image: '', startDate: '', endDate: '', price: 0 });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -38,11 +39,20 @@ export default function AdminAdvertisementsPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  const handleImageUpload = async (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setForm(prev => ({ ...prev, image: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const addAd = async () => {
+    if (!form.businessId || !form.startDate || !form.endDate) { toast.error('کسب‌وکار و تاریخ‌ها الزامی است'); return; }
     try {
       await fetch('/api/admin/advertisements', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
       toast.success('تبلیغ ایجاد شد');
-      setShowAdd(false); setForm({ businessId: '', type: 'FEATURED', startDate: '', endDate: '', price: 0 }); fetchData();
+      setShowAdd(false); setForm({ businessId: '', type: 'FEATURED', image: '', startDate: '', endDate: '', price: 0 }); fetchData();
     } catch { toast.error('خطا'); }
   };
 
@@ -81,9 +91,14 @@ export default function AdminAdvertisementsPage() {
                 const d = daysLeft(ad.endDate);
                 return (
                   <div key={ad.id} className="admin-card p-5">
+                    {ad.image && (
+                      <div className="mb-3 rounded-xl overflow-hidden h-32 -mx-5 -mt-5">
+                        <img src={ad.image} alt={ad.business?.name || 'تبلیغ'} className="w-full h-full object-cover" />
+                      </div>
+                    )}
                     <div className="flex items-start justify-between mb-3">
                       <StatusBadge variant={ad.type === 'FEATURED' ? 'warning' : 'primary'}>
-                        {ad.type === 'FEATURED' ? <><Star className="w-3 h-3" /> ویژه</> : <><Image className="w-3 h-3" /> بنر</>}
+                        {ad.type === 'FEATURED' ? <><Star className="w-3 h-3" /> ویژه</> : <><ImageIcon className="w-3 h-3" /> بنر</>}
                       </StatusBadge>
                       <StatusBadge variant={d > 7 ? 'success' : d > 0 ? 'warning' : 'danger'}>
                         {d > 0 ? `${toPersianDigits(d)} روز` : 'منقضی'}
@@ -121,6 +136,28 @@ export default function AdminAdvertisementsPage() {
                 <option value="FEATURED">ویژه</option>
                 <option value="BANNER">بنر</option>
               </select>
+            </div>
+            <div>
+              <label className="text-sm text-text-secondary mb-1 block">تصویر تبلیغ (اختیاری)</label>
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); }} />
+              <div className="flex items-center gap-3">
+                <div className="w-20 h-20 rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden border border-border">
+                  {form.image ? (
+                    <img src={form.image} alt="preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <ImageIcon className="w-8 h-8 text-text-muted" />
+                  )}
+                </div>
+                {form.image ? (
+                  <button onClick={() => setForm({...form, image: ''})} className="text-error hover:bg-error/10 p-2 rounded-lg flex items-center gap-1 text-sm">
+                    <X className="w-4 h-4" /> حذف تصویر
+                  </button>
+                ) : (
+                  <button onClick={() => fileInputRef.current?.click()} className="admin-input px-3 py-2 rounded-xl text-sm flex items-center gap-2">
+                    <Upload className="w-4 h-4" /> آپلود تصویر
+                  </button>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div><label className="text-sm text-text-secondary mb-1 block">شروع</label><input type="date" value={form.startDate} onChange={e => setForm({...form, startDate: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>

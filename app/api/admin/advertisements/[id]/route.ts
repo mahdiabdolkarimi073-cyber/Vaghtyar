@@ -11,7 +11,7 @@ export async function PATCH(
 
   try {
     const body = await req.json();
-    const { endDate } = body;
+    const { endDate, image } = body;
 
     const existing = await prisma.advertisement.findUnique({
       where: { id: params.id },
@@ -24,6 +24,9 @@ export async function PATCH(
     const data: Record<string, unknown> = {};
     if (endDate !== undefined) {
       data.endDate = new Date(endDate);
+    }
+    if (image !== undefined) {
+      data.image = image;
     }
 
     const updated = await prisma.advertisement.update({

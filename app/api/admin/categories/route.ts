@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   if (!admin) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
 
   try {
-    const { name, icon, description } = await req.json();
+    const { name, icon, image } = await req.json();
 
     if (!name) {
       return NextResponse.json(
@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
         name,
         slug,
         icon,
+        image,
       },
     });
 

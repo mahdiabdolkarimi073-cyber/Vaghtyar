@@ -11,7 +11,7 @@ export async function PATCH(
 
   try {
     const body = await req.json();
-    const { name, icon } = body;
+    const { name, icon, image } = body;
 
     const existing = await prisma.category.findUnique({
       where: { id: params.id },
@@ -24,6 +24,7 @@ export async function PATCH(
     const data: Record<string, unknown> = {};
     if (name !== undefined) data.name = name;
     if (icon !== undefined) data.icon = icon;
+    if (image !== undefined) data.image = image;
 
     const updated = await prisma.category.update({
       where: { id: params.id },

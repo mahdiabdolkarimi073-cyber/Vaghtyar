@@ -428,6 +428,7 @@ model Advertisement {
   id         String   @id @default(cuid())
   businessId String
   type       AdType
+  image      String?
   startDate  DateTime
   endDate    DateTime
   price      Float
