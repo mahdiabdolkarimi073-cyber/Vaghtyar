@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Menu, X, Calendar, Store, User, LogOut, Search, Phone } from 'lucide-react';
+import { Menu, X, Calendar, Store, User, LogOut } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 import { Button } from '@/components/ui/button';
-import { useSiteSettings } from '@/hooks/use-site-settings';
+import type { SiteSettings } from '@/lib/site-settings-server';
 
 const NAV_LINKS = [
   { href: '/', label: 'خانه' },
@@ -14,14 +14,13 @@ const NAV_LINKS = [
   { href: '/contact', label: 'تماس' },
 ];
 
-export default function Header() {
+export default function Header({ siteSettings }: { siteSettings: SiteSettings }) {
   const { user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { settings } = useSiteSettings();
 
   const renderLogo = () =>
-    settings.site_logo ? (
-      <img src={settings.site_logo} alt={settings.site_name} className="w-9 h-9 rounded-xl object-cover" />
+    siteSettings.site_logo ? (
+      <img src={siteSettings.site_logo} alt={siteSettings.site_name} className="w-9 h-9 rounded-xl object-cover" />
     ) : (
       <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center shadow-soft">
         <Calendar className="w-5 h-5 text-white" />
@@ -34,7 +33,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
             {renderLogo()}
-            <span className="text-xl font-bold text-text-primary">{settings.site_name}</span>
+            <span className="text-xl font-bold text-text-primary">{siteSettings.site_name}</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">

@@ -332,7 +332,13 @@ export default function SalonPage() {
               </div>
               <div className="bg-surface rounded-xl border border-border p-2 overflow-hidden">
                 <div className="h-[400px] rounded-xl overflow-hidden">
-                  <MapView lat={30.2839} lng={57.0833} name={business.name} />
+                  {business.latitude && business.longitude ? (
+                    <MapView lat={business.latitude} lng={business.longitude} name={business.name} />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-text-muted text-sm">
+                      موقعیت روی نقشه ثبت نشده است
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

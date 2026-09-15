@@ -17,6 +17,8 @@ export interface Business {
   coverImage?: string | null;
   profileImage?: string | null;
   description?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   isVerified: boolean;
   isFeatured: boolean;
   autoConfirm: boolean;

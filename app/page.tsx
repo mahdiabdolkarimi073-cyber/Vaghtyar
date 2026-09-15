@@ -1,6 +1,3 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Clock, Bell, CalendarCheck, TrendingUp, Users, MapPin,
@@ -12,10 +9,12 @@ import AdBanner from '@/components/AdBanner';
 import AdFeatured from '@/components/AdFeatured';
 import { StarRating } from '@/components/StarRating';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { apiFetch } from '@/lib/api';
-import { useSiteSettings } from '@/hooks/use-site-settings';
 import { toPersianDigits } from '@/lib/constants';
-import type { Business, Category } from '@/lib/types';
+import { getHomeData, type HomeBusiness } from '@/lib/home-data';
+import { getSiteSettings } from '@/lib/site-settings-server';
+import type { Category, Business } from '@/lib/types';
+
+export const revalidate = 60;
 
 const CATEGORY_ICONS: Record<string, string> = {
   'mens-barber': '✂️',
@@ -54,23 +53,13 @@ const TESTIMONIALS = [
   { name: 'سارا کریمی', text: 'یادآوری پیامکی فوق‌العاده است. هیچ‌وقت نوبتم رو فراموش نمی‌کنم.', rating: 4, city: 'اصفهان' },
 ];
 
-export default function Home() {
-  const { settings } = useSiteSettings();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [featured, setFeatured] = useState<Business[]>([]);
-  const [recent, setRecent] = useState<Business[]>([]);
+export default async function Home() {
+  const [data, settings] = await Promise.all([
+    getHomeData(),
+    getSiteSettings(),
+  ]);
 
-  useEffect(() => {
-    Promise.all([
-      apiFetch<{ categories: Category[] }>('/api/categories').catch(() => ({ categories: [] })),
-      apiFetch<{ businesses: Business[] }>('/api/businesses/featured').catch(() => ({ businesses: [] })),
-      apiFetch<{ businesses: Business[] }>('/api/businesses/recent').catch(() => ({ businesses: [] })),
-    ]).then(([catRes, featRes, recRes]) => {
-      setCategories(catRes.categories);
-      setFeatured(featRes.businesses);
-      setRecent(recRes.businesses);
-    });
-  }, []);
+  const siteName = settings.site_name;
 
   return (
     <div>
@@ -80,14 +69,14 @@ export default function Home() {
         <div className="container mx-auto px-4 max-w-7xl relative z-10 py-20 md:py-28">
           <div className="text-center mb-10 animate-slide-up">
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              {settings.site_name}، رزرو آنلاین نوبت
+              {siteName}، رزرو آنلاین نوبت
             </h1>
             <p className="text-primary-foreground/80 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
               بدون انتظار، بدون معطلی. نوبت خود را آنلاین رزرو کنید و در زمان مقرر به سالن یا کلینیک مراجعه کنید.
             </p>
           </div>
           <div className="max-w-5xl mx-auto animate-fade-in">
-            <SearchBar />
+            <SearchBar categories={data.categories} cities={data.cities} />
           </div>
         </div>
       </section>
@@ -113,17 +102,17 @@ export default function Home() {
       </section>
 
       {/* Banner Advertisements */}
-      <AdBanner />
+      <AdBanner banners={data.banners} />
 
       {/* Categories Section */}
-      {categories.length > 0 && (
+      {data.categories.length > 0 && (
         <section className="container mx-auto px-4 max-w-7xl py-16">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">دسته‌بندی کسب‌وکارها</h2>
             <p className="text-text-secondary">نوع خدمت مورد نظر خود را انتخاب کنید</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {categories.map((cat) => (
+            {data.categories.map((cat: Category) => (
               <Link key={cat.id} href={`/search?category=${cat.slug}`} className="group">
                 <div className="bg-surface rounded-xl border border-border p-6 text-center hover:shadow-card-hover hover:border-primary/30 transition-all duration-200 hover:-translate-y-1">
                   <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 overflow-hidden transition-colors ${cat.image ? '' : 'bg-gradient-to-br from-primary/10 to-primary-light/10 group-hover:from-primary/15 group-hover:to-primary-light/15'}`}>
@@ -138,7 +127,7 @@ export default function Home() {
       )}
 
       {/* Featured Businesses */}
-      {featured.length > 0 && (
+      {data.featured.length > 0 && (
         <section className="container mx-auto px-4 max-w-7xl py-16">
           <div className="flex items-center justify-between mb-10">
             <div>
@@ -151,29 +140,29 @@ export default function Home() {
             <Link href="/search?sort=rating" className="text-primary hover:text-primary-dark font-medium text-sm hidden md:block transition-colors">مشاهده همه ←</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featured.map((b) => <BusinessCard key={b.id} business={b} />)}
+            {data.featured.map((b: HomeBusiness) => <BusinessCard key={b.id} business={b as unknown as Business} />)}
           </div>
         </section>
       )}
 
       {/* Featured Advertisements */}
-      <AdFeatured />
+      <AdFeatured ads={data.featuredAds} />
 
       {/* New Businesses */}
-      {recent.length > 0 && (
+      {data.recent.length > 0 && (
         <section className="container mx-auto px-4 max-w-7xl py-16">
           <div className="flex items-center justify-between mb-10">
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2 flex items-center gap-2">
                 <TrendingUp className="w-7 h-7 text-primary" />
-                تازه‌های {settings.site_name}
+                تازه‌های {siteName}
               </h2>
               <p className="text-text-secondary">جدیدترین کسب‌وکارهای عضو شده</p>
             </div>
             <Link href="/search?sort=newest" className="text-primary hover:text-primary-dark font-medium text-sm hidden md:block transition-colors">مشاهده همه ←</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {recent.slice(0, 4).map((b) => <BusinessCard key={b.id} business={b} />)}
+            {data.recent.slice(0, 4).map((b: HomeBusiness) => <BusinessCard key={b.id} business={b as unknown as Business} />)}
           </div>
         </section>
       )}
@@ -182,7 +171,7 @@ export default function Home() {
       <section className="bg-muted/50 py-16">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">چرا {settings.site_name}؟</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">چرا {siteName}؟</h2>
             <p className="text-text-secondary">مزایای رزرو نوبت آنلاین برای مشتریان</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -206,8 +195,8 @@ export default function Home() {
       {/* Why Businesses Choose Nobetyar */}
       <section className="container mx-auto px-4 max-w-7xl py-16">
         <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">چرا کسب‌وکارها {settings.site_name} را انتخاب می‌کنند؟</h2>
-          <p className="text-text-secondary">مزایای عضویت در پلتفرم {settings.site_name} برای صاحبان کسب‌وکار</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">چرا کسب‌وکارها {siteName} را انتخاب می‌کنند؟</h2>
+          <p className="text-text-secondary">مزایای عضویت در پلتفرم {siteName} برای صاحبان کسب‌وکار</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
@@ -231,7 +220,7 @@ export default function Home() {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">نظر کاربران ما</h2>
-            <p className="text-text-secondary">تجربه مشتریان {settings.site_name}</p>
+            <p className="text-text-secondary">تجربه مشتریان {siteName}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {TESTIMONIALS.map((t, i) => (
@@ -279,7 +268,7 @@ export default function Home() {
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-20V10h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zm0-20V10H4v4H0v2h4v4h2v-4h4v-2H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
           <div className="relative z-10">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">کسب‌وکار خود را ثبت کنید</h2>
-            <p className="text-primary-foreground/80 mb-8 max-w-xl mx-auto">همین حالا عضو {settings.site_name} شوید و نوبت‌گیری آنلاین را برای مشتریان خود فراهم کنید.</p>
+            <p className="text-primary-foreground/80 mb-8 max-w-xl mx-auto">همین حالا عضو {siteName} شوید و نوبت‌گیری آنلاین را برای مشتریان خود فراهم کنید.</p>
             <Link href="/register-business">
               <button className="bg-white text-primary font-bold px-8 py-3.5 rounded-xl hover:bg-primary-foreground/10 hover:text-white transition-all shadow-lg active:scale-95">
                 شروع ثبت‌نام

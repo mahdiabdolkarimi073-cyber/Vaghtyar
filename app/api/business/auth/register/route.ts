@@ -17,6 +17,11 @@ const registerSchema = z.object({
   neighborhood: z.string().optional(),
   address: z.string().optional(),
   phone: z.string().optional(),
+  coverImage: z.string().optional(),
+  profileImage: z.string().optional(),
+  photos: z.array(z.string()).optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
 });
 
 function generateSlug(name: string): string {
@@ -87,6 +92,11 @@ export async function POST(req: NextRequest) {
         phone: data.phone,
         status: 'PENDING',
         ownerId: user.id,
+        coverImage: data.coverImage,
+        profileImage: data.profileImage,
+        photos: data.photos || [],
+        latitude: data.latitude,
+        longitude: data.longitude,
       },
     });
 

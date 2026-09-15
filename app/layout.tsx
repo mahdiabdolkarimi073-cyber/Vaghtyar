@@ -5,21 +5,13 @@ import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/AuthProvider';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { prisma } from '@/lib/prisma';
+import { getSiteSettings } from '@/lib/site-settings-server';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir';
 
-async function getSiteName(): Promise<string> {
-  try {
-    const setting = await prisma.setting.findUnique({ where: { key: 'site_name' } });
-    return setting?.value || 'نوبت‌یار';
-  } catch {
-    return 'نوبت‌یار';
-  }
-}
-
 export async function generateMetadata(): Promise<Metadata> {
-  const siteName = await getSiteName();
+  const settings = await getSiteSettings();
+  const siteName = settings.site_name;
   return {
     metadataBase: new URL(SITE_URL),
     title: {
@@ -62,8 +54,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+export const revalidate = 60;
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const siteName = await getSiteName();
+  const settings = await getSiteSettings();
+  const siteName = settings.site_name;
 
   const homeJsonLd = {
     '@context': 'https://schema.org',
@@ -93,9 +88,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="bg-background text-foreground antialiased min-h-screen">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <AuthProvider>
-            <Header />
+            <Header siteSettings={settings} />
             <main className="animate-fade-in">{children}</main>
-            <Footer />
+            <Footer siteSettings={settings} />
           </AuthProvider>
           <Toaster
             position="top-center"

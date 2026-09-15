@@ -1,24 +1,13 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Sparkles, MapPin, Star } from 'lucide-react';
-import { apiFetch } from '@/lib/api';
+import { ChevronLeft, ChevronRight, Sparkles, MapPin } from 'lucide-react';
 import { toPersianDigits } from '@/lib/constants';
 import type { Advertisement } from '@/lib/types';
 
-export default function AdBanner() {
-  const [banners, setBanners] = useState<Advertisement[]>([]);
+export default function AdBanner({ banners }: { banners: Advertisement[] }) {
   const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    apiFetch<{ advertisements: Advertisement[] }>('/api/advertisements/active')
-      .then((res) => {
-        const bannerAds = res.advertisements.filter((ad) => ad.type === 'BANNER');
-        setBanners(bannerAds);
-      })
-      .catch(() => setBanners([]));
-  }, []);
 
   const next = useCallback(() => {
     setCurrent((prev) => (prev + 1) % banners.length);

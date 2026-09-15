@@ -12,6 +12,7 @@ const PUBLIC_API_ROUTES = [
   '/api/business/auth/register',
   '/api/business/auth/login',
   '/api/business/auth/forgot-password',
+  '/api/business/upload',
   '/api/admin/auth/login',
   '/api/cron/send-reminders',
   '/api/public/book',

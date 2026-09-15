@@ -2,8 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 
-// We use a dynamic import wrapper in the parent page to avoid SSR issues with Leaflet.
-// This component is only loaded client-side.
 export default function MapView({ lat, lng, name }: { lat: number; lng: number; name: string }) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<unknown>(null);
@@ -15,7 +13,6 @@ export default function MapView({ lat, lng, name }: { lat: number; lng: number; 
       if (cancelled || !mapRef.current) return;
       const L = (await import('leaflet')).default;
 
-      // Fix default icon paths for Leaflet in bundlers
       delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -23,7 +20,6 @@ export default function MapView({ lat, lng, name }: { lat: number; lng: number; 
         shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
       });
 
-      // Import CSS
       if (!(document.querySelector('link[href*="leaflet.css"]'))) {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
@@ -42,7 +38,16 @@ export default function MapView({ lat, lng, name }: { lat: number; lng: number; 
         attribution: '© OpenStreetMap',
       }).addTo(map);
 
-      L.marker([lat, lng]).addTo(map).bindPopup(name).openPopup();
+      const marker = L.marker([lat, lng]).addTo(map);
+      marker.bindPopup(name).openPopup();
+
+      // Add a permanent tooltip with the business name
+      marker.bindTooltip(name, {
+        permanent: true,
+        direction: 'top',
+        offset: [0, -10],
+        className: 'business-map-label',
+      });
     }
 
     initMap();

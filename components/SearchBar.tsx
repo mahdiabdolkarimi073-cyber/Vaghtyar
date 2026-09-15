@@ -1,29 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { apiFetch } from '@/lib/api';
 import type { Category, City } from '@/lib/types';
 
-export default function SearchBar() {
+export default function SearchBar({ categories, cities }: { categories: Category[]; cities: City[] }) {
   const router = useRouter();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [cities, setCities] = useState<City[]>([]);
   const [category, setCategory] = useState('');
   const [city, setCity] = useState('');
   const [neighborhood, setNeighborhood] = useState('');
-
-  useEffect(() => {
-    Promise.all([
-      apiFetch<{ categories: Category[] }>('/api/categories'),
-      apiFetch<{ cities: City[] }>('/api/cities'),
-    ]).then(([catRes, cityRes]) => {
-      setCategories(catRes.categories);
-      setCities(cityRes.cities);
-    }).catch(() => {});
-  }, []);
 
   const handleSearch = () => {
     const params = new URLSearchParams();

@@ -1,11 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Star, MapPin, Sparkles, BadgeCheck } from 'lucide-react';
-import { apiFetch } from '@/lib/api';
 import { toPersianDigits } from '@/lib/constants';
-import type { Advertisement, Business } from '@/lib/types';
+import type { Advertisement } from '@/lib/types';
 
 interface FeaturedAdWithRating extends Advertisement {
   business?: {
@@ -21,18 +19,7 @@ interface FeaturedAdWithRating extends Advertisement {
   } | null;
 }
 
-export default function AdFeatured() {
-  const [ads, setAds] = useState<FeaturedAdWithRating[]>([]);
-
-  useEffect(() => {
-    apiFetch<{ advertisements: Advertisement[] }>('/api/advertisements/active')
-      .then((res) => {
-        const featuredAds = res.advertisements.filter((ad) => ad.type === 'FEATURED');
-        setAds(featuredAds);
-      })
-      .catch(() => setAds([]));
-  }, []);
-
+export default function AdFeatured({ ads }: { ads: FeaturedAdWithRating[] }) {
   if (ads.length === 0) return null;
 
   return (

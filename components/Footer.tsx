@@ -2,14 +2,12 @@
 
 import Link from 'next/link';
 import { Calendar, Phone, Mail, MapPin, Instagram, Facebook, Twitter, ShieldCheck, BadgeCheck, Headphones } from 'lucide-react';
-import { useSiteSettings } from '@/hooks/use-site-settings';
+import type { SiteSettings } from '@/lib/site-settings-server';
 
-export default function Footer() {
-  const { settings } = useSiteSettings();
-
+export default function Footer({ siteSettings }: { siteSettings: SiteSettings }) {
   const renderLogo = () =>
-    settings.site_logo ? (
-      <img src={settings.site_logo} alt={settings.site_name} className="w-9 h-9 rounded-xl object-cover" />
+    siteSettings.site_logo ? (
+      <img src={siteSettings.site_logo} alt={siteSettings.site_name} className="w-9 h-9 rounded-xl object-cover" />
     ) : (
       <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
         <Calendar className="w-5 h-5 text-white" />
@@ -23,7 +21,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               {renderLogo()}
-              <span className="text-xl font-bold text-white">{settings.site_name}</span>
+              <span className="text-xl font-bold text-white">{siteSettings.site_name}</span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
               پلتفرم رزرو نوبت آنلاین برای سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌ها. بدون انتظار، بدون معطلی.
@@ -60,16 +58,16 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">تماس با ما</h3>
             <ul className="space-y-3 text-sm">
-              {settings.contact_phone && (
-                <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary-light" /> {settings.contact_phone}</li>
+              {siteSettings.contact_phone && (
+                <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary-light" /> {siteSettings.contact_phone}</li>
               )}
-              {settings.contact_email && (
-                <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary-light" /> {settings.contact_email}</li>
+              {siteSettings.contact_email && (
+                <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary-light" /> {siteSettings.contact_email}</li>
               )}
-              {settings.contact_address && (
-                <li className="flex items-center gap-2"><MapPin className="w-4 h-4 text-primary-light" /> {settings.contact_address}</li>
+              {siteSettings.contact_address && (
+                <li className="flex items-center gap-2"><MapPin className="w-4 h-4 text-primary-light" /> {siteSettings.contact_address}</li>
               )}
-              {!settings.contact_phone && !settings.contact_email && !settings.contact_address && (
+              {!siteSettings.contact_phone && !siteSettings.contact_email && !siteSettings.contact_address && (
                 <li className="text-slate-500">اطلاعات تماس در بخش تنظیمات قابل ویرایش است</li>
               )}
             </ul>
@@ -93,7 +91,7 @@ export default function Footer() {
             <Link href="/faq" className="hover:text-primary-light transition-colors">سوالات متداول</Link>
             <Link href="/cancellation-policy" className="hover:text-primary-light transition-colors">لغو نوبت</Link>
           </div>
-          <p className="text-xs text-slate-500">© ۱۴۰۴ {settings.site_name}. تمامی حقوق محفوظ است.</p>
+          <p className="text-xs text-slate-500">© ۱۴۰۴ {siteSettings.site_name}. تمامی حقوق محفوظ است.</p>
         </div>
       </div>
     </footer>
