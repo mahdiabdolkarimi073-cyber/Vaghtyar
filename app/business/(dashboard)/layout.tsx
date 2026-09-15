@@ -7,6 +7,7 @@ import {
   LayoutDashboard, Scissors, Users, Clock, Calendar, UserCheck,
   BarChart3, Settings, CreditCard, LogOut, Menu, X, Bell, MessageSquare, Receipt
 } from 'lucide-react';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 const NAV_ITEMS = [
   { href: '/business/dashboard', label: 'داشبورد', icon: LayoutDashboard },
@@ -28,6 +29,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [businessName, setBusinessName] = useState('');
   const [notifications, setNotifications] = useState(0);
+  const { settings } = useSiteSettings();
+
+  const renderSidebarLogo = () =>
+    settings.site_logo ? (
+      <img src={settings.site_logo} alt={settings.site_name} className="w-10 h-10 rounded-xl object-cover" />
+    ) : (
+      <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+        <span className="text-white font-bold text-lg">{settings.site_name.charAt(0)}</span>
+      </div>
+    );
 
   useEffect(() => {
     fetch('/api/business/auth/me')
@@ -59,11 +70,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <>
       <div className="p-6 border-b border-border">
         <Link href="/business/dashboard" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-            <span className="text-white font-bold text-lg">ن</span>
-          </div>
+          {renderSidebarLogo()}
           <div>
-            <div className="text-sm font-bold text-text-primary">نوبت‌یار</div>
+            <div className="text-sm font-bold text-text-primary">{settings.site_name}</div>
             <div className="text-xs text-text-secondary">پنل کسب‌وکار</div>
           </div>
         </Link>
@@ -104,11 +113,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <aside className="absolute top-0 right-0 h-screen w-64 flex flex-col bg-surface border-l border-border animate-slide-in-right">
             <div className="p-6 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">ن</span>
-                </div>
+                {renderSidebarLogo()}
                 <div>
-                  <div className="text-sm font-bold text-text-primary">نوبت‌یار</div>
+                  <div className="text-sm font-bold text-text-primary">{settings.site_name}</div>
                   <div className="text-xs text-text-secondary">پنل کسب‌وکار</div>
                 </div>
               </div>

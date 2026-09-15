@@ -5,65 +5,80 @@ import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/AuthProvider';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { prisma } from '@/lib/prisma';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir';
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: 'نوبت‌یار | رزرو آنلاین نوبت',
-    template: '%s | نوبت‌یار',
-  },
-  description:
-    'پلتفرم رزرو آنلاین نوبت برای سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌ها در سراسر ایران. بدون انتظار، بدون معطلی.',
-  keywords: [
-    'رزرو نوبت', 'نوبت آنلاین', 'سالن زیبایی', 'کلینیک', 'آرایشگاه',
-    'رزرو نوبت سالن زیبایی', 'رزرو نوبت کلینیک', 'نوبت‌یار',
-  ],
-  openGraph: {
-    type: 'website',
-    locale: 'fa_IR',
-    siteName: 'نوبت‌یار',
-    title: 'نوبت‌یار | رزرو آنلاین نوبت',
-    description: 'بدون انتظار، بدون معطلی. نوبت خود را آنلاین رزرو کنید.',
-    url: SITE_URL,
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'نوبت‌یار | رزرو آنلاین نوبت',
-    description: 'بدون انتظار، بدون معطلی. نوبت خود را آنلاین رزرو کنید.',
-  },
-  alternates: {
-    canonical: SITE_URL,
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+async function getSiteName(): Promise<string> {
+  try {
+    const setting = await prisma.setting.findUnique({ where: { key: 'site_name' } });
+    return setting?.value || 'نوبت‌یار';
+  } catch {
+    return 'نوبت‌یار';
+  }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName();
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: `${siteName} | رزرو آنلاین نوبت`,
+      template: `%s | ${siteName}`,
+    },
+    description:
+      'پلتفرم رزرو آنلاین نوبت برای سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌ها در سراسر ایران. بدون انتظار، بدون معطلی.',
+    keywords: [
+      'رزرو نوبت', 'نوبت آنلاین', 'سالن زیبایی', 'کلینیک', 'آرایشگاه',
+      'رزرو نوبت سالن زیبایی', 'رزرو نوبت کلینیک',
+    ],
+    openGraph: {
+      type: 'website',
+      locale: 'fa_IR',
+      siteName,
+      title: `${siteName} | رزرو آنلاین نوبت`,
+      description: 'بدون انتظار، بدون معطلی. نوبت خود را آنلاین رزرو کنید.',
+      url: SITE_URL,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${siteName} | رزرو آنلاین نوبت`,
+      description: 'بدون انتظار، بدون معطلی. نوبت خود را آنلاین رزرو کنید.',
+    },
+    alternates: {
+      canonical: SITE_URL,
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-      'max-video-preview': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
+      },
     },
-  },
-};
+  };
+}
 
-const homeJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'نوبت‌یار',
-  url: SITE_URL,
-  description: 'پلتفرم رزرو آنلاین نوبت برای سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌ها',
-  inLanguage: 'fa-IR',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: `${SITE_URL}/search?q={search_term_string}`,
-    'query-input': 'required name=search_term_string',
-  },
-};
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const siteName = await getSiteName();
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const homeJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteName,
+    url: SITE_URL,
+    description: 'پلتفرم رزرو آنلاین نوبت برای سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌ها',
+    inLanguage: 'fa-IR',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${SITE_URL}/search?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   return (
     <html lang="fa" dir="rtl" className="font-vazirmatn" suppressHydrationWarning>
       <head>

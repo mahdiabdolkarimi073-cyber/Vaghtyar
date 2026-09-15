@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import GlassCard from '@/components/ui/GlassCard';
 import GradientButton from '@/components/ui/GradientButton';
 import { businessFetch } from '@/lib/business-api';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 type Tab = 'info' | 'booking' | 'sms' | 'link';
 
@@ -15,6 +16,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
   const [businessSlug, setBusinessSlug] = useState('');
+  const { settings } = useSiteSettings();
 
   const [info, setInfo] = useState({ name: '', address: '', phone: '', description: '', neighborhood: '', category: '', city: '' });
   const [booking, setBooking] = useState({ autoApprove: false, minAdvanceHours: 1, maxAdvanceDays: 30, allowCustomerCancel: true, reminderHoursBefore: 24 });
@@ -147,7 +149,7 @@ export default function SettingsPage() {
           </div>
           <p className="text-xs text-text-secondary">این لینک را با مشتریان خود به اشتراک بگذارید تا مستقیما نوبت رزرو کنند.</p>
           <div className="flex gap-2">
-            <a href={`https://wa.me/?text=${typeof window !== 'undefined' ? encodeURIComponent(`نوبت‌یار: ${window.location.origin}/book/${businessSlug}`) : ''}`} target="_blank" rel="noopener" className="px-4 py-2 rounded-xl glass text-sm text-text-primary hover:bg-muted">واتساپ</a>
+            <a href={`https://wa.me/?text=${typeof window !== 'undefined' ? encodeURIComponent(`${settings.site_name}: ${window.location.origin}/book/${businessSlug}`) : ''}`} target="_blank" rel="noopener" className="px-4 py-2 rounded-xl glass text-sm text-text-primary hover:bg-muted">واتساپ</a>
             <a href={`https://t.me/share/url?url=${typeof window !== 'undefined' ? encodeURIComponent(`${window.location.origin}/book/${businessSlug}`) : ''}`} target="_blank" rel="noopener" className="px-4 py-2 rounded-xl glass text-sm text-text-primary hover:bg-muted">تلگرام</a>
           </div>
         </GlassCard>

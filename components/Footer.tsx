@@ -1,17 +1,29 @@
+'use client';
+
 import Link from 'next/link';
 import { Calendar, Phone, Mail, MapPin, Instagram, Facebook, Twitter, ShieldCheck, BadgeCheck, Headphones } from 'lucide-react';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 export default function Footer() {
+  const { settings } = useSiteSettings();
+
+  const renderLogo = () =>
+    settings.site_logo ? (
+      <img src={settings.site_logo} alt={settings.site_name} className="w-9 h-9 rounded-xl object-cover" />
+    ) : (
+      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
+        <Calendar className="w-5 h-5 text-white" />
+      </div>
+    );
+
   return (
     <footer className="bg-slate-900 text-slate-300 mt-20">
       <div className="container mx-auto px-4 max-w-7xl py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold text-white">نوبت‌یار</span>
+              {renderLogo()}
+              <span className="text-xl font-bold text-white">{settings.site_name}</span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
               پلتفرم رزرو نوبت آنلاین برای سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌ها. بدون انتظار، بدون معطلی.
@@ -48,9 +60,18 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">تماس با ما</h3>
             <ul className="space-y-3 text-sm">
-              <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary-light" /> ۰۳۴-۳۲۱۰۰۰۰۰</li>
-              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary-light" /> info@nobetyar.ir</li>
-              <li className="flex items-center gap-2"><MapPin className="w-4 h-4 text-primary-light" /> کرمان، بلوار جمهوری</li>
+              {settings.contact_phone && (
+                <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary-light" /> {settings.contact_phone}</li>
+              )}
+              {settings.contact_email && (
+                <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary-light" /> {settings.contact_email}</li>
+              )}
+              {settings.contact_address && (
+                <li className="flex items-center gap-2"><MapPin className="w-4 h-4 text-primary-light" /> {settings.contact_address}</li>
+              )}
+              {!settings.contact_phone && !settings.contact_email && !settings.contact_address && (
+                <li className="text-slate-500">اطلاعات تماس در بخش تنظیمات قابل ویرایش است</li>
+              )}
             </ul>
             <div className="flex gap-3 mt-4">
               <a href="#" className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors"><Instagram className="w-4 h-4" /></a>
@@ -72,7 +93,7 @@ export default function Footer() {
             <Link href="/faq" className="hover:text-primary-light transition-colors">سوالات متداول</Link>
             <Link href="/cancellation-policy" className="hover:text-primary-light transition-colors">لغو نوبت</Link>
           </div>
-          <p className="text-xs text-slate-500">© ۱۴۰۴ نوبت‌یار. تمامی حقوق محفوظ است.</p>
+          <p className="text-xs text-slate-500">© ۱۴۰۴ {settings.site_name}. تمامی حقوق محفوظ است.</p>
         </div>
       </div>
     </footer>

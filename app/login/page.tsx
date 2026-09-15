@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/components/AuthProvider';
 import { apiFetch } from '@/lib/api';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 import type { User as UserType } from '@/lib/types';
 
 export default function LoginPage() {
@@ -17,6 +18,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const { settings } = useSiteSettings();
 
   const [loginForm, setLoginForm] = useState({ phone: '', password: '' });
   const [registerForm, setRegisterForm] = useState({
@@ -71,7 +73,7 @@ export default function LoginPage() {
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Calendar className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-text-primary">نوبت‌یار</h1>
+          <h1 className="text-2xl font-bold text-text-primary">{settings.site_name}</h1>
           <p className="text-text-muted mt-1">به پلتفرم رزرو آنلاین نوبت خوش آمدید</p>
         </div>
 

@@ -2,20 +2,31 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Target, Users, ShieldCheck, Zap, Heart, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { prisma } from '@/lib/prisma';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir';
 
-export const metadata: Metadata = {
-  title: 'درباره ما',
-  description:
-    'نوبت‌یار پلتفرم رزرو آنلاین نوبت برای سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌ها در ایران است. هدف ما راحت‌تر کردن رزرو نوبت برای همه است.',
-  alternates: { canonical: `${SITE_URL}/about` },
-  openGraph: {
-    title: 'درباره نوبت‌یار',
-    description: 'پلتفرم رزرو آنلاین نوبت برای کسب‌وکارهای زیبایی و سلامت در ایران.',
-    url: `${SITE_URL}/about`,
-  },
-};
+async function getSiteName() {
+  try {
+    const s = await prisma.setting.findUnique({ where: { key: 'site_name' } });
+    return s?.value || 'نوبت‌یار';
+  } catch { return 'نوبت‌یار'; }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName();
+  return {
+    title: 'درباره ما',
+    description:
+      `${siteName} پلتفرم رزرو آنلاین نوبت برای سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌ها در ایران است. هدف ما راحت‌تر کردن رزرو نوبت برای همه است.`,
+    alternates: { canonical: `${SITE_URL}/about` },
+    openGraph: {
+      title: `درباره ${siteName}`,
+      description: 'پلتفرم رزرو آنلاین نوبت برای کسب‌وکارهای زیبایی و سلامت در ایران.',
+      url: `${SITE_URL}/about`,
+    },
+  };
+}
 
 const VALUES = [
   {
@@ -50,13 +61,14 @@ const VALUES = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const siteName = await getSiteName();
   return (
     <div className="container mx-auto px-4 max-w-5xl py-12">
       <div className="text-center mb-12">
-        <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">درباره نوبت‌یار</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">درباره {siteName}</h1>
         <p className="text-text-secondary text-lg leading-relaxed max-w-2xl mx-auto">
-          نوبت‌یار یک پلتفرم رزرو آنلاین نوبت است که ارتباط بین مشتریان و کسب‌وکارهای زیبایی و سلامت را
+          {siteName} یک پلتفرم رزرو آنلاین نوبت است که ارتباط بین مشتریان و کسب‌وکارهای زیبایی و سلامت را
           ساده می‌کند. ما معتقدیم هیچ‌کس نباید برای یک نوبت ساده ساعت‌ها منتظر بماند یا ده‌ها بار تماس بگیرد.
         </p>
       </div>
@@ -98,9 +110,9 @@ export default function AboutPage() {
       </div>
 
       <div className="text-center bg-surface rounded-2xl border border-border p-8">
-        <h2 className="text-xl font-bold text-text-primary mb-3">به نوبت‌یار بپیوندید</h2>
+        <h2 className="text-xl font-bold text-text-primary mb-3">به {siteName} بپیوندید</h2>
         <p className="text-text-secondary mb-6 max-w-lg mx-auto">
-          چه مشتری باشید چه صاحب کسب‌وکار، نوبت‌یار تجربه‌ای بهتر برای شما دارد.
+          چه مشتری باشید چه صاحب کسب‌وکار، {siteName} تجربه‌ای بهتر برای شما دارد.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link href="/search">

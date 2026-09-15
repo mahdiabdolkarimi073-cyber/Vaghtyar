@@ -12,6 +12,7 @@ import BackgroundOrbs from '@/components/ui/BackgroundOrbs';
 import GlassCard from '@/components/ui/GlassCard';
 import GradientButton from '@/components/ui/GradientButton';
 import { GlassInput, GlassTextarea } from '@/components/ui/GlassInput';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 const schema = z.object({
   ownerFirstName: z.string().min(2, 'نام حداقل ۲ کاراکتر'),
@@ -42,6 +43,7 @@ export default function BusinessRegisterPage() {
   const isPending = searchParams.get('status') === 'pending';
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const { settings } = useSiteSettings();
 
   const { register, handleSubmit, formState: { errors }, watch, trigger } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -118,7 +120,7 @@ export default function BusinessRegisterPage() {
               <Building2 className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold gradient-text">ثبت‌نام کسب‌وکار</h1>
-            <p className="text-sm text-text-secondary mt-2">پنل مدیریت نوبت‌یار برای کسب‌وکار شما</p>
+            <p className="text-sm text-text-secondary mt-2">پنل مدیریت {settings.site_name} برای کسب‌وکار شما</p>
           </div>
 
           {/* Step indicator */}

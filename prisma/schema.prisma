@@ -328,9 +328,22 @@ model Category {
 }
 
 model City {
-  id   String @id @default(cuid())
-  name String
-  slug String @unique
+  id            String        @id @default(cuid())
+  name          String
+  slug          String        @unique
+  neighborhoods Neighborhood[]
+}
+
+model Neighborhood {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  cityId    String
+  createdAt DateTime @default(now())
+  city      City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+
+  @@index([cityId])
+  @@unique([cityId, name])
 }
 
 model SmsLog {

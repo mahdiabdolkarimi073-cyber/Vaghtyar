@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Menu, X, Calendar, Store, User, LogOut, Search, Phone } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 const NAV_LINKS = [
   { href: '/', label: 'خانه' },
@@ -17,16 +17,24 @@ const NAV_LINKS = [
 export default function Header() {
   const { user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { settings } = useSiteSettings();
+
+  const renderLogo = () =>
+    settings.site_logo ? (
+      <img src={settings.site_logo} alt={settings.site_name} className="w-9 h-9 rounded-xl object-cover" />
+    ) : (
+      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center shadow-soft">
+        <Calendar className="w-5 h-5 text-white" />
+      </div>
+    );
 
   return (
     <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-md border-b border-border shadow-sm">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-light flex items-center justify-center shadow-soft">
-              <Calendar className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-bold text-text-primary">نوبت‌یار</span>
+            {renderLogo()}
+            <span className="text-xl font-bold text-text-primary">{settings.site_name}</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">

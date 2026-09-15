@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { Shield, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 export default function AdminLoginPage() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { settings } = useSiteSettings();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,10 +36,14 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 via-sky-50 to-emerald-50 px-4">
       <div className="admin-card p-8 w-full max-w-md admin-animate">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl admin-gradient-primary flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold admin-gradient-text mb-1">پنل مدیریت نوبت‌یار</h1>
+          {settings.site_logo ? (
+            <img src={settings.site_logo} alt={settings.site_name} className="w-16 h-16 rounded-2xl object-cover mx-auto mb-4" />
+          ) : (
+            <div className="w-16 h-16 rounded-2xl admin-gradient-primary flex items-center justify-center mx-auto mb-4">
+              <Shield className="w-8 h-8 text-white" />
+            </div>
+          )}
+          <h1 className="text-2xl font-bold admin-gradient-text mb-1">پنل مدیریت {settings.site_name}</h1>
           <p className="text-sm text-text-muted">برای ورود اطلاعات خود را وارد کنید</p>
         </div>
 

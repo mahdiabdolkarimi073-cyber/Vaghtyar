@@ -8,9 +8,17 @@ import type { Metadata } from 'next';
 
 interface Props { params: { citySlug: string } }
 
+async function getSiteName() {
+  try {
+    const s = await prisma.setting.findUnique({ where: { key: 'site_name' } });
+    return s?.value || 'نوبت‌یار';
+  } catch { return 'نوبت‌یار'; }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const city = await prisma.city.findUnique({ where: { slug: params.citySlug } });
-  if (!city) return { title: 'شهر یافت نشد | نوبت‌یار' };
+  const siteName = await getSiteName();
+  if (!city) return { title: `شهر یافت نشد | ${siteName}` };
   return {
     title: `رزرو نوبت در ${city.name}`,
     description: `لیست سالن‌های زیبایی، کلینیک‌ها و آرایشگاه‌های ${city.name}. نوبت خود را آنلاین و بدون انتظار رزرو کنید.`,
@@ -23,6 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CityPage({ params }: Props) {
   const city = await prisma.city.findUnique({ where: { slug: params.citySlug } });
   if (!city) notFound();
+  const siteName = await getSiteName();
 
   const businesses = await prisma.business.findMany({
     where: { city: params.citySlug },
@@ -63,7 +72,7 @@ export default async function CityPage({ params }: Props) {
     url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir'}/city/${params.citySlug}`,
     isPartOf: {
       '@type': 'WebSite',
-      name: 'نوبت‌یار',
+      name: siteName,
     },
   };
 

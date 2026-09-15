@@ -7,6 +7,7 @@ import { Store, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/AuthProvider';
 import { apiFetch } from '@/lib/api';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 import type { Category, City } from '@/lib/types';
 
 export default function RegisterBusinessPage() {
@@ -17,6 +18,7 @@ export default function RegisterBusinessPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const { settings } = useSiteSettings();
 
   const [form, setForm] = useState({
     name: '',
@@ -88,7 +90,7 @@ export default function RegisterBusinessPage() {
           <Store className="w-8 h-8 text-white" />
         </div>
         <h1 className="text-2xl font-bold text-text-primary">ثبت کسب‌وکار</h1>
-        <p className="text-text-muted mt-1">کسب‌وکار خود را در نوبت‌یار ثبت کنید</p>
+        <p className="text-text-muted mt-1">کسب‌وکار خود را در {settings.site_name} ثبت کنید</p>
       </div>
 
       <div className="bg-surface rounded-2xl shadow-card border border-border p-6 space-y-5">

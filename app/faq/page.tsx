@@ -3,14 +3,25 @@ import Link from 'next/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { HelpCircle, Calendar, Store, CreditCard, Bell, Search } from 'lucide-react';
+import { prisma } from '@/lib/prisma';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir';
 
-export const metadata: Metadata = {
-  title: 'سوالات متداول',
-  description: 'پاسخ به پرسش‌های پرتکرار درباره رزرو نوبت، ثبت کسب‌وکار، پرداخت و امکانات نوبت‌یار.',
-  alternates: { canonical: `${SITE_URL}/faq` },
-};
+async function getSiteName() {
+  try {
+    const s = await prisma.setting.findUnique({ where: { key: 'site_name' } });
+    return s?.value || 'نوبت‌یار';
+  } catch { return 'نوبت‌یار'; }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName();
+  return {
+    title: 'سوالات متداول',
+    description: `پاسخ به پرسش‌های پرتکرار درباره رزرو نوبت، ثبت کسب‌وکار، پرداخت و امکانات ${siteName}.`,
+    alternates: { canonical: `${SITE_URL}/faq` },
+  };
+}
 
 const FAQ_SECTIONS = [
   {
@@ -113,7 +124,8 @@ const FAQ_SECTIONS = [
   },
 ];
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const siteName = await getSiteName();
   const allFaqs = FAQ_SECTIONS.flatMap((s) =>
     s.items.map((item) => ({
       '@type': 'Question',
@@ -140,7 +152,7 @@ export default function FaqPage() {
           <HelpCircle className="w-8 h-8 text-primary" />
         </div>
         <h1 className="text-3xl font-bold text-text-primary mb-3">سوالات متداول</h1>
-        <p className="text-text-secondary">پاسخ به پرسش‌های پرتکرار درباره نوبت‌یار</p>
+        <p className="text-text-secondary">پاسخ به پرسش‌های پرتکرار درباره {siteName}</p>
       </div>
 
       <div className="space-y-8">

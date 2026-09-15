@@ -8,10 +8,18 @@ import type { Metadata } from 'next';
 
 interface Props { params: { citySlug: string; categorySlug: string } }
 
+async function getSiteName() {
+  try {
+    const s = await prisma.setting.findUnique({ where: { key: 'site_name' } });
+    return s?.value || 'نوبت‌یار';
+  } catch { return 'نوبت‌یار'; }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const city = await prisma.city.findUnique({ where: { slug: params.citySlug } });
   const category = await prisma.category.findUnique({ where: { slug: params.categorySlug } });
-  if (!city || !category) return { title: 'یافت نشد | نوبت‌یار' };
+  const siteName = await getSiteName();
+  if (!city || !category) return { title: `یافت نشد | ${siteName}` };
   return {
     title: `${category.name} در ${city.name}`,
     description: `لیست ${category.name}های ${city.name}. نوبت خود را آنلاین و بدون انتظار رزرو کنید.`,
@@ -25,6 +33,7 @@ export default async function CityCategoryPage({ params }: Props) {
   const city = await prisma.city.findUnique({ where: { slug: params.citySlug } });
   const category = await prisma.category.findUnique({ where: { slug: params.categorySlug } });
   if (!city || !category) notFound();
+  const siteName = await getSiteName();
 
   const businesses = await prisma.business.findMany({
     where: { city: params.citySlug, category: params.categorySlug },
@@ -54,7 +63,7 @@ export default async function CityCategoryPage({ params }: Props) {
     description: `لیست ${category.name}های ${city.name}. نوبت خود را آنلاین رزرو کنید.`,
     inLanguage: 'fa-IR',
     url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir'}/${params.citySlug}/${params.categorySlug}`,
-    isPartOf: { '@type': 'WebSite', name: 'نوبت‌یار' },
+    isPartOf: { '@type': 'WebSite', name: siteName },
   };
 
   return (

@@ -5,7 +5,7 @@ import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Save } from 'lucide-react';
+import { Save, Upload, X } from 'lucide-react';
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Record<string, string>>({});
@@ -75,7 +75,44 @@ export default function AdminSettingsPage() {
                 <h3 className="text-sm font-bold text-text-secondary">تنظیمات عمومی</h3>
                 {input('site_name', 'نام سایت')}
                 {input('site_tagline', 'شعار سایت')}
-                <button onClick={() => save(['site_name', 'site_tagline'])} disabled={saving} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 disabled:opacity-50">
+                <div>
+                  <label className="text-sm text-text-secondary mb-1 block">لوگوی سایت</label>
+                  <div className="flex items-center gap-3">
+                    <div className="w-20 h-20 rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden border border-border">
+                      {settings.site_logo ? (
+                        <img src={settings.site_logo} alt="logo" className="w-full h-full object-contain" />
+                      ) : (
+                        <span className="text-2xl font-bold text-primary">ن</span>
+                      )}
+                    </div>
+                    {settings.site_logo ? (
+                      <button
+                        onClick={() => setSettings({ ...settings, site_logo: '' })}
+                        className="text-error hover:bg-error/10 p-2 rounded-lg flex items-center gap-1 text-sm"
+                      >
+                        <X className="w-4 h-4" /> حذف لوگو
+                      </button>
+                    ) : (
+                      <label className="admin-input px-3 py-2 rounded-xl text-sm flex items-center gap-2 cursor-pointer">
+                        <Upload className="w-4 h-4" /> آپلود لوگو
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (!f) return;
+                            const reader = new FileReader();
+                            reader.onload = () => setSettings((prev) => ({ ...prev, site_logo: reader.result as string }));
+                            reader.readAsDataURL(f);
+                          }}
+                        />
+                      </label>
+                    )}
+                  </div>
+                  <p className="text-xs text-text-muted mt-1">تصویر لوگو در سراسر سایت جایگزین آیکون پیش‌فرض می‌شود</p>
+                </div>
+                <button onClick={() => save(['site_name', 'site_tagline', 'site_logo'])} disabled={saving} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 disabled:opacity-50">
                   <Save className="w-4 h-4" /> ذخیره
                 </button>
               </div>

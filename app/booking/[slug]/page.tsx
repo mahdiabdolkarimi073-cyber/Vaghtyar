@@ -14,6 +14,7 @@ import {
   DAY_NAMES_FA, formatDateShortFA
 } from '@/lib/constants';
 import JalaliCalendar from '@/components/JalaliCalendar';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 import type { Business, Service, Staff, TimeSlot, Booking } from '@/lib/types';
 
 const STEPS = ['انتخاب خدمت', 'انتخاب متخصص', 'تاریخ و زمان', 'اطلاعات مشتری', 'تأیید و ثبت'];
@@ -38,6 +39,7 @@ export default function BookingPage() {
   const [submitting, setSubmitting] = useState(false);
   const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null);
   const [error, setError] = useState('');
+  const { settings } = useSiteSettings();
 
   // Pre-select service from URL
   const preselectServiceId = searchParams.get('serviceId');
@@ -351,7 +353,7 @@ export default function BookingPage() {
           </div>
           <label className="flex items-start gap-2 cursor-pointer">
             <input type="checkbox" checked={customerForm.terms} onChange={e => setCustomerForm({...customerForm, terms: e.target.checked})} className="w-4 h-4 mt-1 rounded accent-teal-600" />
-            <span className="text-sm text-text-secondary">قوانین و مقررات نوبت‌یار را می‌پذیرم.</span>
+            <span className="text-sm text-text-secondary">قوانین و مقررات {settings.site_name} را می‌پذیرم.</span>
           </label>
         </div>
       )}

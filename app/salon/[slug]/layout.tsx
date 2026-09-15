@@ -11,6 +11,13 @@ interface Props {
   children: React.ReactNode;
 }
 
+async function getSiteName() {
+  try {
+    const s = await prisma.setting.findUnique({ where: { key: 'site_name' } });
+    return s?.value || 'نوبت‌یار';
+  } catch { return 'نوبت‌یار'; }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   let business;
   try {
@@ -51,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: 'website',
       locale: 'fa_IR',
-      siteName: 'نوبت‌یار',
+      siteName: await getSiteName(),
       title,
       description,
       url: `${SITE_URL}/salon/${business.slug}`,

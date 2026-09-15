@@ -1,12 +1,23 @@
 import type { Metadata } from 'next';
+import { prisma } from '@/lib/prisma';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir';
 
-export const metadata: Metadata = {
-  title: 'قوانین و مقررات',
-  description: 'قوانین و مقررات استفاده از پلتفرم نوبت‌یار برای مشتریان و کسب‌وکارها.',
-  alternates: { canonical: `${SITE_URL}/terms` },
-};
+async function getSiteName() {
+  try {
+    const s = await prisma.setting.findUnique({ where: { key: 'site_name' } });
+    return s?.value || 'نوبت‌یار';
+  } catch { return 'نوبت‌یار'; }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName();
+  return {
+    title: 'قوانین و مقررات',
+    description: `قوانین و مقررات استفاده از پلتفرم ${siteName} برای مشتریان و کسب‌وکارها.`,
+    alternates: { canonical: `${SITE_URL}/terms` },
+  };
+}
 
 const SECTIONS = [
   {
@@ -59,7 +70,8 @@ const SECTIONS = [
   },
 ];
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const siteName = await getSiteName();
   return (
     <div className="container mx-auto px-4 max-w-3xl py-12">
       <h1 className="text-3xl font-bold text-text-primary mb-3">قوانین و مقررات</h1>

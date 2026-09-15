@@ -13,6 +13,7 @@ import AdFeatured from '@/components/AdFeatured';
 import { StarRating } from '@/components/StarRating';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { apiFetch } from '@/lib/api';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 import { toPersianDigits } from '@/lib/constants';
 import type { Business, Category } from '@/lib/types';
 
@@ -54,6 +55,7 @@ const TESTIMONIALS = [
 ];
 
 export default function Home() {
+  const { settings } = useSiteSettings();
   const [categories, setCategories] = useState<Category[]>([]);
   const [featured, setFeatured] = useState<Business[]>([]);
   const [recent, setRecent] = useState<Business[]>([]);
@@ -78,7 +80,7 @@ export default function Home() {
         <div className="container mx-auto px-4 max-w-7xl relative z-10 py-20 md:py-28">
           <div className="text-center mb-10 animate-slide-up">
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              نوبت‌یار، رزرو آنلاین نوبت
+              {settings.site_name}، رزرو آنلاین نوبت
             </h1>
             <p className="text-primary-foreground/80 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
               بدون انتظار، بدون معطلی. نوبت خود را آنلاین رزرو کنید و در زمان مقرر به سالن یا کلینیک مراجعه کنید.
@@ -164,7 +166,7 @@ export default function Home() {
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2 flex items-center gap-2">
                 <TrendingUp className="w-7 h-7 text-primary" />
-                تازه‌های نوبت‌یار
+                تازه‌های {settings.site_name}
               </h2>
               <p className="text-text-secondary">جدیدترین کسب‌وکارهای عضو شده</p>
             </div>
@@ -180,7 +182,7 @@ export default function Home() {
       <section className="bg-muted/50 py-16">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">چرا نوبت‌یار؟</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">چرا {settings.site_name}؟</h2>
             <p className="text-text-secondary">مزایای رزرو نوبت آنلاین برای مشتریان</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -204,8 +206,8 @@ export default function Home() {
       {/* Why Businesses Choose Nobetyar */}
       <section className="container mx-auto px-4 max-w-7xl py-16">
         <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">چرا کسب‌وکارها نوبت‌یار را انتخاب می‌کنند؟</h2>
-          <p className="text-text-secondary">مزایای عضویت در پلتفرم نوبت‌یار برای صاحبان کسب‌وکار</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">چرا کسب‌وکارها {settings.site_name} را انتخاب می‌کنند؟</h2>
+          <p className="text-text-secondary">مزایای عضویت در پلتفرم {settings.site_name} برای صاحبان کسب‌وکار</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
@@ -229,7 +231,7 @@ export default function Home() {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">نظر کاربران ما</h2>
-            <p className="text-text-secondary">تجربه مشتریان نوبت‌یار</p>
+            <p className="text-text-secondary">تجربه مشتریان {settings.site_name}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {TESTIMONIALS.map((t, i) => (
@@ -277,7 +279,7 @@ export default function Home() {
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-20V10h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zm0-20V10H4v4H0v2h4v4h2v-4h4v-2H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
           <div className="relative z-10">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">کسب‌وکار خود را ثبت کنید</h2>
-            <p className="text-primary-foreground/80 mb-8 max-w-xl mx-auto">همین حالا عضو نوبت‌یار شوید و نوبت‌گیری آنلاین را برای مشتریان خود فراهم کنید.</p>
+            <p className="text-primary-foreground/80 mb-8 max-w-xl mx-auto">همین حالا عضو {settings.site_name} شوید و نوبت‌گیری آنلاین را برای مشتریان خود فراهم کنید.</p>
             <Link href="/register-business">
               <button className="bg-white text-primary font-bold px-8 py-3.5 rounded-xl hover:bg-primary-foreground/10 hover:text-white transition-all shadow-lg active:scale-95">
                 شروع ثبت‌نام

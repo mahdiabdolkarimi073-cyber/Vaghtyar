@@ -1,18 +1,29 @@
 import type { Metadata } from 'next';
 import { Clock, AlertCircle, CheckCircle2, XCircle, Calendar } from 'lucide-react';
+import { prisma } from '@/lib/prisma';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nobetyar.ir';
 
-export const metadata: Metadata = {
-  title: 'سیاست لغو نوبت',
-  description: 'قوانین لغو و تغییر نوبت در پلتفرم نوبت‌یار. مدت زمان مجاز برای لغو، نحوه لغو و موارد خاص.',
-  alternates: { canonical: `${SITE_URL}/cancellation-policy` },
-  openGraph: {
-    title: 'سیاست لغو نوبت | نوبت‌یار',
-    description: 'قوانین لغو و تغییر نوبت در پلتفرم نوبت‌یار.',
-    url: `${SITE_URL}/cancellation-policy`,
-  },
-};
+async function getSiteName() {
+  try {
+    const s = await prisma.setting.findUnique({ where: { key: 'site_name' } });
+    return s?.value || 'نوبت‌یار';
+  } catch { return 'نوبت‌یار'; }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteName = await getSiteName();
+  return {
+    title: 'سیاست لغو نوبت',
+    description: `قوانین لغو و تغییر نوبت در پلتفرم ${siteName}. مدت زمان مجاز برای لغو، نحوه لغو و موارد خاص.`,
+    alternates: { canonical: `${SITE_URL}/cancellation-policy` },
+    openGraph: {
+      title: `سیاست لغو نوبت | ${siteName}`,
+      description: `قوانین لغو و تغییر نوبت در پلتفرم ${siteName}.`,
+      url: `${SITE_URL}/cancellation-policy`,
+    },
+  };
+}
 
 const SECTIONS = [
   {
@@ -47,7 +58,8 @@ const SECTIONS = [
   },
 ];
 
-export default function CancellationPolicyPage() {
+export default async function CancellationPolicyPage() {
+  const siteName = await getSiteName();
   return (
     <div className="container mx-auto px-4 max-w-3xl py-12">
       <h1 className="text-3xl font-bold text-text-primary mb-3">سیاست لغو نوبت</h1>
