@@ -1,12 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Shield, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +22,7 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'خطا در ورود');
       toast.success('ورود موفقیت‌آمیز بود');
-      router.push('/admin/dashboard');
+      window.location.href = '/admin/dashboard';
     } catch (err) {
       toast.error((err as Error).message);
     } finally {

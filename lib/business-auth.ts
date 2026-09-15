@@ -60,7 +60,7 @@ export async function getBusinessFromRequest(req: NextRequest) {
 export function setBusinessCookie(res: NextResponse, token: string) {
   res.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     sameSite: 'lax',
     path: '/',
     maxAge: 7 * 24 * 60 * 60,

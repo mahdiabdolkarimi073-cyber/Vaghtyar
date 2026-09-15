@@ -1,12 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 
-function getJwtSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) throw new Error('JWT_SECRET environment variable is required. Set it in .env');
-  return secret;
-}
-const JWT_SECRET = getJwtSecret();
 const BUSINESS_COOKIE = 'business_token';
 const ADMIN_COOKIE = 'admin_token';
 
@@ -35,10 +28,22 @@ function isPublicRoute(pathname: string): boolean {
   });
 }
 
+function decodeJwtPayload(token: string): Record<string, unknown> | null {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const payloadB64 = parts[1];
+    const json = Buffer.from(payloadB64, 'base64url').toString('utf-8');
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Protect admin pages — check cookie OR Authorization header
+  // Protect admin pages — check cookie existence
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
     const cookieToken = req.cookies.get(ADMIN_COOKIE)?.value;
     const authHeader = req.headers.get('authorization');
@@ -48,19 +53,14 @@ export async function middleware(req: NextRequest) {
       const loginUrl = new URL('/admin/login', req.url);
       return NextResponse.redirect(loginUrl);
     }
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; role: string };
-      if (decoded.role !== 'ADMIN') {
-        const homeUrl = new URL('/', req.url);
-        return NextResponse.redirect(homeUrl);
-      }
-      const requestHeaders = new Headers(req.headers);
-      requestHeaders.set('x-admin-id', decoded.userId);
-      return NextResponse.next({ request: { headers: requestHeaders } });
-    } catch {
+    const decoded = decodeJwtPayload(token);
+    if (!decoded || decoded.role !== 'ADMIN') {
       const loginUrl = new URL('/admin/login', req.url);
       return NextResponse.redirect(loginUrl);
     }
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('x-admin-id', decoded.userId as string);
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
   // Protect business dashboard pages
@@ -70,15 +70,14 @@ export async function middleware(req: NextRequest) {
       const loginUrl = new URL('/business/login', req.url);
       return NextResponse.redirect(loginUrl);
     }
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { businessId: string };
-      const requestHeaders = new Headers(req.headers);
-      requestHeaders.set('x-business-id', decoded.businessId);
-      return NextResponse.next({ request: { headers: requestHeaders } });
-    } catch {
+    const decoded = decodeJwtPayload(token);
+    if (!decoded || !decoded.businessId) {
       const loginUrl = new URL('/business/login', req.url);
       return NextResponse.redirect(loginUrl);
     }
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('x-business-id', decoded.businessId as string);
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
   if (!pathname.startsWith('/api/')) {
@@ -89,7 +88,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Admin API routes — verify admin token from cookie OR Authorization header
+  // Admin API routes — check token and pass admin id
   if (pathname.startsWith('/api/admin/') && !pathname.startsWith('/api/admin/auth/')) {
     const cookieToken = req.cookies.get(ADMIN_COOKIE)?.value;
     const authHeader = req.headers.get('authorization');
@@ -98,20 +97,16 @@ export async function middleware(req: NextRequest) {
     if (!token) {
       return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
     }
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; role: string };
-      if (decoded.role !== 'ADMIN') {
-        return NextResponse.json({ error: 'دسترسی غیرمجاز' }, { status: 403 });
-      }
-      const requestHeaders = new Headers(req.headers);
-      requestHeaders.set('x-admin-id', decoded.userId);
-      return NextResponse.next({ request: { headers: requestHeaders } });
-    } catch {
-      return NextResponse.json({ error: 'توکن نامعتبر' }, { status: 401 });
+    const decoded = decodeJwtPayload(token);
+    if (!decoded || decoded.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'دسترسی غیرمجاز' }, { status: 403 });
     }
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('x-admin-id', decoded.userId as string);
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
-  // Payment API routes — verify business token from cookie OR Authorization header
+  // Payment API routes — check business token
   if (pathname.startsWith('/api/payment/') && !pathname.startsWith('/api/payment/callback')) {
     const cookieToken = req.cookies.get(BUSINESS_COOKIE)?.value;
     const authHeader = req.headers.get('authorization');
@@ -120,17 +115,16 @@ export async function middleware(req: NextRequest) {
     if (!token) {
       return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
     }
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { businessId: string };
-      const requestHeaders = new Headers(req.headers);
-      requestHeaders.set('x-business-id', decoded.businessId);
-      return NextResponse.next({ request: { headers: requestHeaders } });
-    } catch {
+    const decoded = decodeJwtPayload(token);
+    if (!decoded || !decoded.businessId) {
       return NextResponse.json({ error: 'توکن نامعتبر' }, { status: 401 });
     }
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('x-business-id', decoded.businessId as string);
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
-  // Business API routes — verify business token from cookie OR Authorization header
+  // Business API routes — check business token
   if (pathname.startsWith('/api/business/') && !pathname.startsWith('/api/business/auth/')) {
     const cookieToken = req.cookies.get(BUSINESS_COOKIE)?.value;
     const authHeader = req.headers.get('authorization');
@@ -139,28 +133,25 @@ export async function middleware(req: NextRequest) {
     if (!token) {
       return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
     }
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { businessId: string };
-      const requestHeaders = new Headers(req.headers);
-      requestHeaders.set('x-business-id', decoded.businessId);
-      return NextResponse.next({ request: { headers: requestHeaders } });
-    } catch {
+    const decoded = decodeJwtPayload(token);
+    if (!decoded || !decoded.businessId) {
       return NextResponse.json({ error: 'توکن نامعتبر' }, { status: 401 });
     }
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('x-business-id', decoded.businessId as string);
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
   // Customer API routes
   const authHeader = req.headers.get('authorization');
   if (authHeader) {
     const token = authHeader.replace('Bearer ', '');
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; role: string };
+    const decoded = decodeJwtPayload(token);
+    if (decoded && decoded.userId) {
       const requestHeaders = new Headers(req.headers);
-      requestHeaders.set('x-user-id', decoded.userId);
-      requestHeaders.set('x-user-role', decoded.role);
+      requestHeaders.set('x-user-id', decoded.userId as string);
+      requestHeaders.set('x-user-role', decoded.role as string);
       return NextResponse.next({ request: { headers: requestHeaders } });
-    } catch {
-      // Token invalid, continue
     }
   }
 

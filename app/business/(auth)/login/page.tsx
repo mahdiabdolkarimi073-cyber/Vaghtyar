@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,7 +21,6 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function BusinessLoginPage() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -42,10 +40,10 @@ export default function BusinessLoginPage() {
       if (!res.ok) throw new Error(result.error);
 
       if (result.business.status === 'PENDING') {
-        router.push('/business/register?status=pending');
+        window.location.href = '/business/register?status=pending';
         return;
       }
-      router.push('/business/dashboard');
+      window.location.href = '/business/dashboard';
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'خطای نامشخص');
     } finally {

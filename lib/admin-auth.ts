@@ -62,7 +62,7 @@ export function adminUnauthenticated(): NextResponse {
 export function setAdminCookie(res: NextResponse, token: string) {
   res.cookies.set(ADMIN_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     sameSite: 'lax',
     path: '/',
     maxAge: 7 * 24 * 60 * 60,
