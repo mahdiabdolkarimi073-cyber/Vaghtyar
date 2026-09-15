@@ -18,7 +18,6 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
   const parsed = schema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.data ? '' : parsed.error.errors[0].message }, { status: 400 });
   if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
 
   const { customerName, customerMobile, serviceId, staffId, date, time } = parsed.data;

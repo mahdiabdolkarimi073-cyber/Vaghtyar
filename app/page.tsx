@@ -8,6 +8,8 @@ import {
 } from 'lucide-react';
 import SearchBar from '@/components/SearchBar';
 import BusinessCard from '@/components/BusinessCard';
+import AdBanner from '@/components/AdBanner';
+import AdFeatured from '@/components/AdFeatured';
 import { StarRating } from '@/components/StarRating';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { apiFetch } from '@/lib/api';
@@ -21,6 +23,21 @@ const CATEGORY_ICONS: Record<string, string> = {
   'bridal-salon': '👰',
   'nail-salon': '💅',
 };
+
+function CategoryVisual({ cat }: { cat: Category }) {
+  if (cat.image) {
+    return (
+      <img
+        src={cat.image}
+        alt={cat.name}
+        className="w-full h-full object-cover"
+      />
+    );
+  }
+  return (
+    <span className="text-3xl">{cat.icon || CATEGORY_ICONS[cat.slug] || '✨'}</span>
+  );
+}
 
 const FAQS = [
   { q: 'چگونه می‌توانم نوبت رزرو کنم؟', a: 'کافیست در صفحه جستجو، کسب‌وکار مورد نظر خود را پیدا کنید، خدمت و زمان مناسب را انتخاب کرده و اطلاعات خود را وارد کنید. در کمتر از یک دقیقه نوبت شما ثبت می‌شود.' },
@@ -93,6 +110,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Banner Advertisements */}
+      <AdBanner />
+
       {/* Categories Section */}
       {categories.length > 0 && (
         <section className="container mx-auto px-4 max-w-7xl py-16">
@@ -104,8 +124,8 @@ export default function Home() {
             {categories.map((cat) => (
               <Link key={cat.id} href={`/search?category=${cat.slug}`} className="group">
                 <div className="bg-surface rounded-xl border border-border p-6 text-center hover:shadow-card-hover hover:border-primary/30 transition-all duration-200 hover:-translate-y-1">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary-light/10 flex items-center justify-center mx-auto mb-3 text-3xl group-hover:from-primary/15 group-hover:to-primary-light/15 transition-colors">
-                    {CATEGORY_ICONS[cat.slug] || '✨'}
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 overflow-hidden transition-colors ${cat.image ? '' : 'bg-gradient-to-br from-primary/10 to-primary-light/10 group-hover:from-primary/15 group-hover:to-primary-light/15'}`}>
+                    <CategoryVisual cat={cat} />
                   </div>
                   <h3 className="font-medium text-text-primary group-hover:text-primary transition-colors">{cat.name}</h3>
                 </div>
@@ -133,6 +153,9 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      {/* Featured Advertisements */}
+      <AdFeatured />
 
       {/* New Businesses */}
       {recent.length > 0 && (

@@ -100,6 +100,29 @@ export interface City {
   slug: string;
 }
 
+export interface Advertisement {
+  id: string;
+  businessId: string;
+  type: 'FEATURED' | 'BANNER';
+  image?: string | null;
+  startDate: string;
+  endDate: string;
+  price: number;
+  isActive: boolean;
+  createdAt: string;
+  business?: {
+    id: string;
+    name: string;
+    slug?: string;
+    profileImage?: string | null;
+    coverImage?: string | null;
+    neighborhood?: string | null;
+    city?: string | null;
+    avgRating?: number;
+    reviewCount?: number;
+  } | null;
+}
+
 export interface TimeSlot {
   time: string;
   available: boolean;

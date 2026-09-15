@@ -5,8 +5,11 @@ export async function sendSms(phone: string, message: string): Promise<void> {
   try {
     await prisma.smsLog.create({
       data: {
-        phone,
-        message,
+        businessId: '000000000000000000000000',
+        recipientPhone: phone,
+        smsType: 'APPOINTMENT_CONFIRM',
+        messageBody: message,
+        status: 'SIMULATED',
       },
     });
   } catch (e) {
