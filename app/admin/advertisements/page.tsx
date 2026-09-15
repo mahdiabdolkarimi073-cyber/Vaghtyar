@@ -31,8 +31,8 @@ export default function AdminAdvertisementsPage() {
       ]);
       const adData = await adRes.json();
       const bizData = await bizRes.json();
-      setData(adData.data || adData || []);
-      setBusinesses(bizData.data || []);
+      setData(Array.isArray(adData) ? adData : (Array.isArray(adData?.data) ? adData.data : []));
+      setBusinesses(Array.isArray(bizData) ? bizData : (Array.isArray(bizData?.data) ? bizData.data : []));
     } catch { setData([]); }
     finally { setLoading(false); }
   }, []);
