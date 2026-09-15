@@ -50,7 +50,11 @@ export async function getUserFromRequest(req: NextRequest) {
 }
 
 export async function createSession(userId: string): Promise<string> {
-  const token = signToken({ userId, role: '' });
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { role: true },
+  });
+  const token = signToken({ userId, role: user?.role ?? 'CUSTOMER' });
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7);
   await prisma.session.create({

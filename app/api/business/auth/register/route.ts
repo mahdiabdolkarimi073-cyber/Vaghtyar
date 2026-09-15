@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { signBusinessToken, setBusinessCookie } from '@/lib/business-auth';
+import { rateLimit } from '@/lib/rate-limit';
 
 const registerSchema = z.object({
   ownerFirstName: z.string().min(1, 'نام صاحب کسب‌وکار الزامی است'),
@@ -29,6 +30,8 @@ function generateSlug(name: string): string {
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, { windowMs: 60_000, max: 3, prefix: 'biz-register' });
+    if (limited) return limited;
     const body = await req.json();
     const parsed = registerSchema.safeParse(body);
     if (!parsed.success) {

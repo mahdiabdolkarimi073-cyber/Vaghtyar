@@ -69,40 +69,55 @@ export async function getAvailableSlots(
 
     const timeStr = `${String(currentHour).padStart(2, '0')}:${String(currentMinute).padStart(2, '0')}`;
 
-    // Check for existing bookings
+    // Check for existing bookings AND appointments (both systems must be checked to prevent double-booking)
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    const existingBookings = await prisma.booking.findMany({
-      where: {
-        businessId,
-        date: {
-          gte: startOfDay,
-          lte: endOfDay,
+    const slotStartMin = currentHour * 60 + currentMinute;
+    const slotEndMin = slotEndHour * 60 + slotEndMinute;
+
+    const [existingBookings, existingAppointments] = await Promise.all([
+      prisma.booking.findMany({
+        where: {
+          businessId,
+          date: { gte: startOfDay, lte: endOfDay },
+          status: { in: ['PENDING', 'CONFIRMED'] },
+          ...(staffId ? { staffId } : {}),
         },
-        status: {
-          in: ['PENDING', 'CONFIRMED'],
+      }),
+      prisma.appointment.findMany({
+        where: {
+          businessId,
+          startTime: { gte: startOfDay, lt: new Date(endOfDay.getTime() + 1) },
+          status: { in: ['PENDING', 'CONFIRMED'] },
+          ...(staffId ? { staffId } : {}),
         },
-        ...(staffId ? { staffId } : {}),
-      },
-    });
+      }),
+    ]);
 
     let isAvailable = true;
 
     for (const booking of existingBookings) {
       const [bStartH, bStartM] = booking.startTime.split(':').map(Number);
       const [bEndH, bEndM] = booking.endTime.split(':').map(Number);
-
-      const slotStartMin = currentHour * 60 + currentMinute;
-      const slotEndMin = slotEndHour * 60 + slotEndMinute;
       const bookingStartMin = bStartH * 60 + bStartM;
       const bookingEndMin = bEndH * 60 + bEndM;
-
       if (slotStartMin < bookingEndMin && slotEndMin > bookingStartMin) {
         isAvailable = false;
         break;
+      }
+    }
+
+    if (isAvailable) {
+      for (const appt of existingAppointments) {
+        const apptStartMin = appt.startTime.getHours() * 60 + appt.startTime.getMinutes();
+        const apptEndMin = appt.endTime.getHours() * 60 + appt.endTime.getMinutes();
+        if (slotStartMin < apptEndMin && slotEndMin > apptStartMin) {
+          isAvailable = false;
+          break;
+        }
       }
     }
 

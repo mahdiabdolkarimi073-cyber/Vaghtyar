@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
 
     // ─── جلوگیری از رزرو مضاعف با تراکنش ───
     const result = await prisma.$transaction(async (tx) => {
-      // ۱. بررسی نوبت موجود در همان بازه زمانی برای همان کارمند
+      // ۱. بررسی نوبت موجود در همان بازه زمانی برای همان کارمند (در Booking)
       const conflict = await tx.booking.findFirst({
         where: {
           businessId,
@@ -128,6 +128,24 @@ export async function POST(req: NextRequest) {
       });
 
       if (conflict) {
+        throw new Error('این زمان قبلاً رزرو شده است');
+      }
+
+      // ۱ب. بررسی نوبت موجود در همان بازه زمانی برای همان کارمند (در Appointment)
+      const slotStartDateTime = new Date(date + 'T' + startTime + ':00');
+      const slotEndDateTime = new Date(slotStartDateTime.getTime() + service.durationMinutes * 60000);
+
+      const apptConflict = await tx.appointment.findFirst({
+        where: {
+          businessId,
+          staffId: staffId || undefined,
+          startTime: { lt: slotEndDateTime },
+          endTime: { gt: slotStartDateTime },
+          status: { in: ['PENDING', 'CONFIRMED'] },
+        },
+      });
+
+      if (apptConflict) {
         throw new Error('این زمان قبلاً رزرو شده است');
       }
 

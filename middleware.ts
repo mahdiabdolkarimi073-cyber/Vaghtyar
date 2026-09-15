@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'nobetyar-dev-secret-change-me';
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error('JWT_SECRET environment variable is required. Set it in .env');
+  return secret;
+}
+const JWT_SECRET = getJwtSecret();
 const BUSINESS_COOKIE = 'business_token';
 const ADMIN_COOKIE = 'admin_token';
 
