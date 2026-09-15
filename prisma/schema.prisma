@@ -148,6 +148,7 @@ model BusinessHours {
   isClosed   Boolean  @default(false)
   business   Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
+  @@unique([businessId, dayOfWeek])
   @@index([businessId])
 }
 
@@ -160,6 +161,7 @@ model WorkingHours {
   endTime    String?
   business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
+  @@unique([businessId, dayOfWeek])
   @@index([businessId])
 }
 

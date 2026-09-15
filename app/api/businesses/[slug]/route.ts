@@ -12,7 +12,7 @@ export async function GET(
       include: {
         services: true,
         staff: true,
-        hours: { orderBy: { dayOfWeek: 'asc' } },
+        workingHours: { orderBy: { dayOfWeek: 'asc' } },
         reviews: { orderBy: { createdAt: 'desc' }, take: 20 },
         owner: { select: { name: true } },
       },
@@ -26,15 +26,15 @@ export async function GET(
       ? business.reviews.reduce((sum, r) => sum + r.rating, 0) / business.reviews.length
       : 0;
 
-    // Check if currently open
+    // Check if currently open — using WorkingHours (single source of truth)
     const now = new Date();
     const today = now.getDay();
-    const todayHours = business.hours.find((h) => h.dayOfWeek === today);
+    const todayHours = business.workingHours.find((h) => h.dayOfWeek === today);
     let isOpenNow = false;
-    if (todayHours && !todayHours.isClosed) {
+    if (todayHours && !todayHours.isClosed && todayHours.startTime && todayHours.endTime) {
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
-      const [openH, openM] = todayHours.openTime.split(':').map(Number);
-      const [closeH, closeM] = todayHours.closeTime.split(':').map(Number);
+      const [openH, openM] = todayHours.startTime.split(':').map(Number);
+      const [closeH, closeM] = todayHours.endTime.split(':').map(Number);
       const openMinutes = openH * 60 + openM;
       const closeMinutes = closeH * 60 + closeM;
       isOpenNow = currentMinutes >= openMinutes && currentMinutes < closeMinutes;
@@ -42,6 +42,14 @@ export async function GET(
 
     return NextResponse.json({
       ...business,
+      hours: business.workingHours.map(h => ({
+        id: h.id,
+        businessId: h.businessId,
+        dayOfWeek: h.dayOfWeek,
+        openTime: h.startTime || '09:00',
+        closeTime: h.endTime || '18:00',
+        isClosed: h.isClosed,
+      })),
       avgRating: Math.round(avgRating * 10) / 10,
       reviewCount: business.reviews.length,
       isOpenNow,

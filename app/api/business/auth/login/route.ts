@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { signBusinessToken, setBusinessCookie } from '@/lib/business-auth';
+import { rateLimit } from '@/lib/rate-limit';
 
 const loginSchema = z.object({
   email: z.string().email('ایمیل نامعتبر است'),
@@ -11,6 +12,9 @@ const loginSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, { windowMs: 60_000, max: 5, prefix: 'biz-login' });
+    if (limited) return limited;
+
     const body = await req.json();
     const parsed = loginSchema.safeParse(body);
     if (!parsed.success) {

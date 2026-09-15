@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { generateConfirmationCode } from '@/lib/constants';
 import { sendSms } from '@/lib/sms-service';
 import { publicBookingSchema } from '@/lib/validations/schemas';
+import { rateLimit } from '@/lib/rate-limit';
 
 /**
  * POST /api/public/book
@@ -15,9 +16,13 @@ import { publicBookingSchema } from '@/lib/validations/schemas';
  * - اعتبارسنجی تمام فیلدها با zod
  * - جلوگیری از رزرو مضاعف با تراکنش و بررسی یکتایی
  * - فیلدهای price، subscriptionPlan، discount با .strip() حذف می‌شوند
+ * - Rate limiting برای جلوگیری از اسپم
  */
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, { windowMs: 60_000, max: 10, prefix: 'book' });
+    if (limited) return limited;
+
     const body = await req.json();
 
     // اعتبارسنجی ورودی — فیلدهای ممنوعه strip می‌شوند
@@ -43,7 +48,7 @@ export async function POST(req: NextRequest) {
     // بررسی وجود کسب‌وکار
     const business = await prisma.business.findUnique({
       where: { id: businessId },
-      include: { hours: true },
+      include: { hours: true, workingHours: true },
     });
 
     if (!business || business.status !== 'APPROVED') {
@@ -79,16 +84,29 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // بررسی تعطیل بودن روز
+    // بررسی تعطیل بودن روز — اولویت با WorkingHours (منبع حقیقت واحد)
     const dayOfWeek = bookingDate.getDay();
-    const dayHours = business.hours.find((h) => h.dayOfWeek === dayOfWeek);
-    if (!dayHours || dayHours.isClosed) {
-      return NextResponse.json({ error: 'در این روز کسب‌وکار تعطیر است' }, { status: 400 });
+    let dayHours = business.workingHours.find((h) => h.dayOfWeek === dayOfWeek);
+    if (!dayHours) {
+      const bh = business.hours.find((h) => h.dayOfWeek === dayOfWeek);
+      if (bh) {
+        dayHours = {
+          id: bh.id,
+          businessId: bh.businessId,
+          dayOfWeek: bh.dayOfWeek,
+          isClosed: bh.isClosed,
+          startTime: bh.openTime,
+          endTime: bh.closeTime,
+        };
+      }
+    }
+    if (!dayHours || dayHours.isClosed || !dayHours.startTime || !dayHours.endTime) {
+      return NextResponse.json({ error: 'در این روز کسب‌وکار تعطیل است' }, { status: 400 });
     }
 
     // بررسی بازه ساعات کاری
-    const [openH, openM] = dayHours.openTime.split(':').map(Number);
-    const [closeH, closeM] = dayHours.closeTime.split(':').map(Number);
+    const [openH, openM] = dayHours.startTime.split(':').map(Number);
+    const [closeH, closeM] = dayHours.endTime.split(':').map(Number);
     if (
       startH < openH || (startH === openH && startM < openM) ||
       endH > closeH || (endH === closeH && endM > closeM)

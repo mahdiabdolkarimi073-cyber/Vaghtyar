@@ -1,4 +1,7 @@
 import { prisma } from './prisma';
+import { getBusinessPlan } from './subscription-service';
+
+export { getBusinessPlan };
 
 export type LimitType = 'maxServices' | 'maxStaff' | 'smsConfirmQuota';
 
@@ -7,30 +10,6 @@ export interface PlanLimitResult {
   limit: number | null;
   current: number;
   planName: string;
-}
-
-export async function getBusinessPlan(businessId: string) {
-  const subscription = await prisma.subscription.findFirst({
-    where: { businessId, isActive: true },
-    include: { plan: true },
-  });
-
-  if (!subscription) {
-    const freePlan = await prisma.plan.findFirst({
-      where: { name: 'رایگان', isActive: true },
-    });
-    return {
-      subscription: null,
-      plan: freePlan,
-      isFreePlan: true,
-    };
-  }
-
-  return {
-    subscription,
-    plan: subscription.plan,
-    isFreePlan: false,
-  };
 }
 
 export async function checkPlanLimit(

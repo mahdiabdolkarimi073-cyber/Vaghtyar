@@ -16,12 +16,36 @@ export async function GET(
       return NextResponse.json({ error: 'کسب‌وکار یافت نشد' }, { status: 404 });
     }
 
-    const hours = await prisma.businessHours.findMany({
+    // Read from WorkingHours (single source of truth)
+    let hours = await prisma.workingHours.findMany({
       where: { businessId: business.id },
       orderBy: { dayOfWeek: 'asc' },
     });
 
-    return NextResponse.json({ hours });
+    // Fallback to BusinessHours if WorkingHours empty
+    if (hours.length === 0) {
+      const bh = await prisma.businessHours.findMany({
+        where: { businessId: business.id },
+        orderBy: { dayOfWeek: 'asc' },
+      });
+      hours = bh.map(b => ({
+        id: b.id,
+        businessId: b.businessId,
+        dayOfWeek: b.dayOfWeek,
+        isClosed: b.isClosed,
+        startTime: b.openTime,
+        endTime: b.closeTime,
+      }));
+    }
+
+    return NextResponse.json({ hours: hours.map(h => ({
+      id: h.id,
+      businessId: h.businessId,
+      dayOfWeek: h.dayOfWeek,
+      openTime: h.startTime || '09:00',
+      closeTime: h.endTime || '18:00',
+      isClosed: h.isClosed,
+    })) });
   } catch (error) {
     console.error('Hours error:', error);
     return NextResponse.json({ error: 'خطای سرور' }, { status: 500 });
@@ -58,10 +82,33 @@ export async function PUT(
       return NextResponse.json({ error: 'داده ساعات کاری نامعتبر است' }, { status: 400 });
     }
 
+    // Write to WorkingHours (single source of truth) and sync to BusinessHours
     for (const h of hours) {
-      await prisma.businessHours.updateMany({
-        where: { businessId: business.id, dayOfWeek: h.dayOfWeek },
-        data: {
+      await prisma.workingHours.upsert({
+        where: { businessId_dayOfWeek: { businessId: business.id, dayOfWeek: h.dayOfWeek } },
+        create: {
+          businessId: business.id,
+          dayOfWeek: h.dayOfWeek,
+          isClosed: h.isClosed,
+          startTime: h.openTime,
+          endTime: h.closeTime,
+        },
+        update: {
+          isClosed: h.isClosed,
+          startTime: h.openTime,
+          endTime: h.closeTime,
+        },
+      });
+      await prisma.businessHours.upsert({
+        where: { businessId_dayOfWeek: { businessId: business.id, dayOfWeek: h.dayOfWeek } },
+        create: {
+          businessId: business.id,
+          dayOfWeek: h.dayOfWeek,
+          openTime: h.openTime,
+          closeTime: h.closeTime,
+          isClosed: h.isClosed,
+        },
+        update: {
           openTime: h.openTime,
           closeTime: h.closeTime,
           isClosed: h.isClosed,
@@ -69,12 +116,19 @@ export async function PUT(
       });
     }
 
-    const updated = await prisma.businessHours.findMany({
+    const updated = await prisma.workingHours.findMany({
       where: { businessId: business.id },
       orderBy: { dayOfWeek: 'asc' },
     });
 
-    return NextResponse.json({ hours: updated });
+    return NextResponse.json({ hours: updated.map(h => ({
+      id: h.id,
+      businessId: h.businessId,
+      dayOfWeek: h.dayOfWeek,
+      openTime: h.startTime || '09:00',
+      closeTime: h.endTime || '18:00',
+      isClosed: h.isClosed,
+    })) });
   } catch (error) {
     console.error('Update hours error:', error);
     return NextResponse.json({ error: 'خطای سرور' }, { status: 500 });

@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { signAdminToken, setAdminCookie } from '@/lib/admin-auth';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, { windowMs: 60_000, max: 5, prefix: 'admin-login' });
+    if (limited) return limited;
+
     const { phone, password } = await req.json();
     if (!phone || !password) {
       return NextResponse.json({ error: 'شماره و رمز عبور الزامی است' }, { status: 400 });

@@ -13,21 +13,38 @@ export async function getAvailableSlots(
 ): Promise<TimeSlot[]> {
   const dayOfWeek = date.getDay();
 
-  const businessHours = await prisma.businessHours.findFirst({
+  let workingHours = await prisma.workingHours.findFirst({
     where: {
       businessId,
       dayOfWeek,
     },
   });
 
-  if (!businessHours || businessHours.isClosed) {
+  // Fallback to BusinessHours if WorkingHours not yet populated
+  if (!workingHours) {
+    const businessHours = await prisma.businessHours.findFirst({
+      where: { businessId, dayOfWeek },
+    });
+    if (businessHours) {
+      workingHours = {
+        id: businessHours.id,
+        businessId: businessHours.businessId,
+        dayOfWeek: businessHours.dayOfWeek,
+        isClosed: businessHours.isClosed,
+        startTime: businessHours.openTime,
+        endTime: businessHours.closeTime,
+      };
+    }
+  }
+
+  if (!workingHours || workingHours.isClosed || !workingHours.startTime || !workingHours.endTime) {
     return [];
   }
 
-  const openHour = parseInt(businessHours.openTime.split(':')[0]);
-  const openMinute = parseInt(businessHours.openTime.split(':')[1]);
-  const closeHour = parseInt(businessHours.closeTime.split(':')[0]);
-  const closeMinute = parseInt(businessHours.closeTime.split(':')[1]);
+  const openHour = parseInt(workingHours.startTime.split(':')[0]);
+  const openMinute = parseInt(workingHours.startTime.split(':')[1]);
+  const closeHour = parseInt(workingHours.endTime.split(':')[0]);
+  const closeMinute = parseInt(workingHours.endTime.split(':')[1]);
 
   const slots: TimeSlot[] = [];
   const slotInterval = 30;
