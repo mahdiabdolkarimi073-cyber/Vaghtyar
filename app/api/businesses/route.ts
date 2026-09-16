@@ -117,6 +117,8 @@ export async function POST(req: NextRequest) {
         latitude: latitude ?? null,
         longitude: longitude ?? null,
         profileImage: profileImage || null,
+        coverImage: profileImage || null,
+        photos: profileImage ? [profileImage] : [],
         ownerId: user.id,
       },
     });

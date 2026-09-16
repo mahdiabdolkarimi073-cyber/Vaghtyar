@@ -101,9 +101,9 @@ export default function SalonPage() {
     <div>
       {/* Cover Image */}
       <div className="relative h-80 md:h-[420px] bg-gradient-to-br from-primary to-primary-light overflow-hidden">
-        {(business.coverImage || (business.photos && business.photos.length > 0)) && (
+        {(business.coverImage || (business.photos && business.photos.length > 0) || business.profileImage) && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={business.coverImage || business.photos![0]} alt={business.name} className="w-full h-full object-cover" />
+          <img src={business.coverImage || (business.photos && business.photos.length > 0 ? business.photos[0] : business.profileImage!)} alt={business.name} className="w-full h-full object-cover" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
       </div>

@@ -43,7 +43,7 @@ export async function getHomeData(): Promise<HomeData> {
         orderBy: { createdAt: 'desc' },
       }).catch(() => []),
       prisma.business.findMany({
-        where: { status: 'APPROVED' },
+        where: { status: 'APPROVED', isFeatured: false },
         include: { services: { select: { price: true } }, reviews: { select: { rating: true } } },
         orderBy: { createdAt: 'desc' },
         take: 8,

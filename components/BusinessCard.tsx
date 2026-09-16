@@ -7,7 +7,7 @@ import { toPersianDigits, formatPrice } from '@/lib/constants';
 import type { Business } from '@/lib/types';
 
 export default function BusinessCard({ business }: { business: Business }) {
-  const displayImage = business.coverImage || (business.photos && business.photos.length > 0 ? business.photos[0] : null);
+  const displayImage = business.coverImage || (business.photos && business.photos.length > 0 ? business.photos[0] : null) || business.profileImage || null;
 
   return (
     <div className="bg-surface rounded-xl overflow-hidden border border-border shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-200 group">

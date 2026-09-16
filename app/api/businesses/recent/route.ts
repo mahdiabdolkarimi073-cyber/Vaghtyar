@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 export async function GET() {
   try {
     const businesses = await prisma.business.findMany({
+      where: { isFeatured: false },
       include: {
         services: { select: { price: true } },
         reviews: { select: { rating: true } },
@@ -28,6 +29,7 @@ export async function GET() {
         neighborhood: b.neighborhood,
         coverImage: b.coverImage,
         profileImage: b.profileImage,
+        photos: b.photos,
         isFeatured: b.isFeatured,
         isVerified: b.isVerified,
         avgRating: Math.round(avgRating * 10) / 10,
