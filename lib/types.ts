@@ -16,6 +16,7 @@ export interface Business {
   phone?: string | null;
   coverImage?: string | null;
   profileImage?: string | null;
+  photos?: string[];
   description?: string | null;
   latitude?: number | null;
   longitude?: number | null;

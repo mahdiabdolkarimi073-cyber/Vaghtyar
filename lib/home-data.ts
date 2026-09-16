@@ -19,6 +19,7 @@ export interface HomeBusiness {
   neighborhood?: string | null;
   coverImage?: string | null;
   profileImage?: string | null;
+  photos?: string[];
   isFeatured: boolean;
   isVerified: boolean;
   autoConfirm: boolean;
@@ -73,7 +74,7 @@ export async function getHomeData(): Promise<HomeData> {
       return {
         id: b.id, slug: b.slug, name: b.name, category: b.category,
         city: b.city, neighborhood: b.neighborhood, coverImage: b.coverImage,
-        profileImage: b.profileImage, isFeatured: b.isFeatured, isVerified: b.isVerified,
+        profileImage: b.profileImage, photos: b.photos, isFeatured: b.isFeatured, isVerified: b.isVerified,
         autoConfirm: b.autoConfirm, minAdvanceBookingHours: b.minAdvanceBookingHours,
         createdAt: b.createdAt.toISOString(), ownerId: b.ownerId,
         avgRating: Math.round(avgRating * 10) / 10, reviewCount: b.reviews.length, minPrice,

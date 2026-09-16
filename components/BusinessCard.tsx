@@ -7,12 +7,14 @@ import { toPersianDigits, formatPrice } from '@/lib/constants';
 import type { Business } from '@/lib/types';
 
 export default function BusinessCard({ business }: { business: Business }) {
+  const displayImage = business.coverImage || (business.photos && business.photos.length > 0 ? business.photos[0] : null);
+
   return (
     <div className="bg-surface rounded-xl overflow-hidden border border-border shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-200 group">
-      <div className="relative h-48 overflow-hidden">
-        {business.coverImage ? (
+      <div className="relative h-56 overflow-hidden">
+        {displayImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={business.coverImage} alt={business.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          <img src={displayImage} alt={business.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary-light/10 flex items-center justify-center">
             <Sparkles className="w-12 h-12 text-primary/40" />

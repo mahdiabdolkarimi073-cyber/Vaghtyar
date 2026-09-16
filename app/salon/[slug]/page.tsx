@@ -26,6 +26,7 @@ interface BusinessDetail extends Business {
   staff: Staff[];
   hours: BusinessHours[];
   reviews: Review[];
+  photos?: string[];
   owner?: { name: string };
 }
 
@@ -99,10 +100,10 @@ export default function SalonPage() {
   return (
     <div>
       {/* Cover Image */}
-      <div className="relative h-64 md:h-80 bg-gradient-to-br from-primary to-primary-light overflow-hidden">
-        {business.coverImage && (
+      <div className="relative h-80 md:h-[420px] bg-gradient-to-br from-primary to-primary-light overflow-hidden">
+        {(business.coverImage || (business.photos && business.photos.length > 0)) && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={business.coverImage} alt={business.name} className="w-full h-full object-cover" />
+          <img src={business.coverImage || business.photos![0]} alt={business.name} className="w-full h-full object-cover" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
       </div>
@@ -199,6 +200,20 @@ export default function SalonPage() {
                 <h3 className="font-bold text-text-primary mb-3">درباره {business.name}</h3>
                 <p className="text-text-secondary leading-relaxed">{business.description || 'اطلاعاتی ثبت نشده است.'}</p>
               </div>
+
+              {business.photos && business.photos.length > 0 && (
+                <div className="bg-surface rounded-xl border border-border p-6">
+                  <h3 className="font-bold text-text-primary mb-4">تصاویر کسب‌وکار</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {business.photos.map((photo, i) => (
+                      <div key={i} className="aspect-square rounded-xl overflow-hidden border border-border">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={photo} alt={`${business.name} - تصویر ${i + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="bg-surface rounded-xl border border-border p-6">
                 <h3 className="font-bold text-text-primary mb-4">متخصصین</h3>
