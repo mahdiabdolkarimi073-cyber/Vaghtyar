@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { name, category, city, neighborhood, address, phone, description } = body;
+    const { name, category, city, neighborhood, address, phone, description, latitude, longitude, profileImage } = body;
 
     if (!name || !category || !city) {
       return NextResponse.json({ error: 'نام، دسته‌بندی و شهر الزامی است' }, { status: 400 });
@@ -114,6 +114,9 @@ export async function POST(req: NextRequest) {
         address: address || null,
         phone: phone || null,
         description: description || null,
+        latitude: latitude ?? null,
+        longitude: longitude ?? null,
+        profileImage: profileImage || null,
         ownerId: user.id,
       },
     });

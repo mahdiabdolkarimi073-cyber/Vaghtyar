@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Store, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Store, AlertCircle, CheckCircle2, ArrowLeft, MapPin, Camera, X, ImagePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/AuthProvider';
 import { apiFetch } from '@/lib/api';
 import { useSiteSettings } from '@/hooks/use-site-settings';
+import MapPicker from '@/components/MapPicker';
 import type { Category, City } from '@/lib/types';
 
 export default function RegisterBusinessPage() {
@@ -28,7 +29,14 @@ export default function RegisterBusinessPage() {
     address: '',
     phone: '',
     description: '',
+    latitude: null as number | null,
+    longitude: null as number | null,
+    profileImage: '',
   });
+
+  const [imagePreview, setImagePreview] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     Promise.all([
@@ -46,6 +54,60 @@ export default function RegisterBusinessPage() {
     }
   }, [user, loading, router]);
 
+  const handleImageUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      setError('فقط فایل تصویری مجاز است');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('حداکثر حجم تصویر ۵ مگابایت است');
+      return;
+    }
+
+    setError('');
+    setUploadingImage(true);
+
+    const reader = new FileReader();
+    reader.onload = (e) => setImagePreview(e.target?.result as string);
+    reader.readAsDataURL(file);
+
+    try {
+      const formData = new FormData();
+      formData.append('images', file);
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/business/upload', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'خطا در آپلود');
+      if (data.urls && data.urls.length > 0) {
+        setForm((prev) => ({ ...prev, profileImage: data.urls[0] }));
+      }
+    } catch (e) {
+      setError((e as Error).message);
+      setImagePreview('');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleImageUpload(file);
+  };
+
+  const handleRemoveImage = () => {
+    setImagePreview('');
+    setForm((prev) => ({ ...prev, profileImage: '' }));
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleLocationSelect = (lat: number, lng: number) => {
+    setForm((prev) => ({ ...prev, latitude: lat, longitude: lng }));
+  };
+
   const handleSubmit = async () => {
     setError('');
     if (!form.name || !form.category || !form.city) {
@@ -56,7 +118,18 @@ export default function RegisterBusinessPage() {
     try {
       await apiFetch('/api/businesses', {
         method: 'POST',
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name,
+          category: form.category,
+          city: form.city,
+          neighborhood: form.neighborhood,
+          address: form.address,
+          phone: form.phone,
+          description: form.description,
+          latitude: form.latitude,
+          longitude: form.longitude,
+          profileImage: form.profileImage,
+        }),
       });
       setSuccess(true);
       setTimeout(() => router.push('/dashboard'), 2000);
@@ -153,6 +226,76 @@ export default function RegisterBusinessPage() {
             onChange={(e) => setForm({ ...form, address: e.target.value })}
             placeholder="خیابان، پلاک، ..."
             className="w-full h-12 rounded-xl border border-border px-4 text-sm outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
+        {/* Map Picker Section */}
+        <div>
+          <label className="text-sm font-medium text-text-secondary mb-2 flex items-center gap-1.5">
+            <MapPin className="w-4 h-4 text-primary" />
+            موقعیت روی نقشه
+          </label>
+          <p className="text-xs text-text-muted mb-3">
+            روی نقشه کلیک کنید یا آدرس را جستجو کنید تا موقعیت دقیق کسب‌وکار خود را مشخص کنید
+          </p>
+          <MapPicker
+            latitude={form.latitude}
+            longitude={form.longitude}
+            onLocationSelect={handleLocationSelect}
+            businessName={form.name || undefined}
+          />
+        </div>
+
+        {/* Image Upload Section */}
+        <div>
+          <label className="text-sm font-medium text-text-secondary mb-2 flex items-center gap-1.5">
+            <Camera className="w-4 h-4 text-primary" />
+            تصویر کسب‌وکار
+          </label>
+          <p className="text-xs text-text-muted mb-3">
+            یک تصویر از کسب‌وکار خود آپلود کنید (حداکثر ۵ مگابایت)
+          </p>
+
+          {imagePreview ? (
+            <div className="relative rounded-xl overflow-hidden border border-border group">
+              <img
+                src={imagePreview}
+                alt="پیش‌نمایش تصویر"
+                className="w-full h-48 object-cover"
+              />
+              <button
+                onClick={handleRemoveImage}
+                className="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+                type="button"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              {uploadingImage && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  <span className="text-white text-sm">در حال آپلود...</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingImage}
+              type="button"
+              className="w-full h-48 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 text-text-muted hover:border-primary hover:text-primary transition-colors disabled:opacity-50"
+            >
+              <ImagePlus className="w-10 h-10" />
+              <span className="text-sm font-medium">
+                {uploadingImage ? 'در حال آپلود...' : 'برای انتخاب تصویر کلیک کنید'}
+              </span>
+              <span className="text-xs">JPG, PNG, WebP - حداکثر ۵ مگابایت</span>
+            </button>
+          )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
           />
         </div>
 
