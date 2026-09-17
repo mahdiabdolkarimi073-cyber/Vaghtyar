@@ -274,6 +274,11 @@ export default async function Home() {
                 شروع ثبت‌نام
               </button>
             </Link>
+            <Link href="/plans" className="mr-3">
+              <button className="bg-white/10 text-white font-bold px-8 py-3.5 rounded-xl hover:bg-white/20 transition-all backdrop-blur-sm border border-white/20 active:scale-95">
+                مشاهده پلن‌ها
+              </button>
+            </Link>
           </div>
         </div>
       </section>

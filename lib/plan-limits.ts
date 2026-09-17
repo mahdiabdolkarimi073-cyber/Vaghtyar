@@ -19,7 +19,7 @@ export async function checkPlanLimit(
   const { plan } = await getBusinessPlan(businessId);
 
   if (!plan) {
-    return { allowed: true, limit: null, current: 0, planName: 'نامشخص' };
+    return { allowed: false, limit: 0, current: 0, planName: 'نامشخص' };
   }
 
   const limit = plan[limitType];

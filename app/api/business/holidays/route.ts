@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
 export async function GET(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const holidays = await prisma.holiday.findMany({
     where: { businessId },
@@ -19,8 +20,8 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const body = await req.json();
   const parsed = schema.safeParse(body);

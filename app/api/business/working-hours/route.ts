@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
 export async function GET(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   let hours = await prisma.workingHours.findMany({ where: { businessId }, orderBy: { dayOfWeek: 'asc' } });
   if (hours.length === 0) {
@@ -25,8 +26,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const body = await req.json() as Array<{
     dayOfWeek: number; isClosed: boolean; startTime: string | null; endTime: string | null;

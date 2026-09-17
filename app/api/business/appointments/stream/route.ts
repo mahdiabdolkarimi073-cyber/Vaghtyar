@@ -1,8 +1,9 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
 export async function GET(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
+  const businessId = getBusinessId(req);
   if (!businessId) return new Response(JSON.stringify({ error: 'احراز هویت نشده' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
 
   const encoder = new TextEncoder();

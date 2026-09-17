@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { checkPlanLimit } from '@/lib/plan-limits';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
 export async function GET(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const staff = await prisma.staff.findMany({
     where: { businessId },
@@ -42,8 +43,8 @@ const createSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const body = await req.json();
   const parsed = createSchema.safeParse(body);

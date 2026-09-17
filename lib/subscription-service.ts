@@ -18,9 +18,17 @@ export async function getBusinessPlan(businessId: string) {
   }
 
   const freePlan = await prisma.plan.findFirst({
-    where: { name: 'رایگان', isActive: true },
+    where: { price: 0, isActive: true },
   });
-  return { subscription: null, plan: freePlan, isFreePlan: true };
+  if (freePlan) {
+    return { subscription: null, plan: freePlan, isFreePlan: true };
+  }
+
+  const cheapestPlan = await prisma.plan.findFirst({
+    where: { isActive: true },
+    orderBy: { price: 'asc' },
+  });
+  return { subscription: null, plan: cheapestPlan, isFreePlan: true };
 }
 
 export function hasActiveSubscription(

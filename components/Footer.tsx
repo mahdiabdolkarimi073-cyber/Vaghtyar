@@ -33,6 +33,7 @@ export default function Footer({ siteSettings }: { siteSettings: SiteSettings })
             <ul className="space-y-2 text-sm">
               <li><Link href="/" className="hover:text-primary-light transition-colors">خانه</Link></li>
               <li><Link href="/search" className="hover:text-primary-light transition-colors">جستجوی کسب‌وکار</Link></li>
+              <li><Link href="/plans" className="hover:text-primary-light transition-colors">پلن‌ها و قیمت‌ها</Link></li>
               <li><Link href="/register-business" className="hover:text-primary-light transition-colors">ثبت کسب‌وکار</Link></li>
               <li><Link href="/about" className="hover:text-primary-light transition-colors">درباره ما</Link></li>
               <li><Link href="/contact" className="hover:text-primary-light transition-colors">تماس با ما</Link></li>

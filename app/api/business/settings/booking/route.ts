@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { checkPlanFeature } from '@/lib/plan-limits';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
 export async function GET(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const business = await prisma.business.findUnique({
     where: { id: businessId },
@@ -14,8 +15,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const body = await req.json();
 

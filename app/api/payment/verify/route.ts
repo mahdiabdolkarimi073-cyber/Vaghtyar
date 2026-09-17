@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyPayment } from '@/lib/payment-service';
 import { prisma } from '@/lib/prisma';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
 export async function POST(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const { paymentId, authority, status } = await req.json();
   if (!paymentId) return NextResponse.json({ error: 'شناسه پرداخت الزامی است' }, { status: 400 });

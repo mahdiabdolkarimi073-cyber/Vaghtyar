@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const hours = await prisma.staffWorkingHours.findMany({ where: { staffId: params.id } });
   return NextResponse.json(hours);
 }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const body = await req.json() as Array<{
     dayOfWeek: number; isClosed: boolean; startTime: string | null; endTime: string | null; useBusinessDefault: boolean;

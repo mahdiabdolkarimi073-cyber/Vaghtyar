@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkPlanLimit, getSmsQuotaUsage } from '@/lib/plan-limits';
+import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
 export async function GET(req: NextRequest) {
-  const businessId = req.headers.get('x-business-id');
-  if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+  const businessId = getBusinessId(req);
+  if (!businessId) return unauthorizedResponse();
 
   const [services, staff, smsQuota] = await Promise.all([
     checkPlanLimit(businessId, 'maxServices'),
