@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Download, DollarSign, Calendar, CheckCircle, XCircle, TrendingUp } from 'lucide-react';
+import { Download, DollarSign, Calendar, CheckCircle, XCircle, TrendingUp, Lock, Sparkles } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Link from 'next/link';
 import { businessFetch } from '@/lib/business-api';
 import { toPersianDigits, formatPrice } from '@/lib/constants';
 
@@ -35,6 +36,7 @@ function MiniStat({ icon, label, value, suffix, color }: { icon: React.ReactNode
 export default function ReportsPage() {
   const [report, setReport] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [locked, setLocked] = useState(false);
   const [filter, setFilter] = useState<FilterType>('week');
   const [customStart, setCustomStart] = useState('');
   const [customEnd, setCustomEnd] = useState('');
@@ -56,8 +58,12 @@ export default function ReportsPage() {
       if (endDate) params.set('endDate', endDate);
       const data = await businessFetch<ReportData>(`/api/business/reports?${params}`);
       setReport(data);
-    } catch { /* ignore */ }
-    finally { setLoading(false); }
+      setLocked(false);
+    } catch (err) {
+      if (err instanceof Error && err.message.includes('گزارش درآمد')) {
+        setLocked(true);
+      }
+    } finally { setLoading(false); }
   }, [filter, customStart, customEnd]);
 
   useEffect(() => { fetchReport(); }, [fetchReport]);
@@ -71,6 +77,27 @@ export default function ReportsPage() {
   };
 
   const tooltipStyle = { background: 'rgba(255,255,255,0.98)', border: '1px solid #E2E8F0', borderRadius: 12, color: '#1E293B', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' };
+
+  if (locked) {
+    return (
+      <div className="space-y-5">
+        <div>
+          <h2 className="text-xl font-bold text-text-primary">گزارش‌ها و درآمد</h2>
+          <p className="text-sm text-text-secondary mt-0.5">تحلیل عملکرد کسب‌وکار شما</p>
+        </div>
+        <div className="bg-surface border border-border rounded-2xl p-10 text-center shadow-card">
+          <div className="inline-flex w-16 h-16 rounded-2xl bg-muted items-center justify-center mb-4">
+            <Lock className="w-8 h-8 text-text-muted" />
+          </div>
+          <h3 className="text-lg font-bold text-text-primary mb-2">گزارش درآمد در پلن شما فعال نیست</h3>
+          <p className="text-sm text-text-secondary mb-5 max-w-md mx-auto">برای مشاهده گزارش درآمد و تحلیل عملکرد کسب‌وکار، لطفاً پلن خود را ارتقا دهید.</p>
+          <Link href="/business/subscription" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl gradient-primary text-white text-sm font-medium shadow-soft hover:shadow-card-hover transition-all">
+            <Sparkles className="w-4 h-4" /> ارتقای پلن
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5">

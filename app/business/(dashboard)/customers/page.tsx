@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, UserCheck, Ban, Plus, X, Phone, Calendar, Users } from 'lucide-react';
+import { Search, UserCheck, Ban, Plus, X, Phone, Calendar, Users, Lock } from 'lucide-react';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import GradientButton from '@/components/ui/GradientButton';
 import GlassBadge from '@/components/ui/GlassBadge';
@@ -32,6 +33,7 @@ export default function CustomersPage() {
   const [detail, setDetail] = useState<CustomerDetail | null>(null);
   const [newNote, setNewNote] = useState('');
   const [savingNote, setSavingNote] = useState(false);
+  const [notesLocked, setNotesLocked] = useState(false);
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
@@ -73,7 +75,13 @@ export default function CustomersPage() {
       if (detail) setDetail({ ...detail, notes: [note, ...detail.notes] });
       setNewNote('');
       toast.success('یادداشت اضافه شد');
-    } catch { toast.error('خطا'); }
+    } catch (err) {
+      if (err instanceof Error && err.message.includes('یادداشت مشتری')) {
+        setNotesLocked(true);
+      } else {
+        toast.error('خطا');
+      }
+    }
     finally { setSavingNote(false); }
   };
 
@@ -175,6 +183,16 @@ export default function CustomersPage() {
               </div>
               <div className="mb-4">
                 <h4 className="text-sm font-bold text-text-primary mb-3">یادداشت‌ها</h4>
+                {notesLocked ? (
+                  <div className="p-4 rounded-xl bg-muted/30 text-center">
+                    <Lock className="w-6 h-6 text-text-muted mx-auto mb-2" />
+                    <p className="text-sm text-text-secondary mb-3">یادداشت مشتری در پلن شما فعال نیست</p>
+                    <Link href="/business/subscription" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl gradient-primary text-white text-xs font-medium shadow-soft hover:shadow-card-hover transition-all">
+                      ارتقای پلن
+                    </Link>
+                  </div>
+                ) : (
+                <>
                 <div className="flex gap-2 mb-3">
                   <input value={newNote} onChange={e => setNewNote(e.target.value)} onKeyDown={e => e.key === 'Enter' && addNote()} placeholder="یادداشت جدید..." className="premium-input flex-1 px-3 py-2.5 text-sm" />
                   <GradientButton onClick={addNote} loading={savingNote} size="sm" className="shrink-0"><Plus className="w-4 h-4" /></GradientButton>
@@ -188,6 +206,8 @@ export default function CustomersPage() {
                   ))}
                   {detail.notes.length === 0 && <p className="text-xs text-text-secondary text-center py-3">یادداشتی ثبت نشده</p>}
                 </div>
+                </>
+                )}
               </div>
               <button onClick={() => toggleBlock(detail.id)} className={`w-full py-3 rounded-xl text-sm font-medium transition-all ${detail.isBlocked ? 'bg-secondary/10 text-secondary hover:bg-secondary/20' : 'bg-error/10 text-error hover:bg-error/20'}`}>
                 {detail.isBlocked ? 'رفع مسدودیت' : 'مسدود کردن'}

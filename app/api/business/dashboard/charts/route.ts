@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { toJalali } from '@/lib/jalali';
+import { checkPlanFeature } from '@/lib/plan-limits';
 
 export async function GET(req: NextRequest) {
   const businessId = req.headers.get('x-business-id');
   if (!businessId) return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
+
+  const feature = await checkPlanFeature(businessId, 'hasRevenueReport');
+  if (!feature.allowed) {
+    return NextResponse.json(
+      { error: `گزارش درآمد در پلن ${feature.planName} فعال نیست. برای دسترسی، پلن خود را ارتقا دهید.`, featureLocked: true, feature: 'hasRevenueReport' },
+      { status: 403 }
+    );
+  }
 
   const now = new Date();
   const days: { date: Date; jalali: string }[] = [];

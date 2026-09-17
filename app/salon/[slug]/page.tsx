@@ -6,7 +6,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import {
   MapPin, Phone, Clock, Star, BadgeCheck, Sparkles, Calendar,
-  CheckCircle2, MessageCircle, Scissors, ChevronLeft, User
+  CheckCircle2, MessageCircle, Scissors, ChevronLeft, User, Lock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -34,6 +34,7 @@ export default function SalonPage() {
   const params = useParams();
   const slug = params.slug as string;
   const [business, setBusiness] = useState<BusinessDetail | null>(null);
+  const [marketplaceLocked, setMarketplaceLocked] = useState(false);
   const [similarBusinesses, setSimilarBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', bookingCode: '', customerName: '' });
@@ -41,8 +42,14 @@ export default function SalonPage() {
 
   useEffect(() => {
     apiFetch<BusinessDetail>(`/api/businesses/${slug}`)
-      .then(setBusiness)
-      .catch(() => setBusiness(null))
+      .then((data) => { setBusiness(data); setMarketplaceLocked(false); })
+      .catch((err) => {
+        if (err instanceof Error && err.message.includes('بازار')) {
+          setMarketplaceLocked(true);
+        } else {
+          setBusiness(null);
+        }
+      })
       .finally(() => setLoading(false));
     apiFetch<{ businesses: Business[] }>(`/api/businesses/${slug}/similar`)
       .then((data) => setSimilarBusinesses(data.businesses))
@@ -57,6 +64,19 @@ export default function SalonPage() {
           <div className="h-8 bg-muted rounded w-1/2" />
           <div className="h-40 bg-muted rounded-xl" />
         </div>
+      </div>
+    );
+  }
+
+  if (marketplaceLocked) {
+    return (
+      <div className="container mx-auto px-4 max-w-7xl py-20 text-center">
+        <div className="inline-flex w-16 h-16 rounded-2xl bg-muted items-center justify-center mb-4">
+          <Lock className="w-8 h-8 text-text-muted" />
+        </div>
+        <h2 className="text-xl font-bold text-text-primary mb-2">صفحه اختصاصی این کسب‌وکار در بازار فعال نیست</h2>
+        <p className="text-sm text-text-secondary mb-6 max-w-md mx-auto">صاحب این کسب‌وکار برای دسترسی به صفحه اختصاصی در بازار باید پلن خود را ارتقا دهد.</p>
+        <Link href="/search"><Button className="bg-primary hover:bg-primary-dark text-white">بازگشت به جستجو</Button></Link>
       </div>
     );
   }
@@ -93,7 +113,12 @@ export default function SalonPage() {
       const updated = await apiFetch<BusinessDetail>(`/api/businesses/${slug}`);
       setBusiness(updated);
     } catch (e) {
-      alert((e as Error).message || 'خطا در ثبت نظر');
+      const msg = (e as Error).message || 'خطا در ثبت نظر';
+      if (msg.includes('نظر مشتری')) {
+        alert('ثبت نظر در پلن این کسب‌وکار فعال نیست.');
+      } else {
+        alert(msg);
+      }
     }
   };
 

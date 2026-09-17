@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getUserFromRequest } from '@/lib/auth';
+import { getBusinessPlan } from '@/lib/plan-limits';
 
 export async function GET(
   req: NextRequest,
@@ -20,6 +21,14 @@ export async function GET(
 
     if (!business) {
       return NextResponse.json({ error: 'کسب‌وکار یافت نشد' }, { status: 404 });
+    }
+
+    const { plan } = await getBusinessPlan(business.id);
+    if (plan && !plan.hasMarketplacePage) {
+      return NextResponse.json(
+        { error: 'صفحه اختصاصی این کسب‌وکار در بازار فعال نیست.', featureLocked: true, feature: 'hasMarketplacePage' },
+        { status: 403 }
+      );
     }
 
     const avgRating = business.reviews.length > 0

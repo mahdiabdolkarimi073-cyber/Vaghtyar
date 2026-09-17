@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { checkPlanFeature } from '@/lib/plan-limits';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,6 +13,14 @@ export async function POST(req: NextRequest) {
 
     if (rating < 1 || rating > 5) {
       return NextResponse.json({ error: 'امتیاز باید بین ۱ تا ۵ باشد' }, { status: 400 });
+    }
+
+    const feature = await checkPlanFeature(businessId, 'hasCustomerReviews');
+    if (!feature.allowed) {
+      return NextResponse.json(
+        { error: `ثبت نظر مشتری در پلن ${feature.planName} فعال نیست. برای دسترسی، پلن خود را ارتقا دهید.`, featureLocked: true, feature: 'hasCustomerReviews' },
+        { status: 403 }
+      );
     }
 
     // Check booking exists

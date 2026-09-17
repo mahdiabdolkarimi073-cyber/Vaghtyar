@@ -61,25 +61,44 @@ const paymentStatusLabel: Record<string, string> = {
   SUCCESS: 'موفق', FAILED: 'ناموفق', PENDING: 'در انتظار', REFUNDED: 'بازگشت‌داده شده',
 };
 
-const FEATURE_LIST: { key: keyof Plan; label: string; type: 'boolean' | 'quota' | 'count' }[] = [
-  { key: 'maxServices', label: 'حداکثر خدمات', type: 'count' },
-  { key: 'maxStaff', label: 'حداکثر کارکنان', type: 'count' },
-  { key: 'hasManualConfirm', label: 'تأیید دستی نوبت', type: 'boolean' },
-  { key: 'smsConfirmQuota', label: 'سهمیه پیامک تأیید', type: 'quota' },
-  { key: 'hasSmsReminder', label: 'یادآوری پیامکی', type: 'boolean' },
-  { key: 'hasRevenueReport', label: 'گزارش درآمد', type: 'boolean' },
-  { key: 'hasMarketplacePage', label: 'صفحه بازارچه', type: 'boolean' },
-  { key: 'hasFeaturedListing', label: 'نمایش ویژه', type: 'boolean' },
-  { key: 'hasCustomerReviews', label: 'نظرات مشتریان', type: 'boolean' },
-  { key: 'hasDiscountCodes', label: 'کد تخفیف', type: 'boolean' },
-  { key: 'hasCustomerNotes', label: 'یادداشت مشتری', type: 'boolean' },
-  { key: 'hasPhoneSupport', label: 'پشتیبانی تلفنی', type: 'boolean' },
+interface FeatureRow {
+  label: string;
+  type: 'boolean' | 'quota' | 'count' | 'always-yes';
+  key?: keyof Plan;
+}
+
+const FEATURE_LIST: FeatureRow[] = [
+  { label: 'تعداد خدمات', type: 'count', key: 'maxServices' },
+  { label: 'تعداد کارکنان', type: 'count', key: 'maxStaff' },
+  { label: 'تقویم نوبت', type: 'always-yes' },
+  { label: 'تأیید خودکار نوبت', type: 'always-yes' },
+  { label: 'تأیید دستی نوبت', type: 'boolean', key: 'hasManualConfirm' },
+  { label: 'پیامک تأیید نوبت', type: 'quota', key: 'smsConfirmQuota' },
+  { label: 'پیامک یادآوری', type: 'boolean', key: 'hasSmsReminder' },
+  { label: 'گزارش درآمد', type: 'boolean', key: 'hasRevenueReport' },
+  { label: 'صفحه اختصاصی در بازار', type: 'boolean', key: 'hasMarketplacePage' },
+  { label: 'جایگاه ویژه در نتایج', type: 'boolean', key: 'hasFeaturedListing' },
+  { label: 'نظرات مشتریان', type: 'boolean', key: 'hasCustomerReviews' },
+  { label: 'کدهای تخفیف', type: 'boolean', key: 'hasDiscountCodes' },
+  { label: 'یادداشت مشتری', type: 'boolean', key: 'hasCustomerNotes' },
+  { label: 'پشتیبانی تلفنی', type: 'boolean', key: 'hasPhoneSupport' },
 ];
 
-function formatLimitValue(value: number | null | boolean, type: 'boolean' | 'quota' | 'count'): string | boolean {
-  if (type === 'boolean') return value as boolean;
-  if (value === null) return 'نامحدود';
-  return toPersianDigits(value as number);
+function formatFeatureCell(plan: Plan, feature: FeatureRow): string | boolean {
+  if (feature.type === 'always-yes') return true;
+  if (!feature.key) return false;
+  const value = plan[feature.key];
+  if (feature.type === 'boolean') return value as boolean;
+  if (feature.type === 'quota') {
+    if (value === null) return 'نامحدود';
+    if (value === 0) return false;
+    return toPersianDigits(value as number);
+  }
+  if (feature.type === 'count') {
+    if (value === null) return 'نامحدود';
+    return toPersianDigits(value as number);
+  }
+  return false;
 }
 
 export default function SubscriptionPage() {
@@ -189,43 +208,67 @@ export default function SubscriptionPage() {
 
       <div>
         <h3 className="text-sm font-bold text-text-primary mb-3">مقایسه طرح‌ها</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {plans.map(plan => {
-            const isCurrent = subscription?.plan.id === plan.id;
-            const isUpgrade = !isCurrent && (!subscription || plan.price > subscription.plan.price);
-            return (
-              <div key={plan.id} className={`bg-surface border rounded-2xl p-5 flex flex-col transition-all ${isCurrent ? 'border-primary/40 shadow-primary' : 'border-border shadow-card hover:shadow-card-hover'}`}>
-                <div className="text-center mb-4">
-                  <h4 className="text-lg font-bold text-text-primary">{plan.name}</h4>
-                  <div className="text-2xl font-bold gradient-text mt-1">{formatPrice(plan.price)}</div>
-                  <div className="text-xs text-text-secondary">در ماه</div>
-                </div>
-                <div className="space-y-2 mb-4 flex-1">
-                  {FEATURE_LIST.map(f => {
-                    const value = plan[f.key] as number | null | boolean;
-                    const display = formatLimitValue(value, f.type);
+        <div className="overflow-x-auto rounded-2xl border border-border shadow-card bg-surface">
+          <table className="w-full text-sm" dir="rtl">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-right p-4 font-semibold text-text-secondary whitespace-nowrap">قابلیت</th>
+                {plans.map(plan => {
+                  const isCurrent = subscription?.plan.id === plan.id;
+                  return (
+                    <th key={plan.id} className={`text-center p-4 whitespace-nowrap ${isCurrent ? 'bg-primary/8' : ''}`}>
+                      <div className="font-bold text-text-primary">{plan.name}</div>
+                      <div className="text-lg font-bold gradient-text mt-1">{formatPrice(plan.price)}</div>
+                      <div className="text-xs text-text-secondary">در ماه</div>
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {FEATURE_LIST.map((feature, idx) => (
+                <tr key={feature.label} className={idx % 2 === 0 ? 'bg-muted/20' : ''}>
+                  <td className="text-right p-4 text-text-secondary whitespace-nowrap font-medium">{feature.label}</td>
+                  {plans.map(plan => {
+                    const display = formatFeatureCell(plan, feature);
                     return (
-                      <div key={f.key} className="flex items-center gap-2 text-xs">
-                        {f.type === 'boolean' ? (
-                          display ? <Check className="w-4 h-4 text-secondary shrink-0" /> : <X className="w-4 h-4 text-text-muted shrink-0" />
+                      <td key={plan.id} className={`text-center p-4 whitespace-nowrap ${subscription?.plan.id === plan.id ? 'bg-primary/5' : ''}`}>
+                        {feature.type === 'boolean' || feature.type === 'always-yes' ? (
+                          display === true ? (
+                            <Check className="w-4 h-4 text-secondary mx-auto" />
+                          ) : (
+                            <X className="w-4 h-4 text-text-muted mx-auto" />
+                          )
                         ) : (
-                          <span className="text-text-primary font-medium shrink-0 w-16">{display}</span>
+                          <span className={`font-medium ${display === false ? 'text-text-muted' : 'text-text-primary'}`}>
+                            {display === false ? '—' : display}
+                          </span>
                         )}
-                        <span className={display === false ? 'text-text-muted' : 'text-text-secondary'}>{f.label}</span>
-                      </div>
+                      </td>
                     );
                   })}
-                </div>
-                {isCurrent ? (
-                  <div className="text-center py-2.5 rounded-xl bg-primary/10 text-primary text-sm font-medium">پلن فعلی</div>
-                ) : isUpgrade ? (
-                  <GradientButton size="sm" className="w-full" loading={upgrading === plan.id} onClick={() => handleUpgrade(plan.id)}>ارتقا</GradientButton>
-                ) : (
-                  <div className="text-center py-2.5 rounded-xl bg-muted text-text-secondary text-sm">پلن پایین‌تر</div>
-                )}
-              </div>
-            );
-          })}
+                </tr>
+              ))}
+              <tr className="border-t-2 border-border">
+                <td className="p-4"></td>
+                {plans.map(plan => {
+                  const isCurrent = subscription?.plan.id === plan.id;
+                  const isUpgrade = !isCurrent && (!subscription || plan.price > subscription.plan.price);
+                  return (
+                    <td key={plan.id} className="p-4 text-center">
+                      {isCurrent ? (
+                        <span className="inline-block px-4 py-2 rounded-xl bg-primary/10 text-primary text-xs font-medium">پلن فعلی</span>
+                      ) : isUpgrade ? (
+                        <GradientButton size="sm" loading={upgrading === plan.id} onClick={() => handleUpgrade(plan.id)}>ارتقا</GradientButton>
+                      ) : (
+                        <span className="inline-block px-4 py-2 rounded-xl bg-muted text-text-secondary text-xs">پلن پایین‌تر</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

@@ -56,6 +56,26 @@ export async function checkPlanLimit(
   };
 }
 
+export type PlanFeature =
+  | 'hasManualConfirm'
+  | 'hasSmsReminder'
+  | 'hasRevenueReport'
+  | 'hasMarketplacePage'
+  | 'hasFeaturedListing'
+  | 'hasCustomerReviews'
+  | 'hasDiscountCodes'
+  | 'hasCustomerNotes'
+  | 'hasPhoneSupport';
+
+export async function checkPlanFeature(
+  businessId: string,
+  feature: PlanFeature
+): Promise<{ allowed: boolean; planName: string }> {
+  const { plan } = await getBusinessPlan(businessId);
+  if (!plan) return { allowed: false, planName: 'نامشخص' };
+  return { allowed: plan[feature] as boolean, planName: plan.name };
+}
+
 export async function getSmsQuotaUsage(businessId: string) {
   const { plan } = await getBusinessPlan(businessId);
 
