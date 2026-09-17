@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { CreditCard, Check, X, Calendar, Lock, Sparkles } from 'lucide-react';
+import { CreditCard, Check, X, Lock, Sparkles, Calendar, AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import GlassCard from '@/components/ui/GlassCard';
 import GlassBadge from '@/components/ui/GlassBadge';
 import GradientButton from '@/components/ui/GradientButton';
 import { businessFetch } from '@/lib/business-api';
@@ -126,7 +125,7 @@ export default function SubscriptionPage() {
     }
   };
 
-  if (loading) return <div className="glass h-96 rounded-2xl glass-shimmer" />;
+  if (loading) return <div className="bg-surface border border-border rounded-2xl h-96 glass-shimmer" />;
 
   const smsQuota = subscription?.smsQuota;
   const quotaUsed = smsQuota?.used ?? 0;
@@ -134,70 +133,68 @@ export default function SubscriptionPage() {
   const quotaUnlimited = smsQuota?.unlimited ?? false;
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-bold text-text-primary">اشتراک و پرداخت</h2>
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-xl font-bold text-text-primary">اشتراک و پرداخت</h2>
+        <p className="text-sm text-text-secondary mt-0.5">مدیریت طرح اشتراک و پرداخت‌ها</p>
+      </div>
 
       {subscription && (
-        <GlassCard gradient className="p-5">
-          <div className="flex items-start justify-between mb-4">
+        <div className="bg-gradient-to-l from-primary/8 to-primary-light/5 border border-primary/15 rounded-2xl p-5 lg:p-6">
+          <div className="flex items-start justify-between mb-4 flex-wrap gap-3">
             <div>
               <div className="text-xs text-text-secondary mb-1">طرح فعلی</div>
-              <h3 className="text-xl font-bold gradient-text">{subscription.plan.name}</h3>
+              <h3 className="text-2xl font-bold gradient-text">{subscription.plan.name}</h3>
             </div>
             <GlassBadge variant={subscription.daysRemaining <= 7 ? 'danger' : 'success'}>
               {toPersianDigits(subscription.daysRemaining)} روز باقی‌مانده
             </GlassBadge>
           </div>
           <div className="mb-4">
-            <div className="flex justify-between text-xs text-text-secondary mb-1">
+            <div className="flex items-center gap-2 text-xs text-text-secondary mb-2">
+              <Calendar className="w-3.5 h-3.5" />
               <span>تاریخ انقضا: {formatDateShortFA(new Date(subscription.endDate))}</span>
             </div>
-            <div className="h-2 rounded-full bg-surface/5 overflow-hidden">
-              <div className="h-full gradient-primary rounded-full" style={{ width: `${Math.min(100, (subscription.daysRemaining / 30) * 100)}%` }} />
+            <div className="h-2 rounded-full bg-muted overflow-hidden">
+              <div className="h-full gradient-primary rounded-full transition-all" style={{ width: `${Math.min(100, (subscription.daysRemaining / 30) * 100)}%` }} />
             </div>
           </div>
           {subscription.daysRemaining <= 7 && subscription.daysRemaining > 0 && (
-            <div className="p-3 rounded-xl bg-error/10 border border-red-500/20 text-sm text-red-300">
+            <div className="p-3 rounded-xl bg-error/5 border border-error/20 text-sm text-error flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
               اشتراک شما به‌زودی منقضی می‌شود. برای تداوم خدمات، آن را تمدید کنید.
             </div>
           )}
 
-          {!quotaUnlimited && quotaLimit !== null && quotaLimit !== undefined && (
-            <div className="mt-4 p-3 rounded-xl bg-surface/5">
+          {!quotaUnlimited && quotaLimit !== null && (
+            <div className="mt-4 p-4 rounded-xl bg-surface/50">
               <div className="flex items-center justify-between text-sm mb-2">
                 <span className="text-text-secondary">سهمیه پیامک تأیید این ماه</span>
-                <span className="text-text-primary font-medium">
-                  {toPersianDigits(quotaUsed)} / {toPersianDigits(quotaLimit)} پیامک
-                </span>
+                <span className="text-text-primary font-medium">{toPersianDigits(quotaUsed)} / {toPersianDigits(quotaLimit || 0)} پیامک</span>
               </div>
-              <div className="h-2 rounded-full bg-surface/5 overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all ${quotaUsed >= quotaLimit ? 'bg-red-500' : quotaUsed / quotaLimit > 0.8 ? 'bg-orange-500' : 'gradient-primary'}`}
-                  style={{ width: `${Math.min(100, (quotaUsed / quotaLimit) * 100)}%` }}
-                />
+              <div className="h-2 rounded-full bg-muted overflow-hidden">
+                <div className={`h-full rounded-full transition-all ${quotaLimit && quotaUsed >= quotaLimit ? 'bg-error' : quotaLimit && quotaUsed / quotaLimit > 0.8 ? 'bg-warning' : 'gradient-primary'}`} style={{ width: `${quotaLimit ? Math.min(100, (quotaUsed / quotaLimit) * 100) : 0}%` }} />
               </div>
-              <div className="text-xs text-text-secondary mt-1">
-                {toPersianDigits(Math.max(0, quotaLimit - quotaUsed))} پیامک باقی‌مانده
-              </div>
+              <div className="text-xs text-text-secondary mt-1">{toPersianDigits(Math.max(0, (quotaLimit || 0) - quotaUsed))} پیامک باقی‌مانده</div>
             </div>
           )}
           {quotaUnlimited && (
-            <div className="mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-sm text-emerald-300 flex items-center gap-2">
+            <div className="mt-4 p-3 rounded-xl bg-secondary/5 border border-secondary/20 text-sm text-secondary flex items-center gap-2">
               <Sparkles className="w-4 h-4" />
               سهمیه پیامک نامحدود
             </div>
           )}
-        </GlassCard>
+        </div>
       )}
 
       <div>
         <h3 className="text-sm font-bold text-text-primary mb-3">مقایسه طرح‌ها</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {plans.map(plan => {
             const isCurrent = subscription?.plan.id === plan.id;
             const isUpgrade = !isCurrent && (!subscription || plan.price > subscription.plan.price);
             return (
-              <GlassCard key={plan.id} className={`p-5 flex flex-col ${isCurrent ? 'border-indigo-500/50' : ''}`}>
+              <div key={plan.id} className={`bg-surface border rounded-2xl p-5 flex flex-col transition-all ${isCurrent ? 'border-primary/40 shadow-primary' : 'border-border shadow-card hover:shadow-card-hover'}`}>
                 <div className="text-center mb-4">
                   <h4 className="text-lg font-bold text-text-primary">{plan.name}</h4>
                   <div className="text-2xl font-bold gradient-text mt-1">{formatPrice(plan.price)}</div>
@@ -210,59 +207,57 @@ export default function SubscriptionPage() {
                     return (
                       <div key={f.key} className="flex items-center gap-2 text-xs">
                         {f.type === 'boolean' ? (
-                          display ? <Check className="w-4 h-4 text-secondary shrink-0" /> : <X className="w-4 h-4 text-error shrink-0" />
+                          display ? <Check className="w-4 h-4 text-secondary shrink-0" /> : <X className="w-4 h-4 text-text-muted shrink-0" />
                         ) : (
-                          <span className="text-text-primary font-medium shrink-0">{display}</span>
+                          <span className="text-text-primary font-medium shrink-0 w-16">{display}</span>
                         )}
-                        <span className="text-text-secondary">{f.label}</span>
+                        <span className={display === false ? 'text-text-muted' : 'text-text-secondary'}>{f.label}</span>
                       </div>
                     );
                   })}
                 </div>
                 {isCurrent ? (
-                  <div className="text-center py-2 rounded-xl bg-primary/10 text-primary text-sm font-medium">پلن فعلی</div>
+                  <div className="text-center py-2.5 rounded-xl bg-primary/10 text-primary text-sm font-medium">پلن فعلی</div>
                 ) : isUpgrade ? (
-                  <GradientButton
-                    size="sm"
-                    className="w-full"
-                    loading={upgrading === plan.id}
-                    onClick={() => handleUpgrade(plan.id)}
-                  >
-                    ارتقا
-                  </GradientButton>
+                  <GradientButton size="sm" className="w-full" loading={upgrading === plan.id} onClick={() => handleUpgrade(plan.id)}>ارتقا</GradientButton>
                 ) : (
-                  <div className="text-center py-2 rounded-xl bg-surface/5 text-text-secondary text-sm">پلن پایین‌تر</div>
+                  <div className="text-center py-2.5 rounded-xl bg-muted text-text-secondary text-sm">پلن پایین‌تر</div>
                 )}
-              </GlassCard>
+              </div>
             );
           })}
         </div>
       </div>
 
-      <GlassCard className="p-5">
+      <div className="bg-surface border border-border rounded-2xl p-5 shadow-card">
         <h3 className="text-sm font-bold text-text-primary mb-4">تاریخچه پرداخت</h3>
         {payments.length === 0 ? (
-          <p className="text-sm text-text-secondary text-center py-6">پرداختی ثبت نشده است</p>
+          <div className="text-center py-8">
+            <div className="inline-flex w-12 h-12 rounded-xl bg-muted items-center justify-center mb-3">
+              <CreditCard className="w-6 h-6 text-text-muted" />
+            </div>
+            <p className="text-sm text-text-secondary">پرداختی ثبت نشده است</p>
+          </div>
         ) : (
           <div className="space-y-2">
             {payments.map(p => (
-              <div key={p.id} className="flex items-center justify-between p-3 rounded-xl bg-surface/5">
+              <div key={p.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl glass flex items-center justify-center"><CreditCard className="w-5 h-5 text-text-secondary" /></div>
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><CreditCard className="w-5 h-5 text-primary" /></div>
                   <div>
-                    <div className="text-sm text-text-primary">{p.planName}</div>
+                    <div className="text-sm text-text-primary font-medium">{p.planName}</div>
                     <div className="text-xs text-text-secondary">{formatDateShortFA(new Date(p.createdAt))}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm text-text-primary">{formatPrice(p.amount)}</span>
+                  <span className="text-sm text-text-primary font-medium">{formatPrice(p.amount)}</span>
                   <GlassBadge variant={paymentStatusVariant[p.status] || 'default'}>{paymentStatusLabel[p.status] || p.status}</GlassBadge>
                 </div>
               </div>
             ))}
           </div>
         )}
-      </GlassCard>
+      </div>
     </div>
   );
 }

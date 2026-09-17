@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Settings as SettingsIcon, Building2, Calendar, MessageSquare, Link2, Copy, Check } from 'lucide-react';
+import { Building2, Calendar, MessageSquare, Link2, Copy, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
-import GlassCard from '@/components/ui/GlassCard';
 import GradientButton from '@/components/ui/GradientButton';
 import { businessFetch } from '@/lib/business-api';
 import { useSiteSettings } from '@/hooks/use-site-settings';
@@ -64,7 +63,7 @@ export default function SettingsPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  if (loading) return <div className="glass h-96 rounded-2xl glass-shimmer" />;
+  if (loading) return <div className="bg-surface border border-border rounded-2xl h-96 glass-shimmer" />;
 
   const tabs: { id: Tab; label: string; icon: typeof Building2 }[] = [
     { id: 'info', label: 'اطلاعات کسب‌وکار', icon: Building2 },
@@ -74,85 +73,118 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-bold text-text-primary">تنظیمات</h2>
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-xl font-bold text-text-primary">تنظیمات</h2>
+        <p className="text-sm text-text-secondary mt-0.5">مدیریت اطلاعات و تنظیمات کسب‌وکار</p>
+      </div>
 
       <div className="flex flex-wrap gap-2">
         {tabs.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)} className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === t.id ? 'gradient-primary text-white' : 'glass text-text-secondary hover:text-text-primary'}`}>
+          <button key={t.id} onClick={() => setTab(t.id)} className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${tab === t.id ? 'gradient-primary text-white shadow-soft' : 'bg-surface border border-border text-text-secondary hover:bg-muted'}`}>
             <t.icon className="w-4 h-4" /> {t.label}
           </button>
         ))}
       </div>
 
       {tab === 'info' && (
-        <GlassCard className="p-5 space-y-4 animate-fade-in">
+        <div className="bg-surface border border-border rounded-2xl p-5 lg:p-6 shadow-card space-y-4 animate-fade-in">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div><label className="block text-sm text-text-secondary mb-1.5">نام کسب‌وکار</label><input value={info.name} onChange={e => setInfo({ ...info, name: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm" /></div>
-            <div><label className="block text-sm text-text-secondary mb-1.5">دسته‌بندی</label><input value={info.category} onChange={e => setInfo({ ...info, category: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm" /></div>
-            <div><label className="block text-sm text-text-secondary mb-1.5">تلفن</label><input value={info.phone} onChange={e => setInfo({ ...info, phone: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm" /></div>
-            <div><label className="block text-sm text-text-secondary mb-1.5">محله</label><input value={info.neighborhood} onChange={e => setInfo({ ...info, neighborhood: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm" /></div>
+            <div>
+              <label className="block text-sm text-text-secondary mb-1.5">نام کسب‌وکار</label>
+              <input value={info.name} onChange={e => setInfo({ ...info, name: e.target.value })} className="premium-input w-full px-4 py-2.5 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm text-text-secondary mb-1.5">دسته‌بندی</label>
+              <input value={info.category} onChange={e => setInfo({ ...info, category: e.target.value })} className="premium-input w-full px-4 py-2.5 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm text-text-secondary mb-1.5">تلفن</label>
+              <input value={info.phone} onChange={e => setInfo({ ...info, phone: e.target.value })} className="premium-input w-full px-4 py-2.5 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm text-text-secondary mb-1.5">محله</label>
+              <input value={info.neighborhood} onChange={e => setInfo({ ...info, neighborhood: e.target.value })} className="premium-input w-full px-4 py-2.5 text-sm" />
+            </div>
           </div>
-          <div><label className="block text-sm text-text-secondary mb-1.5">آدرس</label><textarea value={info.address} onChange={e => setInfo({ ...info, address: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm resize-none" rows={2} /></div>
-          <div><label className="block text-sm text-text-secondary mb-1.5">توضیحات</label><textarea value={info.description} onChange={e => setInfo({ ...info, description: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm resize-none" rows={3} /></div>
+          <div>
+            <label className="block text-sm text-text-secondary mb-1.5">آدرس</label>
+            <textarea value={info.address} onChange={e => setInfo({ ...info, address: e.target.value })} className="premium-input w-full px-4 py-2.5 text-sm resize-none" rows={2} />
+          </div>
+          <div>
+            <label className="block text-sm text-text-secondary mb-1.5">توضیحات</label>
+            <textarea value={info.description} onChange={e => setInfo({ ...info, description: e.target.value })} className="premium-input w-full px-4 py-2.5 text-sm resize-none" rows={3} />
+          </div>
           <div className="flex justify-end"><GradientButton onClick={saveInfo} loading={saving} size="md">ذخیره</GradientButton></div>
-        </GlassCard>
+        </div>
       )}
 
       {tab === 'booking' && (
-        <GlassCard className="p-5 space-y-4 animate-fade-in">
-          <label className="flex items-center justify-between p-3 rounded-xl bg-surface/5">
-            <div><div className="text-sm text-text-primary">تایید خودکار نوبت‌ها</div><div className="text-xs text-text-secondary">نوبت‌ها بدون نیاز به تایید دستی فعال می‌شوند</div></div>
-            <button onClick={() => setBooking({ ...booking, autoApprove: !booking.autoApprove })} className={`relative w-10 h-6 rounded-full transition-colors ${booking.autoApprove ? 'bg-emerald-500' : 'bg-surface/10'}`}><span className={`absolute top-0.5 w-5 h-5 rounded-full bg-surface transition-all ${booking.autoApprove ? 'left-0.5' : 'right-0.5'}`} /></button>
+        <div className="bg-surface border border-border rounded-2xl p-5 lg:p-6 shadow-card space-y-4 animate-fade-in">
+          <label className="flex items-center justify-between p-4 rounded-xl bg-muted/30 cursor-pointer">
+            <div><div className="text-sm font-medium text-text-primary">تایید خودکار نوبت‌ها</div><div className="text-xs text-text-secondary mt-0.5">نوبت‌ها بدون نیاز به تایید دستی فعال می‌شوند</div></div>
+            <button onClick={() => setBooking({ ...booking, autoApprove: !booking.autoApprove })} className={`premium-toggle shrink-0 ${booking.autoApprove ? 'bg-secondary' : 'bg-muted'}`}>
+              <span className={`premium-toggle-knob ${booking.autoApprove ? 'left-0.5' : 'right-0.5'}`} />
+            </button>
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div><label className="block text-sm text-text-secondary mb-1.5">حداقل زمان رزرو قبل از نوبت (ساعت)</label><input type="number" value={booking.minAdvanceHours} onChange={e => setBooking({ ...booking, minAdvanceHours: parseInt(e.target.value) || 0 })} className="glass-input w-full px-4 py-2.5 text-sm" /></div>
-            <div><label className="block text-sm text-text-secondary mb-1.5">حداکثر زمان رزرو قبل از نوبت (روز)</label><input type="number" value={booking.maxAdvanceDays} onChange={e => setBooking({ ...booking, maxAdvanceDays: parseInt(e.target.value) || 0 })} className="glass-input w-full px-4 py-2.5 text-sm" /></div>
+            <div>
+              <label className="block text-sm text-text-secondary mb-1.5">حداقل زمان رزرو قبل از نوبت (ساعت)</label>
+              <input type="number" value={booking.minAdvanceHours} onChange={e => setBooking({ ...booking, minAdvanceHours: parseInt(e.target.value) || 0 })} className="premium-input w-full px-4 py-2.5 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm text-text-secondary mb-1.5">حداکثر زمان رزرو قبل از نوبت (روز)</label>
+              <input type="number" value={booking.maxAdvanceDays} onChange={e => setBooking({ ...booking, maxAdvanceDays: parseInt(e.target.value) || 0 })} className="premium-input w-full px-4 py-2.5 text-sm" />
+            </div>
           </div>
-          <label className="flex items-center justify-between p-3 rounded-xl bg-surface/5">
-            <div><div className="text-sm text-text-primary">اجازه لغو نوبت به مشتری</div></div>
-            <button onClick={() => setBooking({ ...booking, allowCustomerCancel: !booking.allowCustomerCancel })} className={`relative w-10 h-6 rounded-full transition-colors ${booking.allowCustomerCancel ? 'bg-emerald-500' : 'bg-surface/10'}`}><span className={`absolute top-0.5 w-5 h-5 rounded-full bg-surface transition-all ${booking.allowCustomerCancel ? 'left-0.5' : 'right-0.5'}`} /></button>
+          <label className="flex items-center justify-between p-4 rounded-xl bg-muted/30 cursor-pointer">
+            <div><div className="text-sm font-medium text-text-primary">اجازه لغو نوبت به مشتری</div></div>
+            <button onClick={() => setBooking({ ...booking, allowCustomerCancel: !booking.allowCustomerCancel })} className={`premium-toggle shrink-0 ${booking.allowCustomerCancel ? 'bg-secondary' : 'bg-muted'}`}>
+              <span className={`premium-toggle-knob ${booking.allowCustomerCancel ? 'left-0.5' : 'right-0.5'}`} />
+            </button>
           </label>
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">زمان ارسال یادآور (ساعت قبل از نوبت)</label>
-            <select value={booking.reminderHoursBefore} onChange={e => setBooking({ ...booking, reminderHoursBefore: parseInt(e.target.value) })} className="glass-input w-full px-4 py-2.5 text-sm">
+            <select value={booking.reminderHoursBefore} onChange={e => setBooking({ ...booking, reminderHoursBefore: parseInt(e.target.value) })} className="premium-input w-full px-4 py-2.5 text-sm">
               {[1, 2, 4, 12, 24, 48].map(h => <option key={h} value={h} className="bg-surface">{h} ساعت</option>)}
             </select>
           </div>
           <div className="flex justify-end"><GradientButton onClick={saveBooking} loading={saving} size="md">ذخیره</GradientButton></div>
-        </GlassCard>
+        </div>
       )}
 
       {tab === 'sms' && (
-        <GlassCard className="p-5 space-y-4 animate-fade-in">
+        <div className="bg-surface border border-border rounded-2xl p-5 lg:p-6 shadow-card space-y-4 animate-fade-in">
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">قالب پیامک تایید</label>
-            <textarea value={sms.confirmationSmsTemplate} onChange={e => setSms({ ...sms, confirmationSmsTemplate: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm resize-none" rows={3} placeholder="کاربر {customer_name} عزیز، نوبت شما برای {service} در تاریخ {date} ساعت {time} تایید شد. {business_name}" />
+            <textarea value={sms.confirmationSmsTemplate} onChange={e => setSms({ ...sms, confirmationSmsTemplate: e.target.value })} className="premium-input w-full px-4 py-2.5 text-sm resize-none" rows={3} placeholder="کاربر {customer_name} عزیز، نوبت شما برای {service} در تاریخ {date} ساعت {time} تایید شد. {business_name}" />
             <p className="text-xs text-text-muted mt-1">متغیرها: {'{customer_name}, {date}, {time}, {service}, {business_name}'}</p>
           </div>
           <div>
             <label className="block text-sm text-text-secondary mb-1.5">قالب پیامک یادآور</label>
-            <textarea value={sms.reminderSmsTemplate} onChange={e => setSms({ ...sms, reminderSmsTemplate: e.target.value })} className="glass-input w-full px-4 py-2.5 text-sm resize-none" rows={3} placeholder="یادآوری: {customer_name} عزیز، نوبت شما برای {service} فردا ساعت {time} در {business_name}." />
+            <textarea value={sms.reminderSmsTemplate} onChange={e => setSms({ ...sms, reminderSmsTemplate: e.target.value })} className="premium-input w-full px-4 py-2.5 text-sm resize-none" rows={3} placeholder="یادآوری: {customer_name} عزیز، نوبت شما برای {service} فردا ساعت {time} در {business_name}." />
           </div>
           <div className="flex justify-end"><GradientButton onClick={saveSms} loading={saving} size="md">ذخیره</GradientButton></div>
-        </GlassCard>
+        </div>
       )}
 
       {tab === 'link' && (
-        <GlassCard className="p-5 space-y-4 animate-fade-in">
-          <h3 className="text-sm font-bold text-text-primary">لینک رزرو کسب‌وکار شما</h3>
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-surface/5">
-            <code className="flex-1 text-sm text-text-primary truncate">{typeof window !== 'undefined' ? window.location.origin : ''}/book/{businessSlug}</code>
-            <button onClick={copyLink} className="p-2 rounded-lg glass hover:bg-muted text-text-secondary hover:text-text-primary">
+        <div className="bg-surface border border-border rounded-2xl p-5 lg:p-6 shadow-card space-y-4 animate-fade-in">
+          <div>
+            <h3 className="text-sm font-bold text-text-primary mb-1">لینک رزرو کسب‌وکار شما</h3>
+            <p className="text-xs text-text-secondary mb-3">این لینک را با مشتریان خود به اشتراک بگذارید تا مستقیما نوبت رزرو کنند</p>
+          </div>
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-muted/30">
+            <code className="flex-1 text-sm text-text-primary truncate ltr-text">{typeof window !== 'undefined' ? window.location.origin : ''}/book/{businessSlug}</code>
+            <button onClick={copyLink} className="p-2 rounded-lg bg-surface border border-border hover:bg-muted text-text-secondary hover:text-primary transition-colors shrink-0">
               {copied ? <Check className="w-4 h-4 text-secondary" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
-          <p className="text-xs text-text-secondary">این لینک را با مشتریان خود به اشتراک بگذارید تا مستقیما نوبت رزرو کنند.</p>
           <div className="flex gap-2">
-            <a href={`https://wa.me/?text=${typeof window !== 'undefined' ? encodeURIComponent(`${settings.site_name}: ${window.location.origin}/book/${businessSlug}`) : ''}`} target="_blank" rel="noopener" className="px-4 py-2 rounded-xl glass text-sm text-text-primary hover:bg-muted">واتساپ</a>
-            <a href={`https://t.me/share/url?url=${typeof window !== 'undefined' ? encodeURIComponent(`${window.location.origin}/book/${businessSlug}`) : ''}`} target="_blank" rel="noopener" className="px-4 py-2 rounded-xl glass text-sm text-text-primary hover:bg-muted">تلگرام</a>
+            <a href={`https://wa.me/?text=${typeof window !== 'undefined' ? encodeURIComponent(`${settings.site_name}: ${window.location.origin}/book/${businessSlug}`) : ''}`} target="_blank" rel="noopener" className="flex-1 px-4 py-2.5 rounded-xl bg-surface border border-border text-sm text-text-primary hover:bg-muted text-center transition-colors">واتساپ</a>
+            <a href={`https://t.me/share/url?url=${typeof window !== 'undefined' ? encodeURIComponent(`${window.location.origin}/book/${businessSlug}`) : ''}`} target="_blank" rel="noopener" className="flex-1 px-4 py-2.5 rounded-xl bg-surface border border-border text-sm text-text-primary hover:bg-muted text-center transition-colors">تلگرام</a>
           </div>
-        </GlassCard>
+        </div>
       )}
     </div>
   );
