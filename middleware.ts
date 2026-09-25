@@ -8,7 +8,6 @@ const PUBLIC_API_ROUTES = [
   '/api/auth/login',
   '/api/categories',
   '/api/cities',
-  '/api/plans',
   '/api/business/auth/register',
   '/api/business/auth/login',
   '/api/business/auth/forgot-password',
@@ -104,24 +103,6 @@ export async function middleware(req: NextRequest) {
     }
     const requestHeaders = new Headers(req.headers);
     requestHeaders.set('x-admin-id', decoded.userId as string);
-    return NextResponse.next({ request: { headers: requestHeaders } });
-  }
-
-  // Payment API routes — check business token
-  if (pathname.startsWith('/api/payment/') && !pathname.startsWith('/api/payment/callback')) {
-    const cookieToken = req.cookies.get(BUSINESS_COOKIE)?.value;
-    const authHeader = req.headers.get('authorization');
-    const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-    const token = cookieToken || bearerToken;
-    if (!token) {
-      return NextResponse.json({ error: 'احراز هویت نشده' }, { status: 401 });
-    }
-    const decoded = decodeJwtPayload(token);
-    if (!decoded || !decoded.businessId) {
-      return NextResponse.json({ error: 'توکن نامعتبر' }, { status: 401 });
-    }
-    const requestHeaders = new Headers(req.headers);
-    requestHeaders.set('x-business-id', decoded.businessId as string);
     return NextResponse.next({ request: { headers: requestHeaders } });
   }
 

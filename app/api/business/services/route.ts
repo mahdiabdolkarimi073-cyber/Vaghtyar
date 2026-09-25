@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { checkPlanLimit } from '@/lib/plan-limits';
 import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 import { createServiceSchema } from '@/lib/validations/schemas';
 
@@ -33,14 +32,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { error: parsed.error.issues[0]?.message || 'ورودی نامعتبر' },
       { status: 400 }
-    );
-  }
-
-  const limit = await checkPlanLimit(businessId, 'maxServices');
-  if (!limit.allowed) {
-    return NextResponse.json(
-      { error: `شما به حداکثر تعداد خدمات در پلن ${limit.planName} رسیده‌اید. برای افزایش محدودیت، پلن خود را ارتقا دهید.`, limitReached: true, limitType: 'maxServices' },
-      { status: 403 }
     );
   }
 

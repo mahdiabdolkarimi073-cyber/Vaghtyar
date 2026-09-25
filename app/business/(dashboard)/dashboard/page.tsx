@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Calendar, Clock, XCircle, DollarSign, TrendingUp, TrendingDown, Bell, ArrowLeft, CheckCircle2, Users, Lock, Sparkles } from 'lucide-react';
+import { Calendar, Clock, XCircle, DollarSign, TrendingUp, TrendingDown, Bell, ArrowLeft, CheckCircle2, Users } from 'lucide-react';
 import Link from 'next/link';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import GlassCard from '@/components/ui/GlassCard';
@@ -110,7 +110,6 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [upcoming, setUpcoming] = useState<UpcomingApp[]>([]);
   const [charts, setCharts] = useState<ChartData | null>(null);
-  const [chartsLocked, setChartsLocked] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
@@ -124,9 +123,8 @@ export default function DashboardPage() {
       try {
         const c = await businessFetch<ChartData>('/api/business/dashboard/charts');
         setCharts(c);
-        setChartsLocked(false);
       } catch {
-        setChartsLocked(true);
+        // charts optional
       }
     } catch {
       // ignore
@@ -198,18 +196,6 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts */}
-      {chartsLocked ? (
-        <div className="bg-surface border border-border rounded-2xl p-8 text-center shadow-card">
-          <div className="inline-flex w-14 h-14 rounded-2xl bg-muted items-center justify-center mb-3">
-            <Lock className="w-7 h-7 text-text-muted" />
-          </div>
-          <h3 className="text-base font-bold text-text-primary mb-1">گزارش درآمد در پلن شما فعال نیست</h3>
-          <p className="text-sm text-text-secondary mb-4">برای مشاهده نمودار درآمد، پلن خود را ارتقا دهید.</p>
-          <Link href="/business/subscription" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl gradient-primary text-white text-sm font-medium shadow-soft hover:shadow-card-hover transition-all">
-            <Sparkles className="w-4 h-4" /> ارتقای پلن
-          </Link>
-        </div>
-      ) : (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <GlassCard className="p-5">
           <h3 className="text-sm font-bold text-text-primary mb-1">درآمد ۷ روز اخیر</h3>
@@ -247,7 +233,6 @@ export default function DashboardPage() {
           </ResponsiveContainer>
         </GlassCard>
       </div>
-      )}
 
       {/* Today's Appointments */}
       <GlassCard className="p-5">

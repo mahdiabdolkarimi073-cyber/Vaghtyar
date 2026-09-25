@@ -5,7 +5,7 @@ import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Check, ChevronLeft, ChevronRight, Clock, User, Calendar,
-  CheckCircle2, Sparkles, Phone, FileText, AlertCircle, Home
+  CheckCircle2, Sparkles, Phone, FileText, AlertCircle, Home, Receipt
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { apiFetch } from '@/lib/api';
@@ -40,6 +40,9 @@ export default function BookingPage() {
   const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null);
   const [error, setError] = useState('');
   const { settings } = useSiteSettings();
+
+  const bookingFee = Number(settings.booking_fee) || 0;
+  const totalPrice = (selectedService?.price || 0) + bookingFee;
 
   // Pre-select service from URL
   const preselectServiceId = searchParams.get('serviceId');
@@ -149,9 +152,19 @@ export default function BookingPage() {
                 {confirmedBooking.status === 'CONFIRMED' ? 'تأیید شد' : 'در انتظار تأیید'}
               </span>
             </div>
+            <div className="flex items-center justify-between border-b border-border pb-2">
+              <span className="text-text-muted text-sm">مبلغ خدمت</span>
+              <span className="font-medium text-primary">{formatPrice(selectedService?.price || 0)}</span>
+            </div>
+            {bookingFee > 0 && (
+              <div className="flex items-center justify-between border-b border-border pb-2">
+                <span className="text-text-muted text-sm flex items-center gap-1"><Receipt className="w-3 h-3" /> هزینه رزرو</span>
+                <span className="font-medium text-primary">{formatPrice(bookingFee)}</span>
+              </div>
+            )}
             <div className="flex items-center justify-between">
-              <span className="text-text-muted text-sm">مبلغ</span>
-              <span className="font-bold text-primary">{formatPrice(selectedService?.price || 0)}</span>
+              <span className="text-text-muted text-sm">مبلغ کل</span>
+              <span className="font-bold text-primary text-lg">{formatPrice(totalPrice)}</span>
             </div>
           </div>
 
@@ -226,6 +239,9 @@ export default function BookingPage() {
                     <span className="text-primary font-bold">{formatPrice(service.price)}</span>
                     <span className="text-text-muted text-sm flex items-center gap-1"><Clock className="w-3 h-3" /> {formatDuration(service.durationMinutes)}</span>
                   </div>
+                  {bookingFee > 0 && (
+                    <p className="text-xs text-text-muted mt-1">+ {formatPrice(bookingFee)} هزینه رزرو = {formatPrice(service.price + bookingFee)}</p>
+                  )}
                 </div>
                 {selectedService?.id === service.id && <CheckCircle2 className="w-6 h-6 text-primary" />}
               </div>
@@ -372,7 +388,11 @@ export default function BookingPage() {
               <div className="flex justify-between border-b border-border pb-2"><span className="text-text-muted">ساعت</span><span className="font-medium text-text-primary">{formatTime(selectedTime)}</span></div>
               <div className="flex justify-between border-b border-border pb-2"><span className="text-text-muted">نام</span><span className="font-medium text-text-primary">{customerForm.name}</span></div>
               <div className="flex justify-between border-b border-border pb-2"><span className="text-text-muted">موبایل</span><span className="font-medium text-text-primary" dir="ltr">{toPersianDigits(customerForm.phone)}</span></div>
-              <div className="flex justify-between"><span className="text-text-muted">مبلغ</span><span className="font-bold text-primary">{formatPrice(selectedService?.price || 0)}</span></div>
+              <div className="flex justify-between border-b border-border pb-2"><span className="text-text-muted">مبلغ خدمت</span><span className="font-medium text-primary">{formatPrice(selectedService?.price || 0)}</span></div>
+              {bookingFee > 0 && (
+                <div className="flex justify-between border-b border-border pb-2"><span className="text-text-muted flex items-center gap-1"><Receipt className="w-3 h-3" /> هزینه رزرو</span><span className="font-medium text-primary">{formatPrice(bookingFee)}</span></div>
+              )}
+              <div className="flex justify-between"><span className="text-text-muted">مبلغ کل</span><span className="font-bold text-primary text-lg">{formatPrice(totalPrice)}</span></div>
             </div>
           </div>
 

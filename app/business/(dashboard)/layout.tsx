@@ -5,8 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
   LayoutDashboard, Scissors, Users, Clock, Calendar, UserCheck,
-  BarChart3, Settings, CreditCard, LogOut, Menu, X, Bell, MessageSquare, Receipt,
-  ChevronLeft, Sparkles
+  BarChart3, Settings, LogOut, Menu, X, Bell, MessageSquare,
 } from 'lucide-react';
 import { useSiteSettings } from '@/hooks/use-site-settings';
 
@@ -37,8 +36,6 @@ const NAV_SECTIONS: { title: string; items: { href: string; label: string; icon:
   {
     title: 'حساب',
     items: [
-      { href: '/business/payments', label: 'پرداخت‌ها', icon: Receipt },
-      { href: '/business/subscription', label: 'اشتراک', icon: CreditCard },
       { href: '/business/settings', label: 'تنظیمات', icon: Settings },
     ],
   },
@@ -197,10 +194,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="flex items-center gap-2 lg:gap-3">
-            <Link href="/business/subscription" className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/8 text-primary text-xs font-medium hover:bg-primary/12 transition-all">
-              <Sparkles className="w-3.5 h-3.5" />
-              ارتقا پلن
-            </Link>
             <button className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-muted transition-colors">
               <Bell className="w-5 h-5 text-text-secondary" />
               {notifications > 0 && (

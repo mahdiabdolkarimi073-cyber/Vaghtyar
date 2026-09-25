@@ -64,6 +64,7 @@ export default function AdminSettingsPage() {
           <Tabs defaultValue="general">
             <TabsList className="bg-surface border border-border rounded-xl p-1 flex flex-wrap">
               <TabsTrigger value="general" className="rounded-lg">عمومی</TabsTrigger>
+              <TabsTrigger value="booking" className="rounded-lg">هزینه رزرو</TabsTrigger>
               <TabsTrigger value="payment" className="rounded-lg">درگاه پرداخت</TabsTrigger>
               <TabsTrigger value="sms" className="rounded-lg">پیامک</TabsTrigger>
               <TabsTrigger value="terms" className="rounded-lg">قوانین</TabsTrigger>
@@ -113,6 +114,32 @@ export default function AdminSettingsPage() {
                   <p className="text-xs text-text-muted mt-1">تصویر لوگو در سراسر سایت جایگزین آیکون پیش‌فرض می‌شود</p>
                 </div>
                 <button onClick={() => save(['site_name', 'site_tagline', 'site_logo'])} disabled={saving} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 disabled:opacity-50">
+                  <Save className="w-4 h-4" /> ذخیره
+                </button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="booking">
+              <div className="admin-card p-6 space-y-4">
+                <h3 className="text-sm font-bold text-text-secondary">هزینه رزرو نوبت</h3>
+                <p className="text-xs text-text-muted">این مبلغ به قیمت هر خدمت اضافه می‌شود و مشتری هنگام رزرو آن را پرداخت می‌کند. برای غیرفعال‌سازی، عدد ۰ را وارد کنید.</p>
+                <div>
+                  <label className="text-sm text-text-secondary mb-1 block">مبلغ هزینه رزرو (تومان)</label>
+                  <input
+                    type="number"
+                    value={settings.booking_fee || '0'}
+                    onChange={e => setSettings({...settings, booking_fee: e.target.value})}
+                    className="admin-input w-full h-10 px-4 text-sm"
+                    min="0"
+                    placeholder="مثال: 5000"
+                  />
+                </div>
+                {Number(settings.booking_fee) > 0 && (
+                  <div className="bg-primary/5 border border-primary/15 rounded-xl p-3 text-sm text-text-secondary">
+                    با فعال بودن این هزینه، هر نوبت با مبلغ اضافی <span className="font-bold text-primary">{Number(settings.booking_fee).toLocaleString('fa-IR')}</span> تومان برای مشتری محاسبه می‌شود.
+                  </div>
+                )}
+                <button onClick={() => save(['booking_fee'])} disabled={saving} className="admin-gradient-primary text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 disabled:opacity-50">
                   <Save className="w-4 h-4" /> ذخیره
                 </button>
               </div>

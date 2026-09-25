@@ -1,11 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Edit2, Trash2, Scissors, Lock, Clock, DollarSign, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Scissors, Clock, DollarSign, X, Receipt } from 'lucide-react';
 import { toast } from 'sonner';
-import GlassCard from '@/components/ui/GlassCard';
 import GradientButton from '@/components/ui/GradientButton';
-import GlassBadge from '@/components/ui/GlassBadge';
 import { businessFetch } from '@/lib/business-api';
 import { toPersianDigits, formatPrice, formatDuration } from '@/lib/constants';
 
@@ -21,13 +19,6 @@ interface Service {
 
 const emptyForm = { name: '', durationMinutes: 30, price: 0, description: '' };
 
-interface PlanLimit {
-  allowed: boolean;
-  limit: number | null;
-  current: number;
-  planName: string;
-}
-
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,17 +27,16 @@ export default function ServicesPage() {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [serviceLimit, setServiceLimit] = useState<PlanLimit | null>(null);
-  const [limitModalOpen, setLimitModalOpen] = useState(false);
+  const [bookingFee, setBookingFee] = useState(0);
 
   const fetchServices = useCallback(async () => {
     try {
-      const [data, limits] = await Promise.all([
+      const [data, settingsRes] = await Promise.all([
         businessFetch<Service[]>('/api/business/services'),
-        businessFetch<{ maxServices: PlanLimit }>('/api/business/plan-limits'),
+        fetch('/api/settings').then(r => r.ok ? r.json() : {}) as Promise<Record<string, string>>,
       ]);
       setServices(data);
-      setServiceLimit(limits.maxServices);
+      setBookingFee(Number(settingsRes.booking_fee) || 0);
     } catch { toast.error('خطا در بارگذاری خدمات'); }
     finally { setLoading(false); }
   }, []);
@@ -54,10 +44,6 @@ export default function ServicesPage() {
   useEffect(() => { fetchServices(); }, [fetchServices]);
 
   const openAdd = () => {
-    if (serviceLimit && !serviceLimit.allowed) {
-      setLimitModalOpen(true);
-      return;
-    }
     setEditingId(null); setForm(emptyForm); setModalOpen(true);
   };
   const openEdit = (s: Service) => {
@@ -114,16 +100,24 @@ export default function ServicesPage() {
         <div>
           <h2 className="text-xl font-bold text-text-primary">خدمات</h2>
           <p className="text-sm text-text-secondary mt-0.5">
-            {serviceLimit && serviceLimit.limit !== null
-              ? `${toPersianDigits(serviceLimit.current)} از ${toPersianDigits(serviceLimit.limit)} خدمت`
-              : `${toPersianDigits(services.length)} خدمت`}
+            {toPersianDigits(services.length)} خدمت
           </p>
         </div>
-        <GradientButton onClick={openAdd} size="sm" disabled={serviceLimit !== null && !serviceLimit.allowed}>
-          {serviceLimit !== null && !serviceLimit.allowed ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+        <GradientButton onClick={openAdd} size="sm">
+          <Plus className="w-4 h-4" />
           افزودن خدمت
         </GradientButton>
       </div>
+
+      {bookingFee > 0 && (
+        <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 flex items-center gap-3">
+          <Receipt className="w-5 h-5 text-primary shrink-0" />
+          <p className="text-sm text-text-secondary">
+            هزینه رزرو نوبت برای هر خدمت: <span className="font-bold text-primary">{formatPrice(bookingFee)}</span>
+            <span className="text-text-muted mr-1">— این مبلغ به قیمت هر خدمت اضافه می‌شود</span>
+          </p>
+        </div>
+      )}
 
       {services.length === 0 ? (
         <div className="bg-surface border border-border rounded-2xl p-12 text-center">
@@ -159,6 +153,15 @@ export default function ServicesPage() {
                   <span className="text-xs font-medium text-text-primary">{formatPrice(s.price)}</span>
                 </div>
               </div>
+              {bookingFee > 0 && (
+                <div className="flex items-center gap-1.5 mt-2">
+                  <Receipt className="w-3.5 h-3.5 text-primary/60" />
+                  <span className="text-xs text-text-secondary">
+                    هزینه رزرو: <span className="font-medium text-primary">{formatPrice(bookingFee)}</span>
+                  </span>
+                  <span className="text-xs text-text-muted mr-1">| مجموع: {formatPrice(s.price + bookingFee)}</span>
+                </div>
+              )}
               <div className="mt-3 flex items-center justify-between">
                 <span className="text-xs text-text-secondary">{s.isActive ? 'فعال' : 'غیرفعال'}</span>
                 <button onClick={() => toggleActive(s)} className={`premium-toggle ${s.isActive ? 'bg-secondary' : 'bg-muted'}`}>
@@ -197,6 +200,17 @@ export default function ServicesPage() {
                   <input type="number" value={form.price} onChange={e => setForm({ ...form, price: parseInt(e.target.value) || 0 })} className="premium-input w-full px-4 py-2.5 text-sm" />
                 </div>
               </div>
+              {bookingFee > 0 && (
+                <div className="bg-primary/5 border border-primary/15 rounded-xl p-3 text-xs text-text-secondary">
+                  <div className="flex items-center gap-2">
+                    <Receipt className="w-4 h-4 text-primary" />
+                    <span>هزینه رزرو نوبت: <span className="font-bold text-primary">{formatPrice(bookingFee)}</span></span>
+                  </div>
+                  <div className="mt-1.5 pt-1.5 border-t border-primary/10">
+                    مبلغ نهایی که مشتری پرداخت می‌کند: <span className="font-bold text-text-primary">{formatPrice(form.price + bookingFee)}</span>
+                  </div>
+                </div>
+              )}
               <div>
                 <label className="block text-sm text-text-secondary mb-1.5">توضیحات (اختیاری)</label>
                 <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="premium-input w-full px-4 py-2.5 text-sm resize-none" rows={2} placeholder="توضیح کوتاه درباره خدمت..." />
@@ -205,25 +219,6 @@ export default function ServicesPage() {
                 <button onClick={() => setModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-border text-text-secondary hover:bg-muted text-sm transition-colors">انصراف</button>
                 <GradientButton onClick={handleSave} loading={saving} className="flex-1" size="md">{editingId ? 'به‌روزرسانی' : 'افزودن'}</GradientButton>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {limitModalOpen && serviceLimit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setLimitModalOpen(false)} />
-          <div className="relative bg-surface border border-border rounded-2xl shadow-xl p-6 w-full max-w-sm text-center animate-scale-in">
-            <div className="inline-flex w-14 h-14 rounded-2xl bg-warning/10 items-center justify-center mb-4">
-              <Lock className="w-7 h-7 text-warning" />
-            </div>
-            <h3 className="text-lg font-bold text-text-primary mb-2">محدودیت پلن</h3>
-            <p className="text-sm text-text-secondary mb-4">
-              شما به حداکثر تعداد خدمات در پلن {serviceLimit.planName} رسیده‌اید. برای افزایش محدودیت، پلن خود را ارتقا دهید.
-            </p>
-            <div className="flex gap-3">
-              <button onClick={() => setLimitModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-border text-text-secondary hover:bg-muted text-sm">بستن</button>
-              <GradientButton onClick={() => { setLimitModalOpen(false); window.location.href = '/business/subscription'; }} className="flex-1" size="md">ارتقا پلن</GradientButton>
             </div>
           </div>
         </div>

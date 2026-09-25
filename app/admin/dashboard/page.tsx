@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Building2, Calendar, DollarSign, Star } from 'lucide-react';
+import { Building2, Calendar, DollarSign, Scissors } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
@@ -15,7 +15,6 @@ interface DashboardData {
   businesses: { total: number; active: number; pending: number; inactive: number; monthlyGrowth: { month: string; count: number }[] };
   appointments: { today: number; thisMonth: number; dailyGrowth: { date: string; count: number }[] };
   revenue: { thisMonth: number; total: number };
-  activeSubscriptions: number;
   recentBusinesses: any[];
   recentPayments: any[];
 }
@@ -49,7 +48,7 @@ export default function AdminDashboardPage() {
             <StatsCard title="کسب‌وکارها" value={data?.businesses.total ?? 0} subtitle={`فعال: ${toPersianDigits(data?.businesses.active ?? 0)} / در انتظار: ${toPersianDigits(data?.businesses.pending ?? 0)}`} icon={<Building2 className="w-5 h-5" />} gradient="primary" isLoading={loading} />
             <StatsCard title="نوبت‌های امروز" value={data?.appointments.today ?? 0} subtitle={`این ماه: ${toPersianDigits(data?.appointments.thisMonth ?? 0)}`} icon={<Calendar className="w-5 h-5" />} gradient="accent" isLoading={loading} />
             <StatsCard title="درآمد این ماه" value={formatPrice(data?.revenue.thisMonth ?? 0)} icon={<DollarSign className="w-5 h-5" />} gradient="success" isLoading={loading} />
-            <StatsCard title="اشتراک‌های فعال" value={data?.activeSubscriptions ?? 0} icon={<Star className="w-5 h-5" />} gradient="warning" isLoading={loading} />
+            <StatsCard title="درآمد کل" value={formatPrice(data?.revenue.total ?? 0)} icon={<Scissors className="w-5 h-5" />} gradient="warning" isLoading={loading} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -94,17 +93,17 @@ export default function AdminDashboardPage() {
               />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-text-secondary mb-3">پرداخت‌های اخیر</h3>
+              <h3 className="text-sm font-bold text-text-secondary mb-3">نوبت‌های اخیر</h3>
               <DataTable
                 columns={[
                   { key: 'business', header: 'کسب‌وکار', render: (r) => r.business?.name || '-' },
-                  { key: 'amount', header: 'مبلغ', render: (r) => formatPrice(r.amount) },
-                  { key: 'plan', header: 'طرح', render: (r) => r.plan?.name || '-' },
-                  { key: 'status', header: 'وضعیت', render: (r) => <StatusBadge status={r.status} variant={r.status === 'SUCCESS' ? 'success' : r.status === 'PENDING' ? 'warning' : 'danger'}>{r.status === 'SUCCESS' ? 'موفق' : r.status === 'PENDING' ? 'در انتظار' : 'ناموفق'}</StatusBadge> },
+                  { key: 'service', header: 'خدمت', render: (r) => r.service?.name || '-' },
+                  { key: 'totalPrice', header: 'مبلغ', render: (r) => formatPrice(r.service?.price || 0) },
+                  { key: 'status', header: 'وضعیت', render: (r) => <StatusBadge status={r.status} variant={r.status === 'COMPLETED' ? 'success' : r.status === 'CONFIRMED' ? 'warning' : 'neutral'}>{r.status === 'COMPLETED' ? 'تکمیل شده' : r.status === 'CONFIRMED' ? 'تأیید شده' : r.status}</StatusBadge> },
                 ]}
                 data={data?.recentPayments || []}
                 isLoading={loading}
-                emptyMessage="پرداختی ثبت نشده است"
+                emptyMessage="نوبتی ثبت نشده است"
               />
             </div>
           </div>

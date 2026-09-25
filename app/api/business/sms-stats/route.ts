@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getSmsQuotaUsage } from '@/lib/plan-limits';
 import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
 export async function GET(req: NextRequest) {
@@ -32,15 +31,13 @@ export async function GET(req: NextRequest) {
     byType[item.smsType] = item._count.smsType;
   }
 
-  const quota = await getSmsQuotaUsage(businessId);
-
   return NextResponse.json({
     totalSent,
     totalSimulated,
     totalFailed,
-    quotaUsed: quota.used,
-    quotaLimit: quota.limit,
-    quotaUnlimited: quota.unlimited,
+    quotaUsed: totalSent + totalSimulated,
+    quotaLimit: null,
+    quotaUnlimited: true,
     byType,
   });
 }

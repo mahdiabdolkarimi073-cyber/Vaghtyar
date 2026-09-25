@@ -9,6 +9,7 @@ type SiteSettings = {
   contact_phone: string;
   contact_email: string;
   contact_address: string;
+  booking_fee: string;
 };
 
 const DEFAULTS: SiteSettings = {
@@ -18,6 +19,7 @@ const DEFAULTS: SiteSettings = {
   contact_phone: '',
   contact_email: '',
   contact_address: '',
+  booking_fee: '0',
 };
 
 let cachedSettings: SiteSettings | null = null;

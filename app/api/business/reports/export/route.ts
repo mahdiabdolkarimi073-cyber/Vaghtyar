@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { checkPlanFeature } from '@/lib/plan-limits';
 import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 
 export async function GET(req: NextRequest) {
   const businessId = getBusinessId(req);
   if (!businessId) return unauthorizedResponse();
-
-  const feature = await checkPlanFeature(businessId, 'hasRevenueReport');
-  if (!feature.allowed) {
-    return NextResponse.json(
-      { error: `گزارش درآمد در پلن ${feature.planName} فعال نیست. برای دسترسی، پلن خود را ارتقا دهید.`, featureLocked: true, feature: 'hasRevenueReport' },
-      { status: 403 }
-    );
-  }
 
   const { searchParams } = new URL(req.url);
   const startDateParam = searchParams.get('startDate');

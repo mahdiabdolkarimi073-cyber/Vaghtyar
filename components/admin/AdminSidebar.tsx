@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Building2, Users, Tag, MapPin,
-  Star, CreditCard, Megaphone, MessageSquare, BarChart3,
+  CreditCard, Megaphone, MessageSquare, BarChart3,
   Settings, LogOut, Menu, X, Shield
 } from 'lucide-react';
 import { useSiteSettings } from '@/hooks/use-site-settings';
@@ -17,7 +17,6 @@ const NAV_ITEMS = [
   { href: '/admin/users', label: 'کاربران', icon: Users },
   { href: '/admin/categories', label: 'دسته‌بندی‌ها', icon: Tag },
   { href: '/admin/locations', label: 'شهرها و محله‌ها', icon: MapPin },
-  { href: '/admin/subscriptions', label: 'اشتراک‌ها', icon: Star },
   { href: '/admin/payments', label: 'پرداخت‌ها', icon: CreditCard },
   { href: '/admin/advertisements', label: 'تبلیغات', icon: Megaphone },
   { href: '/admin/sms', label: 'پیامک‌ها', icon: MessageSquare },

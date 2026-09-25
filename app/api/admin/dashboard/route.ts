@@ -56,26 +56,21 @@ export async function GET(req: NextRequest) {
       dailyGrowth.push({ date: dateLabel, count });
     }
 
-    // Revenue
-    const revenueAgg = await prisma.payment.aggregate({
-      where: { status: 'SUCCESS' },
-      _sum: { amount: true },
+    // Revenue — computed from service price of completed appointments
+    const completedAppts = await prisma.appointment.findMany({
+      where: { status: 'COMPLETED' },
+      select: { service: { select: { price: true } } },
     });
-    const totalRevenue = revenueAgg._sum.amount || 0;
+    const totalRevenue = completedAppts.reduce((sum, a) => sum + (a.service?.price || 0), 0);
 
-    const monthRevenueAgg = await prisma.payment.aggregate({
+    const monthCompletedAppts = await prisma.appointment.findMany({
       where: {
-        status: 'SUCCESS',
-        createdAt: { gte: startOfMonth, lt: endOfMonth },
+        status: 'COMPLETED',
+        startTime: { gte: startOfMonth, lt: endOfMonth },
       },
-      _sum: { amount: true },
+      select: { service: { select: { price: true } } },
     });
-    const thisMonthRevenue = monthRevenueAgg._sum.amount || 0;
-
-    // Active subscriptions
-    const activeSubscriptions = await prisma.subscription.count({
-      where: { isActive: true },
-    });
+    const thisMonthRevenue = monthCompletedAppts.reduce((sum, a) => sum + (a.service?.price || 0), 0);
 
     // Recent businesses
     const recentBusinesses = await prisma.business.findMany({
@@ -88,13 +83,14 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // Recent payments
-    const recentPayments = await prisma.payment.findMany({
+    // Recent payments from completed appointments
+    const recentPayments = await prisma.appointment.findMany({
       take: 5,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { startTime: 'desc' },
+      where: { status: 'COMPLETED' },
       include: {
         business: { select: { id: true, name: true } },
-        plan: { select: { id: true, name: true } },
+        service: { select: { id: true, name: true } },
       },
     });
 
@@ -115,7 +111,6 @@ export async function GET(req: NextRequest) {
         thisMonth: thisMonthRevenue,
         total: totalRevenue,
       },
-      activeSubscriptions,
       recentBusinesses,
       recentPayments,
     });

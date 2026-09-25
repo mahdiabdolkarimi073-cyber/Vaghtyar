@@ -16,19 +16,19 @@ export async function GET(req: NextRequest) {
 
   try {
     if (type === 'revenue') {
-      const payments = await prisma.payment.findMany({
-        where: { status: 'SUCCESS', createdAt: { gte: start, lte: end } },
-        select: { amount: true, createdAt: true },
+      const appointments = await prisma.appointment.findMany({
+        where: { status: 'COMPLETED', createdAt: { gte: start, lte: end } },
+        select: { service: { select: { price: true } }, createdAt: true },
         orderBy: { createdAt: 'asc' },
       });
       const dailyMap = new Map<string, number>();
-      payments.forEach(p => {
-        const d = p.createdAt.toISOString().split('T')[0];
-        dailyMap.set(d, (dailyMap.get(d) || 0) + p.amount);
+      appointments.forEach(a => {
+        const d = a.createdAt.toISOString().split('T')[0];
+        dailyMap.set(d, (dailyMap.get(d) || 0) + (a.service?.price || 0));
       });
       return NextResponse.json({
         data: Array.from(dailyMap.entries()).map(([date, amount]) => ({ date, amount })),
-        total: payments.reduce((s, p) => s + p.amount, 0),
+        total: appointments.reduce((s, a) => s + (a.service?.price || 0), 0),
       });
     }
 
@@ -55,22 +55,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({
         data: Array.from(dailyMap.entries()).map(([date, count]) => ({ date, count })),
         total: appointments.length,
-      });
-    }
-
-    if (type === 'subscriptions') {
-      const subs = await prisma.subscription.findMany({
-        include: { plan: { select: { name: true } } },
-        where: { isActive: true },
-      });
-      const planMap = new Map<string, number>();
-      subs.forEach(s => {
-        const name = s.plan.name;
-        planMap.set(name, (planMap.get(name) || 0) + 1);
-      });
-      return NextResponse.json({
-        data: Array.from(planMap.entries()).map(([name, value]) => ({ name, value })),
-        total: subs.length,
       });
     }
 

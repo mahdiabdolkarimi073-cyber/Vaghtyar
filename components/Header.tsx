@@ -10,7 +10,6 @@ import type { SiteSettings } from '@/lib/site-settings-server';
 const NAV_LINKS = [
   { href: '/', label: 'خانه' },
   { href: '/search', label: 'جستجو' },
-  { href: '/plans', label: 'پلن‌ها' },
   { href: '/register-business', label: 'ورود کسب‌وکار' },
   { href: '/contact', label: 'تماس' },
 ];

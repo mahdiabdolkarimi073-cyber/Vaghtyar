@@ -7,6 +7,7 @@ export interface SiteSettings {
   contact_phone: string;
   contact_email: string;
   contact_address: string;
+  booking_fee: string;
 }
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -16,6 +17,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   contact_phone: '',
   contact_email: '',
   contact_address: '',
+  booking_fee: '0',
 };
 
 let cachedSettings: SiteSettings | null = null;
@@ -28,7 +30,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   }
 
   try {
-    const PUBLIC_KEYS = ['site_name', 'site_tagline', 'site_logo', 'contact_phone', 'contact_email', 'contact_address'];
+    const PUBLIC_KEYS = ['site_name', 'site_tagline', 'site_logo', 'contact_phone', 'contact_email', 'contact_address', 'booking_fee'];
     const settings = await prisma.setting.findMany({ where: { key: { in: PUBLIC_KEYS } } });
     const result: Record<string, string> = {};
     settings.forEach((s) => { result[s.key] = s.value; });

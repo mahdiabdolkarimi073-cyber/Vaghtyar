@@ -19,7 +19,7 @@ export const appointmentTimeSchema = z.object({
 });
 
 // ─── اسکمای رزرو عمومی (بدون احراز هویت) ───
-// قیمت، پلن اشتراک و تخفیف هرگز از کلاینت قبول نمی‌شوند — فقط از دیتابیس
+// قیمت، پلن اشتراک، تخفیف و هزینه رزرو هرگز از کلاینت قبول نمی‌شوند — فقط از دیتابیس
 export const publicBookingSchema = z.object({
   businessId: z.string().min(1, 'شناسه کسب‌وکار الزامی است'),
   serviceId: z.string().min(1, 'شناسه خدمت الزامی است'),
@@ -33,17 +33,7 @@ export const publicBookingSchema = z.object({
   price: z.never().optional(),
   subscriptionPlan: z.never().optional(),
   discount: z.never().optional(),
-}).strip();
-
-// ─── اسکمای ارتقای اشتراک ───
-// فقط planId از کلاینت — قیمت از دیتابیس خوانده می‌شود
-export const subscriptionUpgradeSchema = z.object({
-  planId: z.string().min(1, 'شناسه پلن الزامی است'),
-  // این فیلدها عمداً strip می‌شوند
-  price: z.never().optional(),
-  amount: z.never().optional(),
-  subscriptionPlan: z.never().optional(),
-  discount: z.never().optional(),
+  bookingFee: z.never().optional(),
 }).strip();
 
 // ─── اسکمای ایجاد خدمت ───
@@ -65,6 +55,5 @@ export const appointmentStatusSchema = z.object({
 
 // ─── تایپ‌های استخراج‌شده ───
 export type PublicBookingInput = z.infer<typeof publicBookingSchema>;
-export type SubscriptionUpgradeInput = z.infer<typeof subscriptionUpgradeSchema>;
 export type CreateServiceInput = z.infer<typeof createServiceSchema>;
 export type AppointmentStatusInput = z.infer<typeof appointmentStatusSchema>;

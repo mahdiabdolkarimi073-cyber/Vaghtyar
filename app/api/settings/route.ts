@@ -8,6 +8,7 @@ const PUBLIC_KEYS = [
   'contact_phone',
   'contact_email',
   'contact_address',
+  'booking_fee',
 ];
 
 export async function GET() {

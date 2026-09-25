@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { sendSms } from '@/lib/sms-service';
-import { getBusinessPlan } from '@/lib/plan-limits';
 
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get('authorization');
@@ -30,9 +29,6 @@ export async function POST(req: NextRequest) {
 
   let sentCount = 0;
   for (const appt of appointments) {
-    const { plan } = await getBusinessPlan(appt.businessId);
-    if (!plan?.hasSmsReminder) continue;
-
     const result = await sendSms({
       businessId: appt.businessId,
       appointmentId: appt.id,

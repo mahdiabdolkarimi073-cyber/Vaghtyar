@@ -50,7 +50,7 @@ export default function RegisterBusinessPage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.push('/business/login');
     }
   }, [user, loading, router]);
 

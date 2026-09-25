@@ -3,7 +3,6 @@ import { prisma } from '@/lib/prisma';
 import { sendSms } from '@/lib/sms-service';
 import { getBusinessId, unauthorizedResponse } from '@/lib/auth/getBusinessId';
 import { appointmentStatusSchema } from '@/lib/validations/schemas';
-import { checkPlanFeature } from '@/lib/plan-limits';
 
 /**
  * PATCH /api/business/appointments/[id]/status
@@ -35,19 +34,6 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
   const previousStatus = appointment.status;
   const { status } = parsed.data;
-
-  if (status === 'CONFIRMED' && previousStatus !== 'CONFIRMED') {
-    const manualFeature = await checkPlanFeature(businessId, 'hasManualConfirm');
-    if (!manualFeature.allowed) {
-      const biz = await prisma.business.findUnique({ where: { id: businessId }, select: { autoConfirm: true } });
-      if (!biz?.autoConfirm) {
-        return NextResponse.json(
-          { error: `تأیید دستی نوبت در پلن ${manualFeature.planName} فعال نیست. برای تأیید دستی، پلن خود را ارتقا دهید.`, featureLocked: true, feature: 'hasManualConfirm' },
-          { status: 403 }
-        );
-      }
-    }
-  }
 
   const updated = await prisma.appointment.update({
     where: { id: params.id },

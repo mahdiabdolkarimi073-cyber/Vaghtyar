@@ -131,38 +131,9 @@ export default function SmsPage() {
 
       {stats && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="bg-surface border border-border rounded-2xl p-4 shadow-card">
-            <div className="text-xs text-text-secondary mb-1">سهمیه پیامک تأیید</div>
-            {quotaUnlimited ? (
-              <div className="text-xl font-bold text-secondary">نامحدود</div>
-            ) : (
-              <>
-                <div className="text-xl font-bold text-text-primary">{toPersianDigits(quotaUsed)} / {toPersianDigits(quotaLimit || 0)}</div>
-                <div className="h-1.5 rounded-full bg-muted overflow-hidden mt-2">
-                  <div className={`h-full rounded-full transition-all ${quotaPercent >= 100 ? 'bg-error' : quotaPercent > 80 ? 'bg-warning' : 'gradient-primary'}`} style={{ width: `${Math.min(100, quotaPercent)}%` }} />
-                </div>
-              </>
-            )}
-          </div>
           <StatBox label="ارسال شده" value={stats.totalSent} color="bg-secondary/10 text-secondary" icon={<Send className="w-5 h-5 text-white" />} />
           <StatBox label="شبیه‌سازی شده" value={stats.totalSimulated} color="bg-warning/10 text-warning" icon={<AlertTriangle className="w-5 h-5 text-white" />} />
           <StatBox label="ناموفق" value={stats.totalFailed} color="bg-error/10 text-error" icon={<XCircle className="w-5 h-5 text-white" />} />
-        </div>
-      )}
-
-      {quotaLimit !== null && !quotaUnlimited && quotaPercent >= 100 && (
-        <div className="p-4 rounded-2xl bg-error/5 border border-error/20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-error" />
-            <span className="text-sm text-error">سهمیه پیامک شما تکمیل شده است. برای ادامه، پلن خود را ارتقا دهید.</span>
-          </div>
-          <a href="/business/subscription" className="text-sm text-error underline shrink-0">ارتقا پلن</a>
-        </div>
-      )}
-      {quotaLimit !== null && !quotaUnlimited && quotaPercent > 80 && quotaPercent < 100 && (
-        <div className="p-4 rounded-2xl bg-warning/5 border border-warning/20 flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 text-warning" />
-          <span className="text-sm text-warning">بیش از ۸۰٪ سهمیه پیامک استفاده شده است.</span>
         </div>
       )}
 

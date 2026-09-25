@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAdminFromRequest } from '@/lib/admin-auth';
-import { getBusinessPlan } from '@/lib/plan-limits';
 
 export async function GET(
   req: NextRequest,
@@ -18,11 +17,6 @@ export async function GET(
         staff: true,
         owner: {
           select: { id: true, name: true, phone: true },
-        },
-        subscription: {
-          include: {
-            plan: true,
-          },
         },
         appointments: {
           take: 10,
@@ -79,15 +73,6 @@ export async function PATCH(
     if (category !== undefined) data.category = category;
     if (neighborhood !== undefined) data.neighborhood = neighborhood;
     if (isFeatured !== undefined) {
-      if (isFeatured === true) {
-        const { plan } = await getBusinessPlan(params.id);
-        if (plan && !plan.hasFeaturedListing) {
-          return NextResponse.json(
-            { error: `پلن فعلی این کسب‌وکار (${plan.name}) از جایگاه ویژه در نتایج پشتیبانی نمی‌کند.`, featureLocked: true, feature: 'hasFeaturedListing' },
-            { status: 403 }
-          );
-        }
-      }
       data.isFeatured = isFeatured;
     }
     if (isVerified !== undefined) data.isVerified = isVerified;

@@ -2,15 +2,13 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { Download } from 'lucide-react';
-import { LineChart, Line, BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
 import ChartCard from '@/components/admin/ChartCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toPersianDigits } from '@/lib/constants';
 import { toast } from 'sonner';
-
-const COLORS = ['#8b5cf6', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e'];
 
 export default function AdminReportsPage() {
   const [tab, setTab] = useState('revenue');
@@ -63,7 +61,6 @@ export default function AdminReportsPage() {
               <TabsTrigger value="revenue" className="rounded-lg">درآمد</TabsTrigger>
               <TabsTrigger value="businesses" className="rounded-lg">کسب‌وکارها</TabsTrigger>
               <TabsTrigger value="appointments" className="rounded-lg">نوبت‌ها</TabsTrigger>
-              <TabsTrigger value="subscriptions" className="rounded-lg">اشتراک‌ها</TabsTrigger>
             </TabsList>
 
             <TabsContent value="revenue">
@@ -109,18 +106,6 @@ export default function AdminReportsPage() {
               </ChartCard>
             </TabsContent>
 
-            <TabsContent value="subscriptions">
-              <ChartCard title="توزیع طرح‌های اشتراک" isLoading={loading}>
-                <ResponsiveContainer width="100%" height={350}>
-                  <PieChart>
-                    <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label={(e: any) => `${e.name}: ${toPersianDigits(e.value)}`}>
-                      {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 12, color: '#1e293b' }} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </ChartCard>
-            </TabsContent>
           </Tabs>
         </div>
       </div>

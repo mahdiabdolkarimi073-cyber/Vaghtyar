@@ -1,6 +1,5 @@
 import { prisma } from './prisma';
 import { generateSmsMessage, SmsTemplateType, SmsTemplateData } from './sms-templates';
-import { checkPlanLimit, getBusinessPlan } from './plan-limits';
 
 export interface SendSmsParams {
   businessId: string;
@@ -25,42 +24,6 @@ export async function sendSms(params: SendSmsParams): Promise<SendSmsResult> {
 
   if (!messageBody) {
     return { success: false, status: 'FAILED', message: 'قالب پیامک نامعتبر است', error: 'Invalid template type' };
-  }
-
-  const { plan } = await getBusinessPlan(businessId);
-
-  if (smsType === 'APPOINTMENT_CONFIRM') {
-    const quota = await checkPlanLimit(businessId, 'smsConfirmQuota');
-    if (!quota.allowed) {
-      await prisma.smsLog.create({
-        data: {
-          businessId,
-          appointmentId: appointmentId || null,
-          recipientPhone,
-          recipientType,
-          smsType,
-          messageBody,
-          status: 'FAILED',
-        },
-      });
-      return {
-        success: false,
-        status: 'FAILED',
-        message: `سهمیه پیامک تأیید در پلن ${quota.planName} تکمیل شده است. برای ارسال پیامک، پلن خود را ارتقا دهید.`,
-        error: 'Quota exceeded',
-      };
-    }
-  }
-
-  if (smsType === 'APPOINTMENT_REMINDER' && plan) {
-    if (!plan.hasSmsReminder) {
-      return {
-        success: false,
-        status: 'FAILED',
-        message: 'یادآوری پیامکی در پلن فعلی شما فعال نیست.',
-        error: 'Reminder not available',
-      };
-    }
   }
 
   const smsApiKey = process.env.SMS_API_KEY;

@@ -124,36 +124,6 @@ export interface ReportData {
   statusBreakdown: { name: string; value: number; color: string }[];
 }
 
-export interface PlanInfo {
-  id: string;
-  name: string;
-  price: number;
-  maxStaff: number;
-  maxServices: number;
-  hasSms: boolean;
-  hasReports: boolean;
-  hasCustomSms: boolean;
-  hasApi: boolean;
-  hasPriority: boolean;
-}
-
-export interface SubscriptionInfo {
-  id: string;
-  plan: PlanInfo;
-  startDate: string;
-  endDate: string;
-  isActive: boolean;
-  daysRemaining: number;
-}
-
-export interface PaymentRecord {
-  id: string;
-  planName: string;
-  amount: number;
-  status: string;
-  createdAt: string;
-}
-
 export interface SmartSlot {
   startTime: string;
   endTime: string;
