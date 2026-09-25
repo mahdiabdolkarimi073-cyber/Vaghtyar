@@ -293,7 +293,7 @@ export default function CalendarPage() {
                   <div className="text-xs text-text-secondary ltr-text">{toPersianDigits(selectedAppt.customer.mobile)}</div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-3 rounded-xl bg-muted/30">
                   <div className="text-xs text-text-secondary mb-1">خدمت</div>
                   <div className="text-sm font-medium text-text-primary">{selectedAppt.service.name}</div>

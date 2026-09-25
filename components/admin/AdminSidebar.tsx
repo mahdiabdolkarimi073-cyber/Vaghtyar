@@ -115,6 +115,7 @@ export default function AdminSidebar() {
       <button
         onClick={() => setOpen(true)}
         className="lg:hidden fixed top-4 right-4 z-30 p-2 rounded-lg bg-surface shadow-card"
+        aria-label="منو"
       >
         <Menu className="w-6 h-6 text-text-primary" />
       </button>

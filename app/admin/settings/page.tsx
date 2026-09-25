@@ -62,13 +62,13 @@ export default function AdminSettingsPage() {
         <AdminHeader title="تنظیمات سیستم" />
         <div className="p-4 lg:p-6 max-w-3xl mx-auto">
           <Tabs defaultValue="general">
-            <TabsList className="bg-surface border border-border rounded-xl p-1 flex flex-wrap">
-              <TabsTrigger value="general" className="rounded-lg">عمومی</TabsTrigger>
-              <TabsTrigger value="booking" className="rounded-lg">هزینه رزرو</TabsTrigger>
-              <TabsTrigger value="payment" className="rounded-lg">درگاه پرداخت</TabsTrigger>
-              <TabsTrigger value="sms" className="rounded-lg">پیامک</TabsTrigger>
-              <TabsTrigger value="terms" className="rounded-lg">قوانین</TabsTrigger>
-              <TabsTrigger value="contact" className="rounded-lg">تماس</TabsTrigger>
+            <TabsList className="bg-surface border border-border rounded-xl p-1 flex flex-wrap overflow-x-auto scrollbar-thin">
+              <TabsTrigger value="general" className="rounded-lg whitespace-nowrap shrink-0">عمومی</TabsTrigger>
+              <TabsTrigger value="booking" className="rounded-lg whitespace-nowrap shrink-0">هزینه رزرو</TabsTrigger>
+              <TabsTrigger value="payment" className="rounded-lg whitespace-nowrap shrink-0">درگاه پرداخت</TabsTrigger>
+              <TabsTrigger value="sms" className="rounded-lg whitespace-nowrap shrink-0">پیامک</TabsTrigger>
+              <TabsTrigger value="terms" className="rounded-lg whitespace-nowrap shrink-0">قوانین</TabsTrigger>
+              <TabsTrigger value="contact" className="rounded-lg whitespace-nowrap shrink-0">تماس</TabsTrigger>
             </TabsList>
 
             <TabsContent value="general">

@@ -201,7 +201,7 @@ export default function BookingPage() {
         <div className="flex items-center justify-between mb-2">
           {STEPS.map((s, i) => (
             <div key={i} className="flex items-center flex-1">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 transition-colors ${
+              <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium flex-shrink-0 transition-colors ${
                 i < step ? 'bg-primary text-white' : i === step ? 'bg-primary/10 text-primary ring-2 ring-teal-600' : 'bg-muted text-text-muted'
               }`}>
                 {i < step ? <Check className="w-4 h-4" /> : toPersianDigits(i + 1)}
@@ -214,7 +214,7 @@ export default function BookingPage() {
         </div>
         <div className="flex justify-between">
           {STEPS.map((s, i) => (
-            <span key={i} className={`text-xs ${i === step ? 'text-primary font-medium' : 'text-text-muted'} ${i === STEPS.length - 1 ? '' : 'flex-1'}`}>{s}</span>
+            <span key={i} className={`text-[10px] sm:text-xs ${i === step ? 'text-primary font-medium' : 'text-text-muted'} ${i === STEPS.length - 1 ? '' : 'flex-1'} hidden xs:inline sm:inline`}>{s}</span>
           ))}
         </div>
       </div>
@@ -405,12 +405,12 @@ export default function BookingPage() {
       )}
 
       {/* Navigation buttons */}
-      <div className="flex items-center justify-between mt-8">
+      <div className="flex items-center justify-between mt-8 gap-3">
         <Button
           variant="outline"
           onClick={() => step > 0 && setStep(step - 1)}
           disabled={step === 0}
-          className="gap-2"
+          className="gap-2 shrink-0"
         >
           <ChevronRight className="w-4 h-4" /> مرحله قبل
         </Button>
@@ -419,7 +419,7 @@ export default function BookingPage() {
           <Button
             onClick={() => canProceed() && setStep(step + 1)}
             disabled={!canProceed()}
-            className="bg-primary hover:bg-primary-dark text-white gap-2"
+            className="bg-primary hover:bg-primary-dark text-white gap-2 shrink-0"
           >
             مرحله بعد <ChevronLeft className="w-4 h-4" />
           </Button>
@@ -427,7 +427,7 @@ export default function BookingPage() {
           <Button
             onClick={handleSubmit}
             disabled={submitting}
-            className="bg-primary hover:bg-primary-dark text-white gap-2 px-8"
+            className="bg-primary hover:bg-primary-dark text-white gap-2 px-6 sm:px-8 shrink-0"
           >
             {submitting ? 'در حال ثبت...' : 'ثبت نهایی نوبت'}
           </Button>

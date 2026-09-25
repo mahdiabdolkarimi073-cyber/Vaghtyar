@@ -162,12 +162,12 @@ export default function DashboardPage() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-            <TabsList className="bg-surface border border-border rounded-xl p-1 w-full justify-start gap-1 h-auto overflow-x-auto">
-              <TabsTrigger value="overview" className="rounded-lg px-4 py-2 text-sm">نگاه کلی</TabsTrigger>
-              <TabsTrigger value="bookings" className="rounded-lg px-4 py-2 text-sm">رزروها</TabsTrigger>
-              <TabsTrigger value="services" className="rounded-lg px-4 py-2 text-sm">خدمات</TabsTrigger>
-              <TabsTrigger value="staff" className="rounded-lg px-4 py-2 text-sm">متخصصین</TabsTrigger>
-              <TabsTrigger value="hours" className="rounded-lg px-4 py-2 text-sm">ساعات کاری</TabsTrigger>
+            <TabsList className="bg-surface border border-border rounded-xl p-1 w-full justify-start gap-1 h-auto overflow-x-auto scrollbar-thin">
+              <TabsTrigger value="overview" className="rounded-lg px-3 sm:px-4 py-2 text-sm whitespace-nowrap shrink-0">نگاه کلی</TabsTrigger>
+              <TabsTrigger value="bookings" className="rounded-lg px-3 sm:px-4 py-2 text-sm whitespace-nowrap shrink-0">رزروها</TabsTrigger>
+              <TabsTrigger value="services" className="rounded-lg px-3 sm:px-4 py-2 text-sm whitespace-nowrap shrink-0">خدمات</TabsTrigger>
+              <TabsTrigger value="staff" className="rounded-lg px-3 sm:px-4 py-2 text-sm whitespace-nowrap shrink-0">متخصصین</TabsTrigger>
+              <TabsTrigger value="hours" className="rounded-lg px-3 sm:px-4 py-2 text-sm whitespace-nowrap shrink-0">ساعات کاری</TabsTrigger>
             </TabsList>
 
             {/* Overview */}
@@ -329,12 +329,12 @@ function ServicesManager({ businessSlug, services: initialServices }: { business
 
       <div className="space-y-2">
         {services.map((s) => (
-          <div key={s.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0">
-            <div>
+          <div key={s.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3 last:border-0">
+            <div className="min-w-0">
               <h4 className="font-medium text-text-primary">{s.name}</h4>
               {s.description && <p className="text-xs text-text-muted">{s.description}</p>}
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 shrink-0">
               <span className="text-primary font-bold text-sm">{formatPrice(s.price)}</span>
               <span className="text-text-muted text-sm">{formatDuration(s.durationMinutes)}</span>
             </div>
@@ -452,9 +452,9 @@ function HoursManager({ businessSlug, hours: initialHours }: { businessSlug: str
 
       <div className="space-y-3">
         {hours.map((h, idx) => (
-          <div key={h.id} className="flex items-center gap-4 border-b border-border pb-3 last:border-0">
-            <span className="font-medium text-text-secondary w-24">{DAY_NAMES_FA[h.dayOfWeek]}</span>
-            <label className="flex items-center gap-2 text-sm text-text-secondary">
+          <div key={h.id} className="flex flex-wrap items-center gap-3 sm:gap-4 border-b border-border pb-3 last:border-0">
+            <span className="font-medium text-text-secondary w-20 sm:w-24 shrink-0">{DAY_NAMES_FA[h.dayOfWeek]}</span>
+            <label className="flex items-center gap-2 text-sm text-text-secondary shrink-0">
               <input
                 type="checkbox"
                 checked={h.isClosed}
@@ -464,20 +464,20 @@ function HoursManager({ businessSlug, hours: initialHours }: { businessSlug: str
               تعطیر
             </label>
             {!h.isClosed && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 min-w-0">
                 <input
                   type="time"
                   value={h.openTime}
                   onChange={(e) => updateHour(idx, 'openTime', e.target.value)}
-                  className="h-9 rounded-lg border border-border px-2 text-sm outline-none focus:ring-2 focus:ring-primary"
+                  className="h-9 rounded-lg border border-border px-2 text-sm outline-none focus:ring-2 focus:ring-primary w-full sm:w-auto"
                   dir="ltr"
                 />
-                <span className="text-text-muted">تا</span>
+                <span className="text-text-muted shrink-0">تا</span>
                 <input
                   type="time"
                   value={h.closeTime}
                   onChange={(e) => updateHour(idx, 'closeTime', e.target.value)}
-                  className="h-9 rounded-lg border border-border px-2 text-sm outline-none focus:ring-2 focus:ring-primary"
+                  className="h-9 rounded-lg border border-border px-2 text-sm outline-none focus:ring-2 focus:ring-primary w-full sm:w-auto"
                   dir="ltr"
                 />
               </div>

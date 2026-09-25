@@ -148,22 +148,22 @@ export default function SalonPage() {
           </div>
           <div className="flex-1 bg-surface rounded-xl shadow-card border border-border p-5">
             <div className="flex items-start justify-between flex-wrap gap-3">
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold text-text-primary">{business.name}</h1>
-                  {business.isVerified && <BadgeCheck className="w-6 h-6 text-primary" />}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-xl sm:text-2xl font-bold text-text-primary">{business.name}</h1>
+                  {business.isVerified && <BadgeCheck className="w-6 h-6 text-primary shrink-0" />}
                   {business.isFeatured && (
-                    <span className="bg-warning text-white text-xs px-2 py-1 rounded-full font-medium flex items-center gap-1">
+                    <span className="bg-warning text-white text-xs px-2 py-1 rounded-full font-medium flex items-center gap-1 shrink-0">
                       <Sparkles className="w-3 h-3" /> ویژه
                     </span>
                   )}
                 </div>
                 {business.neighborhood && (
-                  <p className="text-text-muted flex items-center gap-1 mt-1">
-                    <MapPin className="w-4 h-4" /> {business.neighborhood}، {business.address}
+                  <p className="text-text-muted flex items-center gap-1 mt-1 text-sm sm:text-base">
+                    <MapPin className="w-4 h-4 shrink-0" /> {business.neighborhood}، {business.address}
                   </p>
                 )}
-                <div className="flex items-center gap-4 mt-3">
+                <div className="flex items-center gap-4 mt-3 flex-wrap">
                   <StarRating rating={business.avgRating || 0} />
                   <span className="text-sm text-text-muted">({toPersianDigits(business.reviewCount || 0)} نظر)</span>
                   {business.isOpenNow ? (
@@ -177,8 +177,8 @@ export default function SalonPage() {
                   )}
                 </div>
               </div>
-              <Link href={`/booking/${business.slug}`}>
-                <Button className="bg-primary hover:bg-primary-dark text-white gap-2 px-6">
+              <Link href={`/booking/${business.slug}`} className="w-full sm:w-auto">
+                <Button className="bg-primary hover:bg-primary-dark text-white gap-2 px-6 w-full sm:w-auto">
                   <Calendar className="w-5 h-5" /> رزرو نوبت
                 </Button>
               </Link>
@@ -188,19 +188,19 @@ export default function SalonPage() {
 
         {/* Tabs */}
         <Tabs defaultValue="services" className="mb-10">
-          <TabsList className="bg-surface border border-border rounded-xl p-1 w-full justify-start gap-1 h-auto">
-            <TabsTrigger value="services" className="rounded-lg px-4 py-2 text-sm">خدمات</TabsTrigger>
-            <TabsTrigger value="about" className="rounded-lg px-4 py-2 text-sm">درباره</TabsTrigger>
-            <TabsTrigger value="reviews" className="rounded-lg px-4 py-2 text-sm">نظرات</TabsTrigger>
-            <TabsTrigger value="location" className="rounded-lg px-4 py-2 text-sm">موقعیت</TabsTrigger>
+          <TabsList className="bg-surface border border-border rounded-xl p-1 w-full justify-start gap-1 h-auto overflow-x-auto scrollbar-thin">
+            <TabsTrigger value="services" className="rounded-lg px-3 sm:px-4 py-2 text-sm whitespace-nowrap shrink-0">خدمات</TabsTrigger>
+            <TabsTrigger value="about" className="rounded-lg px-3 sm:px-4 py-2 text-sm whitespace-nowrap shrink-0">درباره</TabsTrigger>
+            <TabsTrigger value="reviews" className="rounded-lg px-3 sm:px-4 py-2 text-sm whitespace-nowrap shrink-0">نظرات</TabsTrigger>
+            <TabsTrigger value="location" className="rounded-lg px-3 sm:px-4 py-2 text-sm whitespace-nowrap shrink-0">موقعیت</TabsTrigger>
           </TabsList>
 
           {/* Services Tab */}
           <TabsContent value="services" className="mt-4">
             <div className="bg-surface rounded-xl border border-border overflow-hidden">
               {business.services.map((service, i) => (
-                <div key={service.id} className={`flex items-center justify-between p-5 ${i !== business.services.length - 1 ? 'border-b border-border' : ''}`}>
-                  <div className="flex-1">
+                <div key={service.id} className={`flex flex-col sm:flex-row sm:items-center justify-between p-5 gap-3 ${i !== business.services.length - 1 ? 'border-b border-border' : ''}`}>
+                  <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-text-primary">{service.name}</h3>
                     {service.description && <p className="text-sm text-text-muted mt-1">{service.description}</p>}
                     <div className="flex items-center gap-4 mt-2">
@@ -210,8 +210,8 @@ export default function SalonPage() {
                       </span>
                     </div>
                   </div>
-                  <Link href={`/booking/${business.slug}?serviceId=${service.id}`}>
-                    <Button variant="outline" className="border-primary text-primary hover:bg-primary/10">انتخاب</Button>
+                  <Link href={`/booking/${business.slug}?serviceId=${service.id}`} className="shrink-0">
+                    <Button variant="outline" className="border-primary text-primary hover:bg-primary/10 w-full sm:w-auto">انتخاب</Button>
                   </Link>
                 </div>
               ))}

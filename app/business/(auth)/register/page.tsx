@@ -176,11 +176,11 @@ export default function BusinessRegisterPage() {
           </div>
 
           {/* Step indicator */}
-          <div className="flex items-center justify-center gap-1 mb-8">
+          <div className="flex items-center justify-center gap-1 mb-8 overflow-x-auto scrollbar-thin pb-2">
             {STEP_LABELS.map((label, s) => (
-              <div key={s} className="flex items-center gap-1">
+              <div key={s} className="flex items-center gap-1 shrink-0">
                 <div className="flex flex-col items-center gap-1.5">
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
+                  <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium transition-all duration-300 ${
                     step > s + 1
                       ? 'bg-secondary text-white shadow-soft'
                       : step === s + 1
@@ -189,12 +189,12 @@ export default function BusinessRegisterPage() {
                   }`}>
                     {step > s + 1 ? <CheckCircle2 className="w-4 h-4" /> : s + 1}
                   </div>
-                  <span className={`text-[10px] font-medium transition-colors ${step === s + 1 ? 'text-primary' : 'text-text-muted'}`}>
+                  <span className={`text-[9px] sm:text-[10px] font-medium transition-colors whitespace-nowrap ${step === s + 1 ? 'text-primary' : 'text-text-muted'}`}>
                     {label}
                   </span>
                 </div>
                 {s < STEP_LABELS.length - 1 && (
-                  <div className={`w-6 h-0.5 rounded-full transition-all duration-300 ${step > s + 1 ? 'bg-secondary' : 'bg-border'}`} />
+                  <div className={`w-4 sm:w-6 h-0.5 rounded-full transition-all duration-300 ${step > s + 1 ? 'bg-secondary' : 'bg-border'}`} />
                 )}
               </div>
             ))}
@@ -207,13 +207,13 @@ export default function BusinessRegisterPage() {
                 <User className="w-5 h-5 text-primary" />
                 <p className="text-sm font-medium text-text-primary">اطلاعات صاحب کسب‌وکار</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <GlassInput {...register('ownerFirstName')} placeholder="نام" error={errors.ownerFirstName?.message} />
                 <GlassInput {...register('ownerLastName')} placeholder="نام خانوادگی" error={errors.ownerLastName?.message} />
               </div>
               <GlassInput {...register('ownerMobile')} placeholder="موبایل (09xxxxxxxxx)" error={errors.ownerMobile?.message} />
               <GlassInput {...register('email')} type="email" placeholder="ایمیل" error={errors.email?.message} />
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <GlassInput {...register('password')} type="password" placeholder="رمز عبور" error={errors.password?.message} />
                 <GlassInput {...register('confirmPassword')} type="password" placeholder="تکرار رمز عبور" error={errors.confirmPassword?.message} />
               </div>

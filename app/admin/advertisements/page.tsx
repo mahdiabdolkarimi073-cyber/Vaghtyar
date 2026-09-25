@@ -159,7 +159,7 @@ export default function AdminAdvertisementsPage() {
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div><label className="text-sm text-text-secondary mb-1 block">شروع</label><input type="date" value={form.startDate} onChange={e => setForm({...form, startDate: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
               <div><label className="text-sm text-text-secondary mb-1 block">پایان</label><input type="date" value={form.endDate} onChange={e => setForm({...form, endDate: e.target.value})} className="admin-input w-full h-10 px-4 text-sm" dir="ltr" /></div>
             </div>

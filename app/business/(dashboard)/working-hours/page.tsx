@@ -111,7 +111,7 @@ export default function WorkingHoursPage() {
             const hour = hours.find(h => h.dayOfWeek === idx);
             if (!hour) return null;
             return (
-              <div key={idx} className="flex items-center gap-3 lg:gap-4 p-3 rounded-xl bg-muted/40 hover:bg-muted/60 transition-colors">
+              <div key={idx} className="flex flex-wrap items-center gap-3 lg:gap-4 p-3 rounded-xl bg-muted/40 hover:bg-muted/60 transition-colors">
                 <div className="w-20 lg:w-24 text-sm font-medium text-text-primary shrink-0">{dayName}</div>
                 <button onClick={() => updateHour(idx, 'isClosed', !hour.isClosed)} className={`premium-toggle shrink-0 ${!hour.isClosed ? 'bg-secondary' : 'bg-muted'}`}>
                   <span className={`premium-toggle-knob ${!hour.isClosed ? 'left-0.5' : 'right-0.5'}`} />

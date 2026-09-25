@@ -109,7 +109,7 @@ export default function SearchPage() {
         </Button>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar Filters */}
         <aside className={`${showFilters ? 'block' : 'hidden'} md:block w-full md:w-64 flex-shrink-0`}>
           <div className="bg-surface rounded-xl border border-border p-5 space-y-5 sticky top-20">

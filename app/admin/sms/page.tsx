@@ -66,9 +66,9 @@ export default function AdminSmsPage() {
           </div>
 
           <Tabs defaultValue="logs">
-            <TabsList className="bg-surface border border-border rounded-xl p-1">
-              <TabsTrigger value="logs" className="rounded-lg">گزارش پیامک‌ها</TabsTrigger>
-              <TabsTrigger value="settings" className="rounded-lg">تنظیمات</TabsTrigger>
+            <TabsList className="bg-surface border border-border rounded-xl p-1 overflow-x-auto scrollbar-thin">
+              <TabsTrigger value="logs" className="rounded-lg whitespace-nowrap shrink-0">گزارش پیامک‌ها</TabsTrigger>
+              <TabsTrigger value="settings" className="rounded-lg whitespace-nowrap shrink-0">تنظیمات</TabsTrigger>
             </TabsList>
 
             <TabsContent value="logs">

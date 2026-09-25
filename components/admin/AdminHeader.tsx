@@ -27,11 +27,11 @@ export default function AdminHeader({ title }: AdminHeaderProps) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 bg-surface/95 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between h-16">
-      <div className="flex items-center gap-3">
-        <h1 className="text-lg font-bold text-text-primary">{title}</h1>
+    <header className="sticky top-0 z-30 bg-surface/95 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between h-16 pr-14 lg:pr-4">
+      <div className="flex items-center gap-3 min-w-0">
+        <h1 className="text-base sm:text-lg font-bold text-text-primary truncate">{title}</h1>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 shrink-0">
         <button className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-muted transition-colors">
           <Bell className="w-5 h-5 text-text-secondary" />
           {notifications > 0 && (

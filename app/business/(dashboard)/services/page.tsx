@@ -186,7 +186,7 @@ export default function ServicesPage() {
                 <label className="block text-sm text-text-secondary mb-1.5">نام خدمت</label>
                 <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="premium-input w-full px-4 py-2.5 text-sm" placeholder="مثال: کوتاهی مو" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-text-secondary mb-1.5">مدت (دقیقه)</label>
                   <div className="flex items-center gap-2">

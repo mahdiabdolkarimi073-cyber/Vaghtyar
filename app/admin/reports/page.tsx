@@ -57,10 +57,10 @@ export default function AdminReportsPage() {
           </div>
 
           <Tabs value={tab} onValueChange={setTab}>
-            <TabsList className="bg-surface border border-border rounded-xl p-1">
-              <TabsTrigger value="revenue" className="rounded-lg">درآمد</TabsTrigger>
-              <TabsTrigger value="businesses" className="rounded-lg">کسب‌وکارها</TabsTrigger>
-              <TabsTrigger value="appointments" className="rounded-lg">نوبت‌ها</TabsTrigger>
+            <TabsList className="bg-surface border border-border rounded-xl p-1 overflow-x-auto scrollbar-thin">
+              <TabsTrigger value="revenue" className="rounded-lg whitespace-nowrap shrink-0">درآمد</TabsTrigger>
+              <TabsTrigger value="businesses" className="rounded-lg whitespace-nowrap shrink-0">کسب‌وکارها</TabsTrigger>
+              <TabsTrigger value="appointments" className="rounded-lg whitespace-nowrap shrink-0">نوبت‌ها</TabsTrigger>
             </TabsList>
 
             <TabsContent value="revenue">

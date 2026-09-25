@@ -58,10 +58,10 @@ export default function AdminSubscriptionsPage() {
         <AdminHeader title="مدیریت اشتراک‌ها" />
         <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-4">
           <Tabs value={tab} onValueChange={setTab}>
-            <TabsList className="bg-surface border border-border rounded-xl p-1">
-              <TabsTrigger value="active" className="rounded-lg">فعال</TabsTrigger>
-              <TabsTrigger value="expiring" className="rounded-lg">در حال انقضا</TabsTrigger>
-              <TabsTrigger value="expired" className="rounded-lg">منقضی شده</TabsTrigger>
+            <TabsList className="bg-surface border border-border rounded-xl p-1 overflow-x-auto scrollbar-thin">
+              <TabsTrigger value="active" className="rounded-lg whitespace-nowrap shrink-0">فعال</TabsTrigger>
+              <TabsTrigger value="expiring" className="rounded-lg whitespace-nowrap shrink-0">در حال انقضا</TabsTrigger>
+              <TabsTrigger value="expired" className="rounded-lg whitespace-nowrap shrink-0">منقضی شده</TabsTrigger>
             </TabsList>
 
             <TabsContent value={tab}>

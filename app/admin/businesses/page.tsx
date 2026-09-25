@@ -148,7 +148,7 @@ export default function AdminBusinessesPage() {
           </DialogHeader>
           {selected && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div><span className="text-text-muted">نام:</span> <span className="text-text-secondary font-medium">{selected.name}</span></div>
                 <div><span className="text-text-muted">دسته:</span> <span className="text-text-secondary">{selected.category}</span></div>
                 <div><span className="text-text-muted">شهر:</span> <span className="text-text-secondary">{selected.city}</span></div>
